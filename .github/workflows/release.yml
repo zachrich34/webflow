@@ -33,7 +33,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install pyinstaller pywebview
 
       - name: Build exe with PyInstaller
         run: pyinstaller webflow.spec
@@ -46,6 +46,6 @@ jobs:
             ## How to use
             1. Download **WebFlow.exe** below
             2. Double-click it — no installation needed
-            3. Your browser opens automatically at `http://localhost:8000`
+            3. A **WebFlow window opens directly** — no browser, no terminal
 
             > Windows may show a SmartScreen warning on first launch because the exe is not code-signed. Click **"More info" → "Run anyway"** to proceed.

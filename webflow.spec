@@ -58,6 +58,9 @@ a = Analysis(
         "passlib.handlers.bcrypt",
         "jose",
         "jose.jwt",
+        # --- pywebview (native desktop window) ---
+        "webview",
+        "webview.platforms",
     ],
     hookspath=[],
     hooksconfig={},
