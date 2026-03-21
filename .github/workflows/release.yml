@@ -1,0 +1,51 @@
+name: Build & Release
+
+# Triggered when you push a version tag, e.g.:
+#   git tag v1.0.0
+#   git push origin v1.0.0
+#
+# GitHub Actions will build WebFlow.exe on a real Windows machine
+# and attach it to the GitHub Release automatically.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # needed to create a Release and upload assets
+
+jobs:
+  build-windows:
+    name: Build WebFlow.exe (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build exe with PyInstaller
+        run: pyinstaller webflow.spec
+
+      - name: Upload WebFlow.exe to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/WebFlow.exe
+          body: |
+            ## How to use
+            1. Download **WebFlow.exe** below
+            2. Double-click it — no installation needed
+            3. Your browser opens automatically at `http://localhost:8000`
+
+            > Windows may show a SmartScreen warning on first launch because the exe is not code-signed. Click **"More info" → "Run anyway"** to proceed.

@@ -97,9 +97,12 @@ app.include_router(transfer.router)
 # ---------------------------------------------------------------------------
 
 import os
+import sys
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent.parent
+# When bundled with PyInstaller (--onefile), files are extracted to sys._MEIPASS.
+# In normal dev mode, fall back to the project root derived from __file__.
+BASE_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).parent.parent))
 
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 

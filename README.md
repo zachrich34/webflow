@@ -4,6 +4,21 @@
 
 ---
 
+## Download & Run (no setup needed)
+
+**Windows — the easy way:**
+
+1. Go to the **[Releases](../../releases/latest)** page of this repo
+2. Download **`WebFlow.exe`**
+3. Double-click it
+4. Your browser opens at `http://localhost:8000` automatically
+
+> **Windows SmartScreen warning?** Click **"More info" → "Run anyway"**. The exe is unsigned (no paid certificate), but the full source code is right here for you to inspect.
+
+That's it. No Python, no terminal, no pip.
+
+---
+
 ## What is WebFlow?
 
 WebFlow is a local web application that lets you migrate your browser data between different browsers — similar to how TuneMyMusic transfers playlists between music services, but for browsers.
@@ -56,7 +71,9 @@ Encrypted blob in SQLite  ← you see: "gAAAAA..." not plaintext
 
 ---
 
-## Installation
+## Run from source (developers)
+
+If you want to run the code directly or contribute:
 
 ### Requirements
 - Python 3.11+
@@ -65,7 +82,7 @@ Encrypted blob in SQLite  ← you see: "gAAAAA..." not plaintext
 ### Steps
 
 ```bash
-# 1. Clone / download WebFlow
+# 1. Clone the repo
 cd /path/to/webflow
 
 # 2. (Recommended) Create a virtual environment
@@ -79,6 +96,14 @@ pip install -r requirements.txt
 # 4. Start the server
 python run.py
 # Opens http://localhost:8000 in your browser automatically
+```
+
+### Build the exe yourself
+
+```bash
+pip install pyinstaller
+pyinstaller webflow.spec
+# Output: dist/WebFlow.exe
 ```
 
 ---
