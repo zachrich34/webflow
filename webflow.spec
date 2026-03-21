@@ -15,7 +15,7 @@ a = Analysis(
     pathex=["."],
     binaries=[],
     datas=[
-        ("static", "static"),           # CSS + JS assets
+        ("static", "static"),           # CSS + JS assets + icon
         ("templates", "templates"),     # Jinja2 HTML templates
     ],
     hiddenimports=[
@@ -88,7 +88,8 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,      # No black terminal window on Windows
+    icon="static/icon.ico",  # App icon (taskbar + exe)
+    console=False,           # No black terminal window on Windows
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

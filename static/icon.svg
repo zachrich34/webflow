@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="rounded">
+      <rect width="1024" height="1024" rx="230"/>
+    </clipPath>
+    <clipPath id="inner">
+      <rect width="1024" height="1024" rx="230"/>
+    </clipPath>
+  </defs>
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="230" fill="#0a2540"/>
+  <!-- Globe grid (subtle, centered) -->
+  <g clip-path="url(#inner)" opacity="0.12" stroke="#85B7EB" stroke-width="2.5" fill="none">
+    <!-- Outer circle -->
+    <circle cx="512" cy="512" r="340"/>
+    <!-- Horizontal ellipses (latitude lines) -->
+    <ellipse cx="512" cy="512" rx="340" ry="110"/>
+    <ellipse cx="512" cy="512" rx="340" ry="220"/>
+    <!-- Vertical ellipses (longitude lines) -->
+    <ellipse cx="512" cy="512" rx="110" ry="340"/>
+    <ellipse cx="512" cy="512" rx="220" ry="340"/>
+  </g>
+  <!-- Wave 1 - deepest/darkest -->
+  <g clip-path="url(#inner)">
+    <path d="M-60 680 Q90 630 256 680 Q422 730 576 680 Q730 630 896 680 Q1000 700 1084 680 L1084 1100 L-60 1100 Z"
+      fill="#0f3d6e" opacity="1"/>
+  </g>
+  <!-- Wave 2 - mid -->
+  <g clip-path="url(#inner)">
+    <path d="M-60 720 Q120 660 300 720 Q480 780 640 720 Q800 660 960 720 Q1020 740 1084 720 L1084 1100 L-60 1100 Z"
+      fill="#185FA5" opacity="1"/>
+  </g>
+  <!-- Wave 3 - bright top -->
+  <g clip-path="url(#inner)">
+    <path d="M-60 770 Q150 700 340 770 Q530 840 700 770 Q870 700 1040 770 L1084 790 L1084 1100 L-60 1100 Z"
+      fill="#378ADD" opacity="1"/>
+  </g>
+  <!-- Wave 4 - lightest foam -->
+  <g clip-path="url(#inner)">
+    <path d="M-60 830 Q180 755 380 830 Q580 905 760 830 Q940 755 1084 830 L1084 1100 L-60 1100 Z"
+      fill="#85B7EB" opacity="0.6"/>
+  </g>
+  <!-- Highlight line on top wave -->
+  <g clip-path="url(#inner)">
+    <path d="M-60 770 Q150 700 340 770 Q530 840 700 770 Q870 700 1040 770 L1084 790"
+      fill="none" stroke="#B5D4F4" stroke-width="4" opacity="0.5"/>
+  </g>
+  <!-- Transfer arrow - center icon -->
+  <!-- Left browser dot -->
+  <circle cx="360" cy="460" r="38" fill="#185FA5" stroke="#378ADD" stroke-width="5"/>
+  <rect x="338" y="442" width="44" height="36" rx="6" fill="none" stroke="#85B7EB" stroke-width="4"/>
+  <rect x="338" y="436" width="44" height="12" rx="4" fill="#85B7EB" opacity="0.6"/>
+  <!-- Right browser dot -->
+  <circle cx="664" cy="460" r="38" fill="#185FA5" stroke="#378ADD" stroke-width="5"/>
+  <rect x="642" y="442" width="44" height="36" rx="6" fill="none" stroke="#85B7EB" stroke-width="4"/>
+  <rect x="642" y="436" width="44" height="12" rx="4" fill="#85B7EB" opacity="0.6"/>
+  <!-- Arrow shaft -->
+  <line x1="416" y1="460" x2="600" y2="460" stroke="#85B7EB" stroke-width="8" stroke-linecap="round"/>
+  <!-- Arrowhead -->
+  <polygon points="608,442 640,460 608,478" fill="#85B7EB"/>
+  <!-- Left endpoint dot -->
+  <circle cx="416" cy="460" r="8" fill="#B5D4F4"/>
+</svg>
