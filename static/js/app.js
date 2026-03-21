@@ -1,0 +1,544 @@
+/**
+ * WebFlow — frontend logic
+ * All API communication uses the JWT stored in sessionStorage (NOT localStorage).
+ * Keys never leave the server's memory.
+ */
+
+'use strict';
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+
+const state = {
+  token: sessionStorage.getItem('wf_token') || null,
+  username: sessionStorage.getItem('wf_user') || null,
+  currentStep: 1,
+  detectedBrowsers: [],
+  sourceBrowser: null,
+  sourceProfile: null,
+  snapshotId: null,
+  selectedDataTypes: new Set(['bookmarks', 'history', 'passwords', 'extensions', 'settings']),
+  destBrowser: null,
+  destProfile: null,
+  jobId: null,
+  transferResult: null,
+};
+
+// Browser display info
+const BROWSER_INFO = {
+  chrome:    { emoji: '🌐', label: 'Google Chrome',   color: '#4285F4' },
+  firefox:   { emoji: '🦊', label: 'Mozilla Firefox', color: '#FF7139' },
+  opera_gx:  { emoji: '🎮', label: 'Opera GX',        color: '#FF1B2D' },
+  edge:      { emoji: '🔷', label: 'Microsoft Edge',   color: '#0078D7' },
+  brave:     { emoji: '🦁', label: 'Brave',            color: '#FB542B' },
+};
+
+const DATA_TYPE_EMOJI = {
+  bookmarks: '🔖',
+  history: '📅',
+  passwords: '🔑',
+  extensions: '🧩',
+  settings: '⚙️',
+};
+
+// ---------------------------------------------------------------------------
+// Bootstrap
+// ---------------------------------------------------------------------------
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (state.token) {
+    verifyToken().then(ok => {
+      if (ok) {
+        updateHeaderUI();
+        goToStep(2);
+      } else {
+        clearAuth();
+      }
+    });
+  }
+
+  // Allow Enter key on auth inputs
+  ['loginUsername','loginPassword','regUsername','regEmail','regPassword'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.closest('.card').querySelector('.btn-primary').click(); });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// API helpers
+// ---------------------------------------------------------------------------
+
+async function api(method, path, body = null) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+  const resp = await fetch(path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) throw new Error(data.detail || `HTTP ${resp.status}`);
+  return data;
+}
+
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+
+function switchAuthTab(tab) {
+  document.getElementById('loginForm').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+}
+
+async function login() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Logging in…';
+
+  try {
+    const data = await api('POST', '/api/auth/login', { username, password });
+    state.token = data.access_token;
+    state.username = username;
+    sessionStorage.setItem('wf_token', state.token);
+    sessionStorage.setItem('wf_user', username);
+    updateHeaderUI();
+    toast('Welcome back, ' + username + '!', 'success');
+    goToStep(2);
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = '';
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Continue →';
+  }
+}
+
+async function register() {
+  const username = document.getElementById('regUsername').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const errEl    = document.getElementById('regError');
+  errEl.style.display = 'none';
+  const btn = document.getElementById('regBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating account…';
+
+  try {
+    await api('POST', '/api/auth/register', { username, email, password });
+    toast('Account created! Logging in…', 'success');
+    // Auto-login
+    const data = await api('POST', '/api/auth/login', { username, password });
+    state.token = data.access_token;
+    state.username = username;
+    sessionStorage.setItem('wf_token', state.token);
+    sessionStorage.setItem('wf_user', username);
+    updateHeaderUI();
+    goToStep(2);
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = '';
+  } finally {
+    btn.disabled = false; btn.innerHTML = 'Create account →';
+  }
+}
+
+async function logout() {
+  try { await api('POST', '/api/auth/logout'); } catch {}
+  clearAuth();
+  goToStep(1);
+  toast('Logged out.', 'info');
+}
+
+function clearAuth() {
+  state.token = null; state.username = null;
+  sessionStorage.removeItem('wf_token');
+  sessionStorage.removeItem('wf_user');
+  updateHeaderUI();
+}
+
+async function verifyToken() {
+  try { await api('GET', '/api/auth/me'); return true; } catch { return false; }
+}
+
+function updateHeaderUI() {
+  const userEl  = document.getElementById('headerUser');
+  const logoutEl = document.getElementById('logoutBtn');
+  if (state.username) {
+    userEl.textContent = '👤 ' + state.username;
+    userEl.style.display = '';
+    logoutEl.style.display = '';
+  } else {
+    userEl.style.display = 'none';
+    logoutEl.style.display = 'none';
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Step navigation
+// ---------------------------------------------------------------------------
+
+function goToStep(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page' + n).classList.add('active');
+  state.currentStep = n;
+  updateProgressBar(n);
+
+  const bar = document.getElementById('progressBar');
+  bar.style.display = (n === 1) ? 'none' : 'flex';
+
+  // Lazy-load step content
+  if (n === 2) loadBrowserGrid('source');
+  if (n === 4) loadBrowserGrid('dest');
+}
+
+function updateProgressBar(active) {
+  for (let i = 1; i <= 6; i++) {
+    const dot  = document.getElementById('sdot' + i);
+    const line = document.getElementById('sline' + i);
+    dot.classList.toggle('active', i === active);
+    dot.classList.toggle('done',   i < active);
+    if (line) line.classList.toggle('done', i < active);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Step 2 — Browser detection
+// ---------------------------------------------------------------------------
+
+async function loadBrowserGrid(role) {
+  if (!state.detectedBrowsers.length) {
+    try {
+      const data = await api('GET', '/api/browsers/detect');
+      state.detectedBrowsers = data.browsers || [];
+    } catch (e) {
+      toast('Could not detect browsers: ' + e.message, 'error');
+      state.detectedBrowsers = [];
+    }
+  }
+
+  const gridId   = role === 'source' ? 'sourceBrowserGrid' : 'destBrowserGrid';
+  const grid     = document.getElementById(gridId);
+  grid.innerHTML = '';
+
+  // Group by browser
+  const grouped = {};
+  for (const p of state.detectedBrowsers) {
+    if (!grouped[p.browser]) grouped[p.browser] = [];
+    grouped[p.browser].push(p);
+  }
+
+  // Always show all supported browsers; mark unavailable ones
+  const allBrowsers = ['chrome', 'firefox', 'opera_gx', 'edge', 'brave'];
+  for (const b of allBrowsers) {
+    const info    = BROWSER_INFO[b];
+    const profiles = grouped[b] || [];
+    const avail   = profiles.length > 0;
+
+    const card = document.createElement('div');
+    card.className = 'browser-card' + (avail ? '' : ' unavailable');
+    card.dataset.browser = b;
+    card.innerHTML = `
+      <div class="browser-icon" style="background:${info.color}22">${info.emoji}</div>
+      <div class="browser-name">${info.label}</div>
+      <div class="browser-profiles">${avail ? profiles.length + ' profile(s)' : 'Not detected'}</div>
+    `;
+    if (avail) {
+      card.onclick = () => selectBrowser(role, b, profiles, card);
+    }
+    grid.appendChild(card);
+  }
+}
+
+function selectBrowser(role, browser, profiles, cardEl) {
+  // Deselect all
+  const gridId = role === 'source' ? 'sourceBrowserGrid' : 'destBrowserGrid';
+  document.querySelectorAll('#' + gridId + ' .browser-card').forEach(c => c.classList.remove('selected'));
+  cardEl.classList.add('selected');
+
+  const profileGroupId  = role === 'source' ? 'sourceProfileGroup'  : 'destProfileGroup';
+  const profileSelectId = role === 'source' ? 'sourceProfileSelect' : 'destProfileSelect';
+  const profileGroup    = document.getElementById(profileGroupId);
+  const profileSelect   = document.getElementById(profileSelectId);
+  profileSelect.innerHTML = '';
+  profiles.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.path;
+    opt.textContent = p.profile + ' — ' + p.path;
+    profileSelect.appendChild(opt);
+  });
+  profileGroup.style.display = '';
+
+  if (role === 'source') {
+    state.sourceBrowser = browser;
+    state.sourceProfile = profiles[0]?.path;
+    profileSelect.onchange = () => { state.sourceProfile = profileSelect.value; };
+    document.getElementById('step2Next').disabled = false;
+    // Reset scan
+    state.snapshotId = null;
+    document.getElementById('step3Next').disabled = true;
+    document.getElementById('scanBtn').disabled = false;
+    resetCounters();
+  } else {
+    state.destBrowser = browser;
+    state.destProfile = profiles[0]?.path;
+    profileSelect.onchange = () => {
+      state.destProfile = profileSelect.value;
+      checkSameSource();
+    };
+    checkSameSource();
+  }
+}
+
+function checkSameSource() {
+  const same = state.sourceBrowser === state.destBrowser && state.sourceProfile === state.destProfile;
+  document.getElementById('sameSourceWarning').style.display = same ? '' : 'none';
+  document.getElementById('step4Next').disabled = !state.destBrowser || same;
+}
+
+// ---------------------------------------------------------------------------
+// Step 3 — Data type selection & scan
+// ---------------------------------------------------------------------------
+
+function toggleDataType(card, type) {
+  card.classList.toggle('selected');
+  if (card.classList.contains('selected')) {
+    state.selectedDataTypes.add(type);
+  } else {
+    state.selectedDataTypes.delete(type);
+  }
+}
+
+function resetCounters() {
+  ['bookmarks','history','passwords','extensions','settings'].forEach(t => {
+    const el = document.getElementById('count-' + t);
+    if (el) el.textContent = 'Not scanned';
+  });
+}
+
+async function scanBrowser() {
+  const btn = document.getElementById('scanBtn');
+  const statusEl = document.getElementById('scanStatus');
+  const errorEl  = document.getElementById('scanError');
+  errorEl.style.display = 'none';
+  statusEl.style.display = '';
+  btn.disabled = true;
+
+  try {
+    const types = Array.from(state.selectedDataTypes);
+    const data = await api('POST', '/api/browsers/snapshot', {
+      browser: state.sourceBrowser,
+      profile: state.sourceProfile,
+      data_types: types,
+    });
+
+    state.snapshotId = data.id;
+
+    // Update counts
+    const summary = data.data_summary || {};
+    Object.entries(summary).forEach(([type, count]) => {
+      const el = document.getElementById('count-' + type);
+      if (el) el.textContent = count.toLocaleString() + ' items';
+    });
+
+    if (data.status === 'error') {
+      errorEl.textContent = '⚠️ Partial scan: ' + (data.error_message || 'Some data could not be read');
+      errorEl.style.display = '';
+    }
+
+    document.getElementById('step3Next').disabled = false;
+    toast('Browser scanned — ' + Object.values(summary).reduce((a,b)=>a+b,0).toLocaleString() + ' items found', 'success');
+  } catch (e) {
+    errorEl.textContent = '❌ ' + e.message;
+    errorEl.style.display = '';
+    toast('Scan failed: ' + e.message, 'error');
+  } finally {
+    statusEl.style.display = 'none';
+    btn.disabled = false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Step 4 → 5 — Start transfer
+// ---------------------------------------------------------------------------
+
+async function startTransfer() {
+  goToStep(5);
+  const types = Array.from(state.selectedDataTypes);
+
+  // Build progress items
+  const container = document.getElementById('transferProgress');
+  container.innerHTML = '';
+  types.forEach(type => {
+    container.innerHTML += `
+      <div class="progress-item" id="prog-${type}">
+        <div class="progress-item-header">
+          <span>${DATA_TYPE_EMOJI[type] || '📦'} ${type.charAt(0).toUpperCase() + type.slice(1)}</span>
+          <span class="status-badge badge-pending" id="badge-${type}">Pending</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="fill-${type}"></div>
+        </div>
+      </div>`;
+  });
+
+  // Animate "running" state
+  types.forEach(type => {
+    setBadge(type, 'running');
+    setFill(type, 30);
+  });
+
+  try {
+    const job = await api('POST', '/api/transfer/start', {
+      source_snapshot_id: state.snapshotId,
+      target_browser: state.destBrowser,
+      target_profile: state.destProfile,
+      data_types: types,
+    });
+    state.jobId = job.id;
+    pollJob(types);
+  } catch (e) {
+    document.getElementById('transferError').textContent = '❌ ' + e.message;
+    document.getElementById('transferError').style.display = '';
+    types.forEach(t => { setBadge(t, 'error'); setFill(t, 100, true); });
+  }
+}
+
+async function pollJob(types) {
+  let attempts = 0;
+  const maxAttempts = 120; // 2 minutes
+
+  const poll = async () => {
+    try {
+      const job = await api('GET', '/api/transfer/status/' + state.jobId);
+
+      if (job.status === 'running' || job.status === 'pending') {
+        types.forEach(t => { setBadge(t, 'running'); setFill(t, 50 + Math.random() * 20); });
+        if (attempts++ < maxAttempts) setTimeout(poll, 1000);
+        return;
+      }
+
+      if (job.status === 'done') {
+        const summary = JSON.parse(job.result_summary || '{}');
+        types.forEach(t => {
+          setBadge(t, 'done');
+          setFill(t, 100);
+        });
+        state.transferResult = summary;
+        setTimeout(() => goToStep(6, summary), 800);
+        return;
+      }
+
+      if (job.status === 'error') {
+        types.forEach(t => { setBadge(t, 'error'); setFill(t, 100, true); });
+        document.getElementById('transferError').textContent = '❌ ' + (job.error_message || 'Transfer failed');
+        document.getElementById('transferError').style.display = '';
+      }
+    } catch (e) {
+      if (attempts++ < maxAttempts) setTimeout(poll, 2000);
+    }
+  };
+
+  poll();
+}
+
+function setBadge(type, status) {
+  const el = document.getElementById('badge-' + type);
+  if (!el) return;
+  el.className = 'status-badge badge-' + status;
+  el.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+function setFill(type, pct, error = false) {
+  const el = document.getElementById('fill-' + type);
+  if (!el) return;
+  el.style.width = pct + '%';
+  if (error) el.style.background = 'var(--danger)';
+  else if (pct >= 100) el.classList.add('done');
+}
+
+// ---------------------------------------------------------------------------
+// Step 6 — Summary
+// ---------------------------------------------------------------------------
+
+function goToStep(n, summary) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page' + n).classList.add('active');
+  state.currentStep = n;
+  updateProgressBar(n);
+
+  const bar = document.getElementById('progressBar');
+  bar.style.display = (n === 1) ? 'none' : 'flex';
+
+  if (n === 2) loadBrowserGrid('source');
+  if (n === 4) loadBrowserGrid('dest');
+
+  if (n === 6 && summary) buildSummary(summary);
+}
+
+function buildSummary(summary) {
+  const grid = document.getElementById('summaryGrid');
+  grid.innerHTML = '';
+  Object.entries(summary).forEach(([type, count]) => {
+    grid.innerHTML += `
+      <div class="summary-item">
+        <div style="font-size:1.5rem">${DATA_TYPE_EMOJI[type] || '📦'}</div>
+        <div class="summary-count">${Number(count).toLocaleString()}</div>
+        <div class="summary-label">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+      </div>`;
+  });
+
+  if (summary.passwords !== undefined) {
+    document.getElementById('passwordNote').style.display = '';
+  }
+  if (summary.extensions !== undefined) {
+    document.getElementById('extensionNote').style.display = '';
+  }
+}
+
+function downloadReport() {
+  const lines = [
+    'WebFlow Transfer Report',
+    'Date: ' + new Date().toLocaleString(),
+    'Source: ' + (BROWSER_INFO[state.sourceBrowser]?.label || state.sourceBrowser) + ' — ' + state.sourceProfile,
+    'Destination: ' + (BROWSER_INFO[state.destBrowser]?.label || state.destBrowser) + ' — ' + state.destProfile,
+    '',
+    'Items transferred:',
+  ];
+  if (state.transferResult) {
+    Object.entries(state.transferResult).forEach(([k, v]) => lines.push('  ' + k + ': ' + v));
+  }
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'webflow-report-' + Date.now() + '.txt';
+  a.click();
+}
+
+function startOver() {
+  state.sourceBrowser = null;
+  state.sourceProfile = null;
+  state.snapshotId = null;
+  state.destBrowser = null;
+  state.destProfile = null;
+  state.jobId = null;
+  state.transferResult = null;
+  state.selectedDataTypes = new Set(['bookmarks','history','passwords','extensions','settings']);
+  goToStep(2);
+}
+
+// ---------------------------------------------------------------------------
+// Toast notifications
+// ---------------------------------------------------------------------------
+
+function toast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const div = document.createElement('div');
+  div.className = 'toast ' + type;
+  div.textContent = message;
+  container.appendChild(div);
+  setTimeout(() => div.remove(), 4000);
+}

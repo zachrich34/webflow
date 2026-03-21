@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebFlow — Browser Data Transfer</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <header>
+    <span class="logo">⚡ WebFlow</span>
+    <div class="header-actions">
+      <span class="header-user" id="headerUser" style="display:none"></span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn" style="display:none" onclick="logout()">Log out</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Step progress indicator -->
+    <div class="progress-bar" id="progressBar" style="display:none">
+      <div class="step-dot" id="sdot1">
+        <div class="dot">1</div>
+        <div class="label">Account</div>
+      </div>
+      <div class="step-line" id="sline1"></div>
+      <div class="step-dot" id="sdot2">
+        <div class="dot">2</div>
+        <div class="label">Source</div>
+      </div>
+      <div class="step-line" id="sline2"></div>
+      <div class="step-dot" id="sdot3">
+        <div class="dot">3</div>
+        <div class="label">Data</div>
+      </div>
+      <div class="step-line" id="sline3"></div>
+      <div class="step-dot" id="sdot4">
+        <div class="dot">4</div>
+        <div class="label">Destination</div>
+      </div>
+      <div class="step-line" id="sline4"></div>
+      <div class="step-dot" id="sdot5">
+        <div class="dot">5</div>
+        <div class="label">Transfer</div>
+      </div>
+      <div class="step-line" id="sline5"></div>
+      <div class="step-dot" id="sdot6">
+        <div class="dot">6</div>
+        <div class="label">Done</div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 1: Auth ===== -->
+    <div class="page active" id="page1">
+      <div style="text-align:center; margin-bottom: 8px;">
+        <div style="font-size:3.5rem; margin-bottom:12px;">⚡</div>
+        <h1 class="page-title" style="font-size:2.4rem;">WebFlow</h1>
+        <p class="page-subtitle" style="margin-top:8px;">Transfer your browser data — bookmarks, history, passwords — in minutes.</p>
+      </div>
+
+      <div class="security-banner" style="max-width:480px; margin: 0 auto;">
+        🔒 End-to-end encrypted. Your master password never leaves your device.
+      </div>
+
+      <div class="card" style="max-width:480px; margin: 0 auto; width:100%;">
+        <div class="nav-tabs" style="margin-bottom:20px">
+          <button class="nav-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+          <button class="nav-tab" id="tabRegister" onclick="switchAuthTab('register')">Create account</button>
+        </div>
+
+        <!-- Login form -->
+        <div id="loginForm">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="loginUsername" placeholder="your_username" autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>Master password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div id="loginError" class="form-error" style="display:none; margin-bottom:12px;"></div>
+          <button class="btn btn-primary btn-lg" style="width:100%" onclick="login()" id="loginBtn">
+            Continue →
+          </button>
+        </div>
+
+        <!-- Register form -->
+        <div id="registerForm" style="display:none">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="regUsername" placeholder="your_username" autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label>Master password (min. 8 chars)</label>
+            <input type="password" id="regPassword" placeholder="Create a strong password" autocomplete="new-password">
+          </div>
+          <div id="regError" class="form-error" style="display:none; margin-bottom:12px;"></div>
+          <button class="btn btn-primary btn-lg" style="width:100%" onclick="register()" id="regBtn">
+            Create account →
+          </button>
+        </div>
+      </div>
+
+      <p style="text-align:center; font-size:0.78rem; color:var(--muted); max-width:480px; margin: 0 auto;">
+        WebFlow runs locally on your machine. No data is sent to external servers.
+      </p>
+    </div>
+
+    <!-- ===== STEP 2: Select source browser ===== -->
+    <div class="page" id="page2">
+      <h2 class="page-title">Select <span style="color:var(--accent1)">source</span> browser</h2>
+      <p class="page-subtitle">Which browser do you want to transfer data <strong>from</strong>?</p>
+
+      <div class="browser-grid" id="sourceBrowserGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div id="sourceProfileGroup" style="display:none" class="card">
+        <div class="profile-select-group">
+          <label>Profile</label>
+          <select id="sourceProfileSelect"></select>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+        <button class="btn btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- ===== STEP 3: Choose data types ===== -->
+    <div class="page" id="page3">
+      <h2 class="page-title">What to <span style="color:var(--accent2)">transfer</span>?</h2>
+      <p class="page-subtitle">Select the data you want to move to the new browser.</p>
+
+      <div class="data-types-grid">
+        <div class="data-type-card selected" onclick="toggleDataType(this, 'bookmarks')">
+          <input type="checkbox" checked>
+          <div class="data-type-icon">🔖</div>
+          <div class="data-type-info">
+            <div class="data-type-name">Bookmarks</div>
+            <div class="data-type-count" id="count-bookmarks">Scanning…</div>
+          </div>
+        </div>
+        <div class="data-type-card selected" onclick="toggleDataType(this, 'history')">
+          <input type="checkbox" checked>
+          <div class="data-type-icon">📅</div>
+          <div class="data-type-info">
+            <div class="data-type-name">History</div>
+            <div class="data-type-count" id="count-history">Scanning…</div>
+          </div>
+        </div>
+        <div class="data-type-card selected" onclick="toggleDataType(this, 'passwords')">
+          <input type="checkbox" checked>
+          <div class="data-type-icon">🔑</div>
+          <div class="data-type-info">
+            <div class="data-type-name">Passwords</div>
+            <div class="data-type-count" id="count-passwords">Scanning…</div>
+          </div>
+        </div>
+        <div class="data-type-card selected" onclick="toggleDataType(this, 'extensions')">
+          <input type="checkbox" checked>
+          <div class="data-type-icon">🧩</div>
+          <div class="data-type-info">
+            <div class="data-type-name">Extensions</div>
+            <div class="data-type-count" id="count-extensions">Scanning…</div>
+          </div>
+        </div>
+        <div class="data-type-card selected" onclick="toggleDataType(this, 'settings')">
+          <input type="checkbox" checked>
+          <div class="data-type-icon">⚙️</div>
+          <div class="data-type-info">
+            <div class="data-type-name">Settings</div>
+            <div class="data-type-count" id="count-settings">Homepage, search engine</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        ⚠️ <strong>Cookies</strong> and <strong>payment methods</strong> cannot be transferred for security reasons.
+      </div>
+
+      <div id="scanStatus" style="display:none" class="alert alert-info">
+        <span class="spinner"></span> Scanning browser data…
+      </div>
+      <div id="scanError" style="display:none" class="alert alert-error"></div>
+
+      <div style="display:flex; gap:12px; justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+        <button class="btn btn-primary" id="scanBtn" onclick="scanBrowser()">
+          🔍 Scan browser
+        </button>
+        <button class="btn btn-primary" id="step3Next" onclick="goToStep(4)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- ===== STEP 4: Select destination browser ===== -->
+    <div class="page" id="page4">
+      <h2 class="page-title">Select <span style="color:var(--accent3)">destination</span> browser</h2>
+      <p class="page-subtitle">Which browser do you want to transfer data <strong>to</strong>?</p>
+
+      <div class="browser-grid" id="destBrowserGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div id="destProfileGroup" style="display:none" class="card">
+        <div class="profile-select-group">
+          <label>Profile</label>
+          <select id="destProfileSelect"></select>
+        </div>
+      </div>
+
+      <div id="sameSourceWarning" style="display:none" class="alert alert-warning">
+        ⚠️ Source and destination are the same browser and profile. Please choose a different destination.
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+        <button class="btn btn-primary" id="step4Next" onclick="startTransfer()" disabled>
+          🚀 Start transfer
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== STEP 5: Transfer progress ===== -->
+    <div class="page" id="page5">
+      <h2 class="page-title">Transferring your data…</h2>
+      <p class="page-subtitle">Please wait. Do not close your browser.</p>
+
+      <div class="card">
+        <div class="transfer-progress" id="transferProgress">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div id="transferError" style="display:none" class="alert alert-error"></div>
+    </div>
+
+    <!-- ===== STEP 6: Done ===== -->
+    <div class="page" id="page6">
+      <div style="text-align:center">
+        <div style="font-size:4rem; margin-bottom:12px;">🎉</div>
+        <h2 class="page-title">Transfer complete!</h2>
+        <p class="page-subtitle" style="margin-top:8px;">Your browser data has been successfully transferred.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="font-weight:700; margin-bottom:16px;">Summary</h3>
+        <div class="summary-grid" id="summaryGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="alert alert-info" id="passwordNote" style="display:none">
+        🔑 <div><strong>Passwords:</strong> A CSV file has been created in your destination browser's profile folder.
+        Import it via your browser's password manager settings to complete the password transfer.</div>
+      </div>
+
+      <div class="alert alert-info" id="extensionNote" style="display:none">
+        🧩 <div><strong>Extensions:</strong> An HTML file has been saved to your profile folder with links to reinstall each extension.
+        Open it to reinstall your extensions in the new browser.</div>
+      </div>
+
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-lg" onclick="downloadReport()">📄 Download report</button>
+        <button class="btn btn-primary btn-lg" onclick="startOver()">↺ New transfer</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    WebFlow — local browser data transfer tool &nbsp;|&nbsp;
+    All data encrypted with AES-256 · Passwords never stored in plaintext
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
