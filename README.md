@@ -10,18 +10,17 @@
 
 1. Go to the **[Releases](../../releases/latest)** page of this repo
 2. Download **`WebFlow.exe`**
-3. Double-click it
-4. Your browser opens at `http://localhost:8000` automatically
+3. Double-click it — a **native app window opens instantly**
+
+No browser. No terminal. No Python. No pip.
 
 > **Windows SmartScreen warning?** Click **"More info" → "Run anyway"**. The exe is unsigned (no paid certificate), but the full source code is right here for you to inspect.
-
-That's it. No Python, no terminal, no pip.
 
 ---
 
 ## What is WebFlow?
 
-WebFlow is a local web application that lets you migrate your browser data between different browsers — similar to how TuneMyMusic transfers playlists between music services, but for browsers.
+WebFlow is a **native desktop app** that lets you migrate your browser data between different browsers — similar to how TuneMyMusic transfers playlists between music services, but for browsers. It runs entirely on your machine with no internet connection required.
 
 **Supported browsers:** Google Chrome · Mozilla Firefox · Opera GX · Microsoft Edge · Brave
 
@@ -60,7 +59,7 @@ Encrypted blob in SQLite  ← you see: "gAAAAA..." not plaintext
 - Your **encryption key** is derived from your password at login and stays in RAM — lost on server restart (you just log in again)
 - All browser data (bookmarks, history, passwords) is **Fernet-encrypted** before being saved to SQLite
 - If someone steals the `webflow.db` file, they see **only encrypted blobs** — useless without your password
-- The app runs **entirely on localhost** — no data ever leaves your machine
+- The app runs **entirely on your machine** — no data ever leaves your machine
 - JWT tokens stored in `sessionStorage` (cleared when you close the tab) — never `localStorage`
 - Rate limiting: 5 login attempts/min, 3 registrations/hour per IP
 - Security headers on every response: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, CSP
@@ -93,9 +92,9 @@ source venv/bin/activate        # Linux/macOS
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Start the server
+# 4. Launch the app
 python run.py
-# Opens http://localhost:8000 in your browser automatically
+# A native desktop window opens automatically
 ```
 
 ### Build the exe yourself
@@ -155,7 +154,7 @@ webflow/
 
 ## API Reference
 
-The API is self-documented at `http://localhost:8000/api/docs` (Swagger UI).
+The API is self-documented at `http://localhost:8000/api/docs` (Swagger UI) when running from source.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
