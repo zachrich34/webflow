@@ -1,4 +1,4 @@
-# ⚡ WebFlow — Browser Data Transfer Tool
+# 🌊 WebFlow — Browser Data Transfer Tool
 
 > Transfer your bookmarks, history, passwords, and extensions from one browser to another — locally, privately, and securely.
 
