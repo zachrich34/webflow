@@ -34,7 +34,7 @@ Successfully installed fastapi-0.111.0 uvicorn-0.29.0 sqlalchemy-2.0.30 ...
 
 ---
 
-## Step 1 — Start the server
+## Step 1 — Launch the app
 
 ```bash
 python run.py
@@ -43,10 +43,10 @@ python run.py
 The terminal will show:
 ```
 INFO:     Started server process
-INFO:     Uvicorn running on http://127.0.0.1:8000
+INFO:     Uvicorn running on http://127.0.0.1:8765
 ```
 
-Your browser will automatically open to `http://localhost:8000`.
+A **native desktop window** will open automatically — no browser needed.
 
 ---
 
@@ -202,14 +202,14 @@ Before using WebFlow on sensitive data:
 - [ ] You've chosen a strong master password
 - [ ] You'll delete the password CSV after importing it into the browser
 - [ ] You'll delete `webflow.db` when you no longer need the stored snapshots
-- [ ] The server is only accessible from your machine (`127.0.0.1`)
+- [ ] The app runs entirely on your machine (not accessible from any other device)
 
 ---
 
 ## Uninstalling / cleaning up
 
 ```bash
-# Stop the server: Ctrl+C in the terminal
+# Close the WebFlow window, or press Ctrl+C in the terminal if running from source
 
 # Remove the encrypted database
 rm webflow.db

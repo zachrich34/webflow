@@ -154,7 +154,7 @@ webflow/
 
 ## API Reference
 
-The API is self-documented at `http://localhost:8000/api/docs` (Swagger UI) when running from source.
+The API is self-documented at `http://127.0.0.1:8765/api/docs` (Swagger UI) when running from source.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -182,7 +182,7 @@ sqlite3 webflow.db "SELECT data_type, substr(encrypted_blob,1,40) FROM encrypted
 
 ### Check security headers
 ```bash
-curl -I http://localhost:8000
+curl -I http://127.0.0.1:8765
 # X-Frame-Options: DENY
 # X-Content-Type-Options: nosniff
 # X-XSS-Protection: 1; mode=block
@@ -192,7 +192,7 @@ curl -I http://localhost:8000
 ### Check rate limiting
 ```bash
 for i in $(seq 1 8); do
-  curl -s -o /dev/null -w "%{http_code}\n" -X POST http://localhost:8000/api/auth/login \
+  curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:8765/api/auth/login \
     -H "Content-Type: application/json" -d '{"username":"x","password":"y"}'
 done
 # 401 401 401 401 401 429 429 429  (rate limited after 5 attempts)
@@ -216,7 +216,7 @@ Passwords are decrypted using DPAPI via `pywin32`. Install it with: `pip install
 ## FAQ
 
 **Q: Does WebFlow send my data anywhere?**
-A: No. The server binds to `127.0.0.1` only. Nothing leaves your machine.
+A: No. The app runs entirely on your machine. Nothing leaves your device.
 
 **Q: What if I restart the server?**
 A: Your encrypted data stays in the DB. You just log in again to re-derive the key.
