@@ -74,6 +74,22 @@ header {
 }
 
 .header-actions { display: flex; gap: 12px; align-items: center; }
+
+.lang-select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-family: inherit;
+  padding: 5px 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+  width: auto;
+}
+.lang-select:hover { border-color: var(--accent1); }
+.lang-select option { background: #1a1a2e; }
 .header-user { color: var(--muted); font-size: 0.875rem; }
 
 /* ---- Buttons ---- */

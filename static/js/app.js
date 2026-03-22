@@ -30,6 +30,310 @@ const state = {
 };
 
 // Free tier data types
+// ---------------------------------------------------------------------------
+// i18n
+// ---------------------------------------------------------------------------
+
+const TRANSLATIONS = {
+  fr: {
+    'upgrade-btn':'Upgrade ✨','manage-sub-btn':"Gérer l'abonnement",'logout-btn':'Déconnexion',
+    'tab-login':'Login','tab-register':'Créer un compte','label-username':"Nom d'utilisateur",
+    'label-password':'Mot de passe maître','label-email':'Email',
+    'label-password-new':'Mot de passe maître (min. 8 car.)','remember-me':'Se souvenir de moi',
+    'btn-continue':'Continuer →','btn-create-account':'Créer le compte →',
+    'ph-username':'votre_pseudo','ph-strong-password':'Créez un mot de passe fort',
+    'local-notice':'WebFlow tourne localement. Aucune donnée envoyée à des serveurs externes.',
+    'step-account':'Compte','step-source':'Source','step-data':'Données',
+    'step-dest':'Destination','step-transfer':'Transfert','step-done':'Terminé',
+    'dash-subtitle':'Que voulez-vous faire aujourd\'hui ?',
+    'dtab-new':'🚀 Nouveau transfert','dtab-transfers':'📋 Mes transferts',
+    'dtab-plan':'💎 Mon plan','dtab-faq':'⭐ Review & FAQ',
+    'hero-title':'Prêt à transférer ?',
+    'hero-subtitle':'Déplacez vos bookmarks, historique, mots de passe et plus en quelques clics.',
+    'btn-start-transfer':'🚀 Démarrer un transfert',
+    'upcoming-section-title':'Fonctionnalités Pro & Premium',
+    'upcoming-section-sub':'Cliquez pour en savoir plus — disponibles bientôt.',
+    'upcoming-auto-name':'Transferts automatiques quotidiens','upcoming-auto-desc':'Sync automatique chaque jour — Premium',
+    'upcoming-history-name':'Historique illimité','upcoming-history-desc':'Conservez tous vos transferts passés — Pro',
+    'upcoming-multi-name':'Sync multi-profils','upcoming-multi-desc':'Gérez plusieurs profils simultanément — Premium',
+    'upcoming-early-name':'Accès anticipé','upcoming-early-desc':'Nouvelles fonctionnalités en avant-première — Premium',
+    'transfers-tab-title':'Historique des transferts',
+    'transfers-tab-sub':"L'historique de vos transferts sera disponible ici très prochainement.",
+    'transfers-tab-badge':'À venir — Pro & Premium','plan-tab-title':'Mon abonnement',
+    'plan-compare-title':'Comparer les plans','faq-title':'Questions fréquentes',
+    'review-title':'Donne ton avis sur la bêta',
+    'review-sub':'2 minutes pour nous aider à améliorer WebFlow. Ton retour compte vraiment.',
+    'review-btn':'✍️ Répondre au formulaire',
+    'step2-back':'← Retour','step2-next':'Suivant →',
+    'step3-back':'← Retour','step3-scan':'🔍 Scanner','step3-next':'Suivant →',
+    'dt-bookmarks':'Bookmarks','dt-history':'Historique','dt-passwords':'Mots de passe',
+    'dt-extensions':'Extensions','dt-settings':'Paramètres',
+    'pro-section-label':'Pro & Premium — À venir',
+    'pro-auto-name':'Transferts automatiques','pro-auto-desc':'Sync quotidienne programmée',
+    'pro-history-name':'Historique illimité','pro-history-desc':'Tous vos transferts conservés',
+    'pro-multi-name':'Multi-profils','pro-multi-desc':'Sync plusieurs profils en même temps',
+    'pro-early-name':'Accès anticipé','pro-early-desc':'Nouvelles fonctionnalités en avant-première',
+    'step4-back':'← Retour','step4-start':'🚀 Lancer le transfert',
+    'step5-title':'Transfert en cours…','step5-sub':'Veuillez patienter. Ne fermez pas cette fenêtre.',
+    'step6-title':'Transfert terminé !','step6-sub':'Vos données ont été transférées avec succès.',
+    'btn-download':'📄 Télécharger le rapport','btn-new-transfer':'↺ Nouveau transfert',
+    'footer':'WebFlow — outil local de transfert · Chiffrement AES-256 · Mots de passe jamais stockés en clair',
+    'coming-soon-toast':'À venir pour Pro / Premium','welcome':'Bienvenue','logged-out':'Déconnecté.',
+  },
+  en: {
+    'upgrade-btn':'Upgrade ✨','manage-sub-btn':'Manage subscription','logout-btn':'Log out',
+    'tab-login':'Login','tab-register':'Create account','label-username':'Username',
+    'label-password':'Master password','label-email':'Email',
+    'label-password-new':'Master password (min. 8 chars)','remember-me':'Remember me',
+    'btn-continue':'Continue →','btn-create-account':'Create account →',
+    'ph-username':'your_username','ph-strong-password':'Create a strong password',
+    'local-notice':'WebFlow runs locally on your machine. No data is sent to external servers.',
+    'step-account':'Account','step-source':'Source','step-data':'Data',
+    'step-dest':'Destination','step-transfer':'Transfer','step-done':'Done',
+    'dash-subtitle':'What would you like to do today?',
+    'dtab-new':'🚀 New transfer','dtab-transfers':'📋 My transfers',
+    'dtab-plan':'💎 My plan','dtab-faq':'⭐ Review & FAQ',
+    'hero-title':'Ready to transfer?',
+    'hero-subtitle':'Move your bookmarks, history, passwords and more in just a few clicks.',
+    'btn-start-transfer':'🚀 Start a transfer',
+    'upcoming-section-title':'Pro & Premium Features',
+    'upcoming-section-sub':'Click to learn more — coming soon.',
+    'upcoming-auto-name':'Automatic daily transfers','upcoming-auto-desc':'Automatic sync every day — Premium',
+    'upcoming-history-name':'Unlimited history','upcoming-history-desc':'Keep all your past transfers — Pro',
+    'upcoming-multi-name':'Multi-profile sync','upcoming-multi-desc':'Manage multiple profiles at once — Premium',
+    'upcoming-early-name':'Early access','upcoming-early-desc':'New features first — Premium',
+    'transfers-tab-title':'Transfer history',
+    'transfers-tab-sub':'Your transfer history will be available here very soon.',
+    'transfers-tab-badge':'Coming soon — Pro & Premium','plan-tab-title':'My subscription',
+    'plan-compare-title':'Compare plans','faq-title':'Frequently asked questions',
+    'review-title':'Share your beta feedback',
+    'review-sub':'2 minutes to help us improve WebFlow. Your feedback really matters.',
+    'review-btn':'✍️ Fill out the form',
+    'step2-back':'← Back','step2-next':'Next →',
+    'step3-back':'← Back','step3-scan':'🔍 Scan browser','step3-next':'Next →',
+    'dt-bookmarks':'Bookmarks','dt-history':'History','dt-passwords':'Passwords',
+    'dt-extensions':'Extensions','dt-settings':'Settings',
+    'pro-section-label':'Pro & Premium — Coming soon',
+    'pro-auto-name':'Automatic transfers','pro-auto-desc':'Scheduled daily sync',
+    'pro-history-name':'Unlimited history','pro-history-desc':'All your transfers saved',
+    'pro-multi-name':'Multi-profile','pro-multi-desc':'Sync multiple profiles at once',
+    'pro-early-name':'Early access','pro-early-desc':'New features first',
+    'step4-back':'← Back','step4-start':'🚀 Start transfer',
+    'step5-title':'Transferring your data…','step5-sub':'Please wait. Do not close this window.',
+    'step6-title':'Transfer complete!','step6-sub':'Your browser data has been successfully transferred.',
+    'btn-download':'📄 Download report','btn-new-transfer':'↺ New transfer',
+    'footer':'WebFlow — local browser data transfer tool · All data encrypted with AES-256 · Passwords never stored in plaintext',
+    'coming-soon-toast':'Coming soon for Pro / Premium','welcome':'Welcome','logged-out':'Logged out.',
+  },
+  de: {
+    'upgrade-btn':'Upgrade ✨','manage-sub-btn':'Abo verwalten','logout-btn':'Abmelden',
+    'tab-login':'Anmelden','tab-register':'Konto erstellen','label-username':'Benutzername',
+    'label-password':'Master-Passwort','label-email':'E-Mail',
+    'label-password-new':'Master-Passwort (min. 8 Zeichen)','remember-me':'Angemeldet bleiben',
+    'btn-continue':'Weiter →','btn-create-account':'Konto erstellen →',
+    'ph-username':'dein_benutzername','ph-strong-password':'Sicheres Passwort erstellen',
+    'local-notice':'WebFlow läuft lokal. Keine Daten werden an externe Server gesendet.',
+    'step-account':'Konto','step-source':'Quelle','step-data':'Daten',
+    'step-dest':'Ziel','step-transfer':'Transfer','step-done':'Fertig',
+    'dash-subtitle':'Was möchten Sie heute tun?',
+    'dtab-new':'🚀 Neuer Transfer','dtab-transfers':'📋 Meine Transfers',
+    'dtab-plan':'💎 Mein Plan','dtab-faq':'⭐ Bewertung & FAQ',
+    'hero-title':'Bereit zum Übertragen?',
+    'hero-subtitle':'Verschieben Sie Lesezeichen, Verlauf und Passwörter in wenigen Klicks.',
+    'btn-start-transfer':'🚀 Transfer starten',
+    'upcoming-section-title':'Pro & Premium Funktionen',
+    'upcoming-section-sub':'Klicken für mehr Infos — bald verfügbar.',
+    'upcoming-auto-name':'Automatische tägliche Transfers','upcoming-auto-desc':'Tägliche Synchronisierung — Premium',
+    'upcoming-history-name':'Unbegrenzter Verlauf','upcoming-history-desc':'Alle Transfers speichern — Pro',
+    'upcoming-multi-name':'Multi-Profil-Sync','upcoming-multi-desc':'Mehrere Profile gleichzeitig — Premium',
+    'upcoming-early-name':'Früher Zugang','upcoming-early-desc':'Neue Funktionen zuerst — Premium',
+    'transfers-tab-title':'Transferverlauf',
+    'transfers-tab-sub':'Ihr Transferverlauf wird hier bald verfügbar sein.',
+    'transfers-tab-badge':'Demnächst — Pro & Premium','plan-tab-title':'Mein Abonnement',
+    'plan-compare-title':'Pläne vergleichen','faq-title':'Häufig gestellte Fragen',
+    'review-title':'Beta-Feedback geben',
+    'review-sub':'2 Minuten, um uns zu helfen WebFlow zu verbessern.',
+    'review-btn':'✍️ Formular ausfüllen',
+    'step2-back':'← Zurück','step2-next':'Weiter →',
+    'step3-back':'← Zurück','step3-scan':'🔍 Browser scannen','step3-next':'Weiter →',
+    'dt-bookmarks':'Lesezeichen','dt-history':'Verlauf','dt-passwords':'Passwörter',
+    'dt-extensions':'Erweiterungen','dt-settings':'Einstellungen',
+    'pro-section-label':'Pro & Premium — Demnächst',
+    'pro-auto-name':'Automatische Transfers','pro-auto-desc':'Geplante tägliche Synchronisierung',
+    'pro-history-name':'Unbegrenzter Verlauf','pro-history-desc':'Alle Transfers gespeichert',
+    'pro-multi-name':'Multi-Profil','pro-multi-desc':'Mehrere Profile gleichzeitig',
+    'pro-early-name':'Früher Zugang','pro-early-desc':'Neue Funktionen zuerst',
+    'step4-back':'← Zurück','step4-start':'🚀 Transfer starten',
+    'step5-title':'Daten werden übertragen…','step5-sub':'Bitte warten. Fenster nicht schließen.',
+    'step6-title':'Transfer abgeschlossen!','step6-sub':'Ihre Browserdaten wurden erfolgreich übertragen.',
+    'btn-download':'📄 Bericht herunterladen','btn-new-transfer':'↺ Neuer Transfer',
+    'footer':'WebFlow — lokales Transfer-Tool · AES-256-Verschlüsselung',
+    'coming-soon-toast':'Demnächst für Pro / Premium','welcome':'Willkommen','logged-out':'Abgemeldet.',
+  },
+  ru: {
+    'upgrade-btn':'Улучшить ✨','manage-sub-btn':'Управление подпиской','logout-btn':'Выйти',
+    'tab-login':'Войти','tab-register':'Создать аккаунт','label-username':'Имя пользователя',
+    'label-password':'Мастер-пароль','label-email':'Email',
+    'label-password-new':'Мастер-пароль (мин. 8 симв.)','remember-me':'Запомнить меня',
+    'btn-continue':'Продолжить →','btn-create-account':'Создать аккаунт →',
+    'ph-username':'ваш_ник','ph-strong-password':'Создайте надёжный пароль',
+    'local-notice':'WebFlow работает локально. Данные не отправляются на внешние серверы.',
+    'step-account':'Аккаунт','step-source':'Источник','step-data':'Данные',
+    'step-dest':'Назначение','step-transfer':'Перенос','step-done':'Готово',
+    'dash-subtitle':'Что вы хотите сделать сегодня?',
+    'dtab-new':'🚀 Новый перенос','dtab-transfers':'📋 Мои переносы',
+    'dtab-plan':'💎 Мой план','dtab-faq':'⭐ Отзыв & FAQ',
+    'hero-title':'Готовы к переносу?',
+    'hero-subtitle':'Перенесите закладки, историю, пароли и многое другое за несколько кликов.',
+    'btn-start-transfer':'🚀 Начать перенос',
+    'upcoming-section-title':'Функции Pro и Premium',
+    'upcoming-section-sub':'Нажмите для подробностей — скоро будет доступно.',
+    'upcoming-auto-name':'Автоматические ежедневные переносы','upcoming-auto-desc':'Автоматическая синхронизация — Premium',
+    'upcoming-history-name':'Безлимитная история','upcoming-history-desc':'Все прошлые переносы — Pro',
+    'upcoming-multi-name':'Мультипрофильная синхронизация','upcoming-multi-desc':'Управление несколькими профилями — Premium',
+    'upcoming-early-name':'Ранний доступ','upcoming-early-desc':'Новые функции первыми — Premium',
+    'transfers-tab-title':'История переносов',
+    'transfers-tab-sub':'История ваших переносов скоро появится здесь.',
+    'transfers-tab-badge':'Скоро — Pro и Premium','plan-tab-title':'Моя подписка',
+    'plan-compare-title':'Сравнить планы','faq-title':'Часто задаваемые вопросы',
+    'review-title':'Оставьте отзыв о бете',
+    'review-sub':'2 минуты, чтобы помочь нам улучшить WebFlow.',
+    'review-btn':'✍️ Заполнить форму',
+    'step2-back':'← Назад','step2-next':'Далее →',
+    'step3-back':'← Назад','step3-scan':'🔍 Сканировать','step3-next':'Далее →',
+    'dt-bookmarks':'Закладки','dt-history':'История','dt-passwords':'Пароли',
+    'dt-extensions':'Расширения','dt-settings':'Настройки',
+    'pro-section-label':'Pro и Premium — Скоро',
+    'pro-auto-name':'Автоматические переносы','pro-auto-desc':'Ежедневная синхронизация',
+    'pro-history-name':'Безлимитная история','pro-history-desc':'Все переносы сохранены',
+    'pro-multi-name':'Мультипрофиль','pro-multi-desc':'Несколько профилей одновременно',
+    'pro-early-name':'Ранний доступ','pro-early-desc':'Новые функции первыми',
+    'step4-back':'← Назад','step4-start':'🚀 Начать перенос',
+    'step5-title':'Перенос данных…','step5-sub':'Пожалуйста, подождите. Не закрывайте окно.',
+    'step6-title':'Перенос завершён!','step6-sub':'Данные браузера успешно перенесены.',
+    'btn-download':'📄 Скачать отчёт','btn-new-transfer':'↺ Новый перенос',
+    'footer':'WebFlow — локальный инструмент переноса · Шифрование AES-256',
+    'coming-soon-toast':'Скоро для Pro / Premium','welcome':'Добро пожаловать','logged-out':'Вы вышли.',
+  },
+  tr: {
+    'upgrade-btn':'Yükselt ✨','manage-sub-btn':'Aboneliği yönet','logout-btn':'Çıkış yap',
+    'tab-login':'Giriş yap','tab-register':'Hesap oluştur','label-username':'Kullanıcı adı',
+    'label-password':'Ana şifre','label-email':'E-posta',
+    'label-password-new':'Ana şifre (min. 8 karakter)','remember-me':'Beni hatırla',
+    'btn-continue':'Devam et →','btn-create-account':'Hesap oluştur →',
+    'ph-username':'kullanici_adi','ph-strong-password':'Güçlü bir şifre oluşturun',
+    'local-notice':'WebFlow yerel olarak çalışır. Hiçbir veri harici sunuculara gönderilmez.',
+    'step-account':'Hesap','step-source':'Kaynak','step-data':'Veri',
+    'step-dest':'Hedef','step-transfer':'Transfer','step-done':'Tamam',
+    'dash-subtitle':'Bugün ne yapmak istersiniz?',
+    'dtab-new':'🚀 Yeni transfer','dtab-transfers':'📋 Transferlerim',
+    'dtab-plan':'💎 Planım','dtab-faq':'⭐ İnceleme & SSS',
+    'hero-title':'Transfere hazır mısınız?',
+    'hero-subtitle':'Yer işaretlerinizi, geçmişinizi ve şifrelerinizi birkaç tıkla taşıyın.',
+    'btn-start-transfer':'🚀 Transfer başlat',
+    'upcoming-section-title':'Pro ve Premium Özellikler',
+    'upcoming-section-sub':'Daha fazla bilgi için tıklayın — yakında geliyor.',
+    'upcoming-auto-name':'Otomatik günlük transferler','upcoming-auto-desc':'Her gün otomatik senkronizasyon — Premium',
+    'upcoming-history-name':'Sınırsız geçmiş','upcoming-history-desc':'Tüm geçmiş transferleriniz — Pro',
+    'upcoming-multi-name':'Çoklu profil sync','upcoming-multi-desc':'Birden fazla profili yönetin — Premium',
+    'upcoming-early-name':'Erken erişim','upcoming-early-desc':'Yeni özellikler ilk sizde — Premium',
+    'transfers-tab-title':'Transfer geçmişi',
+    'transfers-tab-sub':'Transfer geçmişiniz çok yakında burada olacak.',
+    'transfers-tab-badge':'Yakında — Pro ve Premium','plan-tab-title':'Aboneliğim',
+    'plan-compare-title':'Planları karşılaştır','faq-title':'Sık sorulan sorular',
+    'review-title':'Beta geri bildiriminizi paylaşın',
+    'review-sub':"WebFlow'u geliştirmemize yardımcı olmak için 2 dakika.",
+    'review-btn':'✍️ Formu doldur',
+    'step2-back':'← Geri','step2-next':'İleri →',
+    'step3-back':'← Geri','step3-scan':'🔍 Tara','step3-next':'İleri →',
+    'dt-bookmarks':'Yer işaretleri','dt-history':'Geçmiş','dt-passwords':'Şifreler',
+    'dt-extensions':'Uzantılar','dt-settings':'Ayarlar',
+    'pro-section-label':'Pro ve Premium — Yakında',
+    'pro-auto-name':'Otomatik transferler','pro-auto-desc':'Planlanmış günlük senkronizasyon',
+    'pro-history-name':'Sınırsız geçmiş','pro-history-desc':'Tüm transferleriniz kaydedildi',
+    'pro-multi-name':'Çoklu profil','pro-multi-desc':'Birden fazla profili aynı anda',
+    'pro-early-name':'Erken erişim','pro-early-desc':'Yeni özellikler ilk sizde',
+    'step4-back':'← Geri','step4-start':'🚀 Transferi başlat',
+    'step5-title':'Veriler aktarılıyor…','step5-sub':'Lütfen bekleyin. Bu pencereyi kapatmayın.',
+    'step6-title':'Transfer tamamlandı!','step6-sub':'Tarayıcı verileriniz başarıyla aktarıldı.',
+    'btn-download':'📄 Raporu indir','btn-new-transfer':'↺ Yeni transfer',
+    'footer':'WebFlow — yerel tarayıcı veri aktarım aracı · AES-256 şifreleme',
+    'coming-soon-toast':'Pro / Premium için yakında','welcome':'Hoş geldiniz','logged-out':'Çıkış yapıldı.',
+  },
+  es: {
+    'upgrade-btn':'Mejorar ✨','manage-sub-btn':'Gestionar suscripción','logout-btn':'Cerrar sesión',
+    'tab-login':'Iniciar sesión','tab-register':'Crear cuenta','label-username':'Usuario',
+    'label-password':'Contraseña maestra','label-email':'Correo electrónico',
+    'label-password-new':'Contraseña maestra (mín. 8 car.)','remember-me':'Recuérdame',
+    'btn-continue':'Continuar →','btn-create-account':'Crear cuenta →',
+    'ph-username':'tu_usuario','ph-strong-password':'Crea una contraseña segura',
+    'local-notice':'WebFlow se ejecuta localmente. No se envían datos a servidores externos.',
+    'step-account':'Cuenta','step-source':'Origen','step-data':'Datos',
+    'step-dest':'Destino','step-transfer':'Transferencia','step-done':'Hecho',
+    'dash-subtitle':'¿Qué quieres hacer hoy?',
+    'dtab-new':'🚀 Nueva transferencia','dtab-transfers':'📋 Mis transferencias',
+    'dtab-plan':'💎 Mi plan','dtab-faq':'⭐ Reseña & FAQ',
+    'hero-title':'¿Listo para transferir?',
+    'hero-subtitle':'Mueve tus marcadores, historial y contraseñas en pocos clics.',
+    'btn-start-transfer':'🚀 Iniciar transferencia',
+    'upcoming-section-title':'Funciones Pro y Premium',
+    'upcoming-section-sub':'Haz clic para más info — próximamente.',
+    'upcoming-auto-name':'Transferencias automáticas diarias','upcoming-auto-desc':'Sincronización automática cada día — Premium',
+    'upcoming-history-name':'Historial ilimitado','upcoming-history-desc':'Guarda todas tus transferencias — Pro',
+    'upcoming-multi-name':'Sincronización multi-perfil','upcoming-multi-desc':'Gestiona varios perfiles a la vez — Premium',
+    'upcoming-early-name':'Acceso anticipado','upcoming-early-desc':'Nuevas funciones primero — Premium',
+    'transfers-tab-title':'Historial de transferencias',
+    'transfers-tab-sub':'Tu historial de transferencias estará disponible muy pronto.',
+    'transfers-tab-badge':'Próximamente — Pro y Premium','plan-tab-title':'Mi suscripción',
+    'plan-compare-title':'Comparar planes','faq-title':'Preguntas frecuentes',
+    'review-title':'Comparte tu opinión sobre la beta',
+    'review-sub':'2 minutos para ayudarnos a mejorar WebFlow.',
+    'review-btn':'✍️ Rellenar el formulario',
+    'step2-back':'← Atrás','step2-next':'Siguiente →',
+    'step3-back':'← Atrás','step3-scan':'🔍 Escanear','step3-next':'Siguiente →',
+    'dt-bookmarks':'Marcadores','dt-history':'Historial','dt-passwords':'Contraseñas',
+    'dt-extensions':'Extensiones','dt-settings':'Configuración',
+    'pro-section-label':'Pro y Premium — Próximamente',
+    'pro-auto-name':'Transferencias automáticas','pro-auto-desc':'Sincronización diaria programada',
+    'pro-history-name':'Historial ilimitado','pro-history-desc':'Todas tus transferencias guardadas',
+    'pro-multi-name':'Multi-perfil','pro-multi-desc':'Varios perfiles a la vez',
+    'pro-early-name':'Acceso anticipado','pro-early-desc':'Nuevas funciones primero',
+    'step4-back':'← Atrás','step4-start':'🚀 Iniciar transferencia',
+    'step5-title':'Transfiriendo datos…','step5-sub':'Por favor espera. No cierres esta ventana.',
+    'step6-title':'¡Transferencia completa!','step6-sub':'Los datos de tu navegador se han transferido con éxito.',
+    'btn-download':'📄 Descargar informe','btn-new-transfer':'↺ Nueva transferencia',
+    'footer':'WebFlow — herramienta local de transferencia · Cifrado AES-256',
+    'coming-soon-toast':'Próximamente para Pro / Premium','welcome':'Bienvenido','logged-out':'Sesión cerrada.',
+  },
+};
+
+function t(key) {
+  const lang = state.lang || 'fr';
+  return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || (TRANSLATIONS.fr[key]) || key;
+}
+
+function setLanguage(lang) {
+  state.lang = lang;
+  localStorage.setItem('wf_lang', lang);
+  const sel = document.getElementById('langSelect');
+  if (sel) sel.value = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const val = t(el.dataset.i18n);
+    if (val) el.textContent = val;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const val = t(el.dataset.i18nPh);
+    if (val) el.placeholder = val;
+  });
+}
+
+function loadLanguage() {
+  const saved = localStorage.getItem('wf_lang') || 'fr';
+  state.lang = saved;
+  setLanguage(saved);
+}
+
+// Free tier data types
 const FREE_TYPES = new Set(['bookmarks', 'history']);
 // Pro/Premium data types
 const PRO_TYPES  = new Set(['bookmarks', 'history', 'passwords', 'extensions', 'settings']);
@@ -56,6 +360,7 @@ const DATA_TYPE_EMOJI = {
 // ---------------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
+  loadLanguage();
   // Try auto-login from saved credentials
   const saved = loadRemembered();
   if (saved) {
@@ -135,7 +440,7 @@ async function login() {
     }
     updateHeaderUI();
     await loadSubscriptionStatus();
-    toast('Bienvenue, ' + username + ' !', 'success');
+    toast(t('welcome') + ', ' + username + ' !', 'success');
     showDash();
   } catch (e) {
     errEl.textContent = e.message;
@@ -178,7 +483,7 @@ async function logout() {
   clearRemembered();
   clearAuth();
   goToStep(1);
-  toast('Déconnecté.', 'info');
+  toast(t('logged-out'), 'info');
 }
 
 function clearAuth() {
@@ -701,7 +1006,7 @@ function beginTransfer() {
 }
 
 function showComingSoonToast() {
-  toast('À venir pour Pro / Premium', 'info');
+  toast(t('coming-soon-toast'), 'info');
 }
 
 function updatePlanDetails() {
