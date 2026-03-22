@@ -28,6 +28,16 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Single subtle ambient gradient — less is more */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 40%, rgba(108,99,255,0.07) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 
 #app {
   position: relative;
@@ -52,10 +62,13 @@ header {
 }
 
 .logo {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.3px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(120deg, var(--accent1), #a09bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.4px;
 }
 
 .header-actions { display: flex; gap: 12px; align-items: center; }
@@ -94,10 +107,11 @@ header {
 }
 
 .btn-primary {
-  background: var(--accent1);
+  background: linear-gradient(135deg, var(--accent1), #8b84ff);
   color: #fff;
+  box-shadow: 0 2px 12px rgba(108,99,255,0.25);
 }
-.btn-primary:hover { background: #7d75ff; }
+.btn-primary:hover { box-shadow: 0 4px 20px rgba(108,99,255,0.4); }
 
 .btn-secondary {
   background: var(--surface);
@@ -122,6 +136,7 @@ header {
   border-radius: var(--radius);
   backdrop-filter: blur(16px);
   padding: 28px;
+  box-shadow: 0 0 24px rgba(108,99,255,0.08);
 }
 
 /* ---- Main layout ---- */
@@ -167,9 +182,10 @@ main {
 }
 
 .step-dot.active .dot {
-  background: var(--accent1);
-  border-color: var(--accent1);
+  background: linear-gradient(135deg, var(--accent1), #8b84ff);
+  border-color: transparent;
   color: #fff;
+  box-shadow: 0 0 12px rgba(108,99,255,0.35);
 }
 
 .step-dot.done .dot {
@@ -384,7 +400,7 @@ select option { background: #1a1a2e; color: var(--text); }
 .progress-bar-fill {
   height: 100%;
   border-radius: 99px;
-  background: var(--accent1);
+  background: linear-gradient(90deg, var(--accent1), #8b84ff);
   transition: width 0.6s cubic-bezier(.4,0,.2,1);
   width: 0%;
 }
@@ -422,7 +438,10 @@ select option { background: #1a1a2e; color: var(--text); }
 .summary-count {
   font-size: 1.6rem;
   font-weight: 800;
-  color: var(--accent1);
+  background: linear-gradient(135deg, var(--accent1), #a09bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .summary-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
