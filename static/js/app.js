@@ -13,7 +13,8 @@
 const state = {
   token: sessionStorage.getItem('wf_token') || null,
   username: sessionStorage.getItem('wf_user') || null,
-  currentStep: 1,
+  currentStep: 2,
+  maxReachedStep: 2,
   detectedBrowsers: [],
   sourceBrowser: null,
   sourceProfile: null,
@@ -36,7 +37,7 @@ const state = {
 
 const TRANSLATIONS = {
   fr: {
-    'upgrade-btn':'Upgrade ✨','manage-sub-btn':"Gérer l'abonnement",'logout-btn':'Déconnexion',
+    'upgrade-btn':'Upgrade','manage-sub-btn':"Gérer l'abonnement",'logout-btn':'Déconnexion',
     'tab-login':'Login','tab-register':'Créer un compte','label-username':"Nom d'utilisateur",
     'label-password':'Mot de passe maître','label-email':'Email',
     'label-password-new':'Mot de passe maître (min. 8 car.)','remember-me':'Se souvenir de moi',
@@ -49,11 +50,11 @@ const TRANSLATIONS = {
     'step-account':'Compte','step-source':'Source','step-data':'Données',
     'step-dest':'Destination','step-transfer':'Transfert','step-done':'Terminé',
     'dash-subtitle':'Que voulez-vous faire aujourd\'hui ?',
-    'dtab-new':'🚀 Nouveau transfert','dtab-transfers':'📋 Mes transferts',
-    'dtab-plan':'💎 Mon plan','dtab-faq':'⭐ Review & FAQ',
+    'dtab-new':'Nouveau transfert','dtab-transfers':'Mes transferts',
+    'dtab-plan':'Mon plan','dtab-faq':'Review & FAQ',
     'hero-title':'Prêt à transférer ?',
     'hero-subtitle':'Déplacez vos bookmarks, historique, mots de passe et plus en quelques clics.',
-    'btn-start-transfer':'🚀 Démarrer un transfert',
+    'btn-start-transfer':'Démarrer un transfert',
     'upcoming-section-title':'Fonctionnalités Pro & Premium',
     'upcoming-section-sub':'Cliquez pour en savoir plus — disponibles bientôt.',
     'upcoming-auto-name':'Transferts automatiques quotidiens','upcoming-auto-desc':'Sync automatique chaque jour — Premium',
@@ -66,9 +67,9 @@ const TRANSLATIONS = {
     'plan-compare-title':'Comparer les plans','faq-title':'Questions fréquentes',
     'review-title':'Donne ton avis sur la bêta',
     'review-sub':'2 minutes pour nous aider à améliorer WebFlow. Ton retour compte vraiment.',
-    'review-btn':'✍️ Répondre au formulaire',
+    'review-btn':'Répondre au formulaire',
     'step2-back':'← Retour','step2-next':'Suivant →',
-    'step3-back':'← Retour','step3-scan':'🔍 Scanner','step3-next':'Suivant →',
+    'step3-back':'← Retour','step3-scan':'Scanner','step3-next':'Suivant →',
     'dt-bookmarks':'Bookmarks','dt-history':'Historique','dt-passwords':'Mots de passe',
     'dt-extensions':'Extensions','dt-settings':'Paramètres',
     'pro-section-label':'Pro & Premium — À venir',
@@ -76,10 +77,10 @@ const TRANSLATIONS = {
     'pro-history-name':'Historique illimité','pro-history-desc':'Tous vos transferts conservés',
     'pro-multi-name':'Multi-profils','pro-multi-desc':'Sync plusieurs profils en même temps',
     'pro-early-name':'Accès anticipé','pro-early-desc':'Nouvelles fonctionnalités en avant-première',
-    'step4-back':'← Retour','step4-start':'🚀 Lancer le transfert',
+    'step4-back':'← Retour','step4-start':'Lancer le transfert',
     'step5-title':'Transfert en cours…','step5-sub':'Veuillez patienter. Ne fermez pas cette fenêtre.',
     'step6-title':'Transfert terminé !','step6-sub':'Vos données ont été transférées avec succès.',
-    'btn-download':'📄 Télécharger le rapport','btn-new-transfer':'↺ Nouveau transfert',
+    'btn-download':'Télécharger le rapport','btn-new-transfer':'Nouveau transfert',
     'footer':'WebFlow — outil local de transfert · Chiffrement AES-256 · Mots de passe jamais stockés en clair',
     'coming-soon-toast':'À venir pour Pro / Premium','welcome':'Bienvenue','logged-out':'Déconnecté.',
     'per-month':'/ mois','badge-popular':'Populaire','badge-best':'Meilleur','badge-current':'Actuel',
@@ -112,7 +113,7 @@ const TRANSLATIONS = {
     'cs-body2':'En attendant, profite de tout gratuitement. 🎉','cs-btn':'Continuer gratuitement →',
   },
   en: {
-    'upgrade-btn':'Upgrade ✨','manage-sub-btn':'Manage subscription','logout-btn':'Log out',
+    'upgrade-btn':'Upgrade','manage-sub-btn':'Manage subscription','logout-btn':'Log out',
     'tab-login':'Login','tab-register':'Create account','label-username':'Username',
     'label-password':'Master password','label-email':'Email',
     'label-password-new':'Master password (min. 8 chars)','remember-me':'Remember me',
@@ -125,11 +126,11 @@ const TRANSLATIONS = {
     'step-account':'Account','step-source':'Source','step-data':'Data',
     'step-dest':'Destination','step-transfer':'Transfer','step-done':'Done',
     'dash-subtitle':'What would you like to do today?',
-    'dtab-new':'🚀 New transfer','dtab-transfers':'📋 My transfers',
-    'dtab-plan':'💎 My plan','dtab-faq':'⭐ Review & FAQ',
+    'dtab-new':'New transfer','dtab-transfers':'My transfers',
+    'dtab-plan':'My plan','dtab-faq':'Review & FAQ',
     'hero-title':'Ready to transfer?',
     'hero-subtitle':'Move your bookmarks, history, passwords and more in just a few clicks.',
-    'btn-start-transfer':'🚀 Start a transfer',
+    'btn-start-transfer':'Start a transfer',
     'upcoming-section-title':'Pro & Premium Features',
     'upcoming-section-sub':'Click to learn more — coming soon.',
     'upcoming-auto-name':'Automatic daily transfers','upcoming-auto-desc':'Automatic sync every day — Premium',
@@ -142,9 +143,9 @@ const TRANSLATIONS = {
     'plan-compare-title':'Compare plans','faq-title':'Frequently asked questions',
     'review-title':'Share your beta feedback',
     'review-sub':'2 minutes to help us improve WebFlow. Your feedback really matters.',
-    'review-btn':'✍️ Fill out the form',
+    'review-btn':'Fill out the form',
     'step2-back':'← Back','step2-next':'Next →',
-    'step3-back':'← Back','step3-scan':'🔍 Scan browser','step3-next':'Next →',
+    'step3-back':'← Back','step3-scan':'Scan browser','step3-next':'Next →',
     'dt-bookmarks':'Bookmarks','dt-history':'History','dt-passwords':'Passwords',
     'dt-extensions':'Extensions','dt-settings':'Settings',
     'pro-section-label':'Pro & Premium — Coming soon',
@@ -152,10 +153,10 @@ const TRANSLATIONS = {
     'pro-history-name':'Unlimited history','pro-history-desc':'All your transfers saved',
     'pro-multi-name':'Multi-profile','pro-multi-desc':'Sync multiple profiles at once',
     'pro-early-name':'Early access','pro-early-desc':'New features first',
-    'step4-back':'← Back','step4-start':'🚀 Start transfer',
+    'step4-back':'← Back','step4-start':'Start transfer',
     'step5-title':'Transferring your data…','step5-sub':'Please wait. Do not close this window.',
     'step6-title':'Transfer complete!','step6-sub':'Your browser data has been successfully transferred.',
-    'btn-download':'📄 Download report','btn-new-transfer':'↺ New transfer',
+    'btn-download':'Download report','btn-new-transfer':'New transfer',
     'footer':'WebFlow — local browser data transfer tool · All data encrypted with AES-256 · Passwords never stored in plaintext',
     'coming-soon-toast':'Coming soon for Pro / Premium','welcome':'Welcome','logged-out':'Logged out.',
     'per-month':'/ month','badge-popular':'Popular','badge-best':'Best','badge-current':'Current',
@@ -188,7 +189,7 @@ const TRANSLATIONS = {
     'cs-body2':'In the meantime, enjoy everything for free. 🎉','cs-btn':'Continue for free →',
   },
   de: {
-    'upgrade-btn':'Upgrade ✨','manage-sub-btn':'Abo verwalten','logout-btn':'Abmelden',
+    'upgrade-btn':'Upgrade','manage-sub-btn':'Abo verwalten','logout-btn':'Abmelden',
     'tab-login':'Anmelden','tab-register':'Konto erstellen','label-username':'Benutzername',
     'label-password':'Master-Passwort','label-email':'E-Mail',
     'label-password-new':'Master-Passwort (min. 8 Zeichen)','remember-me':'Angemeldet bleiben',
@@ -198,11 +199,11 @@ const TRANSLATIONS = {
     'step-account':'Konto','step-source':'Quelle','step-data':'Daten',
     'step-dest':'Ziel','step-transfer':'Transfer','step-done':'Fertig',
     'dash-subtitle':'Was möchten Sie heute tun?',
-    'dtab-new':'🚀 Neuer Transfer','dtab-transfers':'📋 Meine Transfers',
-    'dtab-plan':'💎 Mein Plan','dtab-faq':'⭐ Bewertung & FAQ',
+    'dtab-new':'Neuer Transfer','dtab-transfers':'Meine Transfers',
+    'dtab-plan':'Mein Plan','dtab-faq':'Bewertung & FAQ',
     'hero-title':'Bereit zum Übertragen?',
     'hero-subtitle':'Verschieben Sie Lesezeichen, Verlauf und Passwörter in wenigen Klicks.',
-    'btn-start-transfer':'🚀 Transfer starten',
+    'btn-start-transfer':'Transfer starten',
     'upcoming-section-title':'Pro & Premium Funktionen',
     'upcoming-section-sub':'Klicken für mehr Infos — bald verfügbar.',
     'upcoming-auto-name':'Automatische tägliche Transfers','upcoming-auto-desc':'Tägliche Synchronisierung — Premium',
@@ -215,9 +216,9 @@ const TRANSLATIONS = {
     'plan-compare-title':'Pläne vergleichen','faq-title':'Häufig gestellte Fragen',
     'review-title':'Beta-Feedback geben',
     'review-sub':'2 Minuten, um uns zu helfen WebFlow zu verbessern.',
-    'review-btn':'✍️ Formular ausfüllen',
+    'review-btn':'Formular ausfüllen',
     'step2-back':'← Zurück','step2-next':'Weiter →',
-    'step3-back':'← Zurück','step3-scan':'🔍 Browser scannen','step3-next':'Weiter →',
+    'step3-back':'← Zurück','step3-scan':'Browser scannen','step3-next':'Weiter →',
     'dt-bookmarks':'Lesezeichen','dt-history':'Verlauf','dt-passwords':'Passwörter',
     'dt-extensions':'Erweiterungen','dt-settings':'Einstellungen',
     'pro-section-label':'Pro & Premium — Demnächst',
@@ -225,10 +226,10 @@ const TRANSLATIONS = {
     'pro-history-name':'Unbegrenzter Verlauf','pro-history-desc':'Alle Transfers gespeichert',
     'pro-multi-name':'Multi-Profil','pro-multi-desc':'Mehrere Profile gleichzeitig',
     'pro-early-name':'Früher Zugang','pro-early-desc':'Neue Funktionen zuerst',
-    'step4-back':'← Zurück','step4-start':'🚀 Transfer starten',
+    'step4-back':'← Zurück','step4-start':'Transfer starten',
     'step5-title':'Daten werden übertragen…','step5-sub':'Bitte warten. Fenster nicht schließen.',
     'step6-title':'Transfer abgeschlossen!','step6-sub':'Ihre Browserdaten wurden erfolgreich übertragen.',
-    'btn-download':'📄 Bericht herunterladen','btn-new-transfer':'↺ Neuer Transfer',
+    'btn-download':'Bericht herunterladen','btn-new-transfer':'Neuer Transfer',
     'footer':'WebFlow — lokales Transfer-Tool · AES-256-Verschlüsselung',
     'coming-soon-toast':'Demnächst für Pro / Premium','welcome':'Willkommen','logged-out':'Abgemeldet.',
     'per-month':'/ Monat','badge-popular':'Beliebt','badge-best':'Bestes','badge-current':'Aktuell',
@@ -261,7 +262,7 @@ const TRANSLATIONS = {
     'cs-body2':'In der Zwischenzeit alles kostenlos nutzen. 🎉','cs-btn':'Kostenlos weitermachen →',
   },
   ru: {
-    'upgrade-btn':'Улучшить ✨','manage-sub-btn':'Управление подпиской','logout-btn':'Выйти',
+    'upgrade-btn':'Улучшить','manage-sub-btn':'Управление подпиской','logout-btn':'Выйти',
     'tab-login':'Войти','tab-register':'Создать аккаунт','label-username':'Имя пользователя',
     'label-password':'Мастер-пароль','label-email':'Email',
     'label-password-new':'Мастер-пароль (мин. 8 симв.)','remember-me':'Запомнить меня',
@@ -271,11 +272,11 @@ const TRANSLATIONS = {
     'step-account':'Аккаунт','step-source':'Источник','step-data':'Данные',
     'step-dest':'Назначение','step-transfer':'Перенос','step-done':'Готово',
     'dash-subtitle':'Что вы хотите сделать сегодня?',
-    'dtab-new':'🚀 Новый перенос','dtab-transfers':'📋 Мои переносы',
-    'dtab-plan':'💎 Мой план','dtab-faq':'⭐ Отзыв & FAQ',
+    'dtab-new':'Новый перенос','dtab-transfers':'Мои переносы',
+    'dtab-plan':'Мой план','dtab-faq':'Отзыв & FAQ',
     'hero-title':'Готовы к переносу?',
     'hero-subtitle':'Перенесите закладки, историю, пароли и многое другое за несколько кликов.',
-    'btn-start-transfer':'🚀 Начать перенос',
+    'btn-start-transfer':'Начать перенос',
     'upcoming-section-title':'Функции Pro и Premium',
     'upcoming-section-sub':'Нажмите для подробностей — скоро будет доступно.',
     'upcoming-auto-name':'Автоматические ежедневные переносы','upcoming-auto-desc':'Автоматическая синхронизация — Premium',
@@ -288,9 +289,9 @@ const TRANSLATIONS = {
     'plan-compare-title':'Сравнить планы','faq-title':'Часто задаваемые вопросы',
     'review-title':'Оставьте отзыв о бете',
     'review-sub':'2 минуты, чтобы помочь нам улучшить WebFlow.',
-    'review-btn':'✍️ Заполнить форму',
+    'review-btn':'Заполнить форму',
     'step2-back':'← Назад','step2-next':'Далее →',
-    'step3-back':'← Назад','step3-scan':'🔍 Сканировать','step3-next':'Далее →',
+    'step3-back':'← Назад','step3-scan':'Сканировать','step3-next':'Далее →',
     'dt-bookmarks':'Закладки','dt-history':'История','dt-passwords':'Пароли',
     'dt-extensions':'Расширения','dt-settings':'Настройки',
     'pro-section-label':'Pro и Premium — Скоро',
@@ -298,10 +299,10 @@ const TRANSLATIONS = {
     'pro-history-name':'Безлимитная история','pro-history-desc':'Все переносы сохранены',
     'pro-multi-name':'Мультипрофиль','pro-multi-desc':'Несколько профилей одновременно',
     'pro-early-name':'Ранний доступ','pro-early-desc':'Новые функции первыми',
-    'step4-back':'← Назад','step4-start':'🚀 Начать перенос',
+    'step4-back':'← Назад','step4-start':'Начать перенос',
     'step5-title':'Перенос данных…','step5-sub':'Пожалуйста, подождите. Не закрывайте окно.',
     'step6-title':'Перенос завершён!','step6-sub':'Данные браузера успешно перенесены.',
-    'btn-download':'📄 Скачать отчёт','btn-new-transfer':'↺ Новый перенос',
+    'btn-download':'Скачать отчёт','btn-new-transfer':'Новый перенос',
     'footer':'WebFlow — локальный инструмент переноса · Шифрование AES-256',
     'coming-soon-toast':'Скоро для Pro / Premium','welcome':'Добро пожаловать','logged-out':'Вы вышли.',
     'per-month':'/ мес','badge-popular':'Популярное','badge-best':'Лучшее','badge-current':'Текущий',
@@ -334,7 +335,7 @@ const TRANSLATIONS = {
     'cs-body2':'А пока пользуйтесь всем бесплатно. 🎉','cs-btn':'Продолжить бесплатно →',
   },
   tr: {
-    'upgrade-btn':'Yükselt ✨','manage-sub-btn':'Aboneliği yönet','logout-btn':'Çıkış yap',
+    'upgrade-btn':'Yükselt','manage-sub-btn':'Aboneliği yönet','logout-btn':'Çıkış yap',
     'tab-login':'Giriş yap','tab-register':'Hesap oluştur','label-username':'Kullanıcı adı',
     'label-password':'Ana şifre','label-email':'E-posta',
     'label-password-new':'Ana şifre (min. 8 karakter)','remember-me':'Beni hatırla',
@@ -344,11 +345,11 @@ const TRANSLATIONS = {
     'step-account':'Hesap','step-source':'Kaynak','step-data':'Veri',
     'step-dest':'Hedef','step-transfer':'Transfer','step-done':'Tamam',
     'dash-subtitle':'Bugün ne yapmak istersiniz?',
-    'dtab-new':'🚀 Yeni transfer','dtab-transfers':'📋 Transferlerim',
-    'dtab-plan':'💎 Planım','dtab-faq':'⭐ İnceleme & SSS',
+    'dtab-new':'Yeni transfer','dtab-transfers':'Transferlerim',
+    'dtab-plan':'Planım','dtab-faq':'İnceleme & SSS',
     'hero-title':'Transfere hazır mısınız?',
     'hero-subtitle':'Yer işaretlerinizi, geçmişinizi ve şifrelerinizi birkaç tıkla taşıyın.',
-    'btn-start-transfer':'🚀 Transfer başlat',
+    'btn-start-transfer':'Transfer başlat',
     'upcoming-section-title':'Pro ve Premium Özellikler',
     'upcoming-section-sub':'Daha fazla bilgi için tıklayın — yakında geliyor.',
     'upcoming-auto-name':'Otomatik günlük transferler','upcoming-auto-desc':'Her gün otomatik senkronizasyon — Premium',
@@ -361,9 +362,9 @@ const TRANSLATIONS = {
     'plan-compare-title':'Planları karşılaştır','faq-title':'Sık sorulan sorular',
     'review-title':'Beta geri bildiriminizi paylaşın',
     'review-sub':"WebFlow'u geliştirmemize yardımcı olmak için 2 dakika.",
-    'review-btn':'✍️ Formu doldur',
+    'review-btn':'Formu doldur',
     'step2-back':'← Geri','step2-next':'İleri →',
-    'step3-back':'← Geri','step3-scan':'🔍 Tara','step3-next':'İleri →',
+    'step3-back':'← Geri','step3-scan':'Tara','step3-next':'İleri →',
     'dt-bookmarks':'Yer işaretleri','dt-history':'Geçmiş','dt-passwords':'Şifreler',
     'dt-extensions':'Uzantılar','dt-settings':'Ayarlar',
     'pro-section-label':'Pro ve Premium — Yakında',
@@ -371,10 +372,10 @@ const TRANSLATIONS = {
     'pro-history-name':'Sınırsız geçmiş','pro-history-desc':'Tüm transferleriniz kaydedildi',
     'pro-multi-name':'Çoklu profil','pro-multi-desc':'Birden fazla profili aynı anda',
     'pro-early-name':'Erken erişim','pro-early-desc':'Yeni özellikler ilk sizde',
-    'step4-back':'← Geri','step4-start':'🚀 Transferi başlat',
+    'step4-back':'← Geri','step4-start':'Transferi başlat',
     'step5-title':'Veriler aktarılıyor…','step5-sub':'Lütfen bekleyin. Bu pencereyi kapatmayın.',
     'step6-title':'Transfer tamamlandı!','step6-sub':'Tarayıcı verileriniz başarıyla aktarıldı.',
-    'btn-download':'📄 Raporu indir','btn-new-transfer':'↺ Yeni transfer',
+    'btn-download':'Raporu indir','btn-new-transfer':'Yeni transfer',
     'footer':'WebFlow — yerel tarayıcı veri aktarım aracı · AES-256 şifreleme',
     'coming-soon-toast':'Pro / Premium için yakında','welcome':'Hoş geldiniz','logged-out':'Çıkış yapıldı.',
     'per-month':'/ ay','badge-popular':'Popüler','badge-best':'En iyi','badge-current':'Mevcut',
@@ -417,11 +418,11 @@ const TRANSLATIONS = {
     'step-account':'Cuenta','step-source':'Origen','step-data':'Datos',
     'step-dest':'Destino','step-transfer':'Transferencia','step-done':'Hecho',
     'dash-subtitle':'¿Qué quieres hacer hoy?',
-    'dtab-new':'🚀 Nueva transferencia','dtab-transfers':'📋 Mis transferencias',
-    'dtab-plan':'💎 Mi plan','dtab-faq':'⭐ Reseña & FAQ',
+    'dtab-new':'Nueva transferencia','dtab-transfers':'Mis transferencias',
+    'dtab-plan':'Mi plan','dtab-faq':'Reseña & FAQ',
     'hero-title':'¿Listo para transferir?',
     'hero-subtitle':'Mueve tus marcadores, historial y contraseñas en pocos clics.',
-    'btn-start-transfer':'🚀 Iniciar transferencia',
+    'btn-start-transfer':'Iniciar transferencia',
     'upcoming-section-title':'Funciones Pro y Premium',
     'upcoming-section-sub':'Haz clic para más info — próximamente.',
     'upcoming-auto-name':'Transferencias automáticas diarias','upcoming-auto-desc':'Sincronización automática cada día — Premium',
@@ -434,9 +435,9 @@ const TRANSLATIONS = {
     'plan-compare-title':'Comparar planes','faq-title':'Preguntas frecuentes',
     'review-title':'Comparte tu opinión sobre la beta',
     'review-sub':'2 minutos para ayudarnos a mejorar WebFlow.',
-    'review-btn':'✍️ Rellenar el formulario',
+    'review-btn':'Rellenar el formulario',
     'step2-back':'← Atrás','step2-next':'Siguiente →',
-    'step3-back':'← Atrás','step3-scan':'🔍 Escanear','step3-next':'Siguiente →',
+    'step3-back':'← Atrás','step3-scan':'Escanear','step3-next':'Siguiente →',
     'dt-bookmarks':'Marcadores','dt-history':'Historial','dt-passwords':'Contraseñas',
     'dt-extensions':'Extensiones','dt-settings':'Configuración',
     'pro-section-label':'Pro y Premium — Próximamente',
@@ -444,10 +445,10 @@ const TRANSLATIONS = {
     'pro-history-name':'Historial ilimitado','pro-history-desc':'Todas tus transferencias guardadas',
     'pro-multi-name':'Multi-perfil','pro-multi-desc':'Varios perfiles a la vez',
     'pro-early-name':'Acceso anticipado','pro-early-desc':'Nuevas funciones primero',
-    'step4-back':'← Atrás','step4-start':'🚀 Iniciar transferencia',
+    'step4-back':'← Atrás','step4-start':'Iniciar transferencia',
     'step5-title':'Transfiriendo datos…','step5-sub':'Por favor espera. No cierres esta ventana.',
     'step6-title':'¡Transferencia completa!','step6-sub':'Los datos de tu navegador se han transferido con éxito.',
-    'btn-download':'📄 Descargar informe','btn-new-transfer':'↺ Nueva transferencia',
+    'btn-download':'Descargar informe','btn-new-transfer':'Nueva transferencia',
     'footer':'WebFlow — herramienta local de transferencia · Cifrado AES-256',
     'coming-soon-toast':'Próximamente para Pro / Premium','welcome':'Bienvenido','logged-out':'Sesión cerrada.',
     'per-month':'/ mes','badge-popular':'Popular','badge-best':'Mejor','badge-current':'Actual',
@@ -516,19 +517,11 @@ const PRO_TYPES  = new Set(['bookmarks', 'history', 'passwords', 'extensions', '
 
 // Browser display info
 const BROWSER_INFO = {
-  chrome:    { emoji: '🌐', label: 'Google Chrome',   color: '#4285F4' },
-  firefox:   { emoji: '🦊', label: 'Mozilla Firefox', color: '#FF7139' },
-  opera_gx:  { emoji: '🎮', label: 'Opera GX',        color: '#FF1B2D' },
-  edge:      { emoji: '🔷', label: 'Microsoft Edge',   color: '#0078D7' },
-  brave:     { emoji: '🦁', label: 'Brave',            color: '#FB542B' },
-};
-
-const DATA_TYPE_EMOJI = {
-  bookmarks: '🔖',
-  history: '📅',
-  passwords: '🔑',
-  extensions: '🧩',
-  settings: '⚙️',
+  chrome:    { label: 'Google Chrome',   color: '#4285F4' },
+  firefox:   { label: 'Mozilla Firefox', color: '#FF7139' },
+  opera_gx:  { label: 'Opera GX',        color: '#FF1B2D' },
+  edge:      { label: 'Microsoft Edge',   color: '#0078D7' },
+  brave:     { label: 'Brave',            color: '#FB542B' },
 };
 
 // ---------------------------------------------------------------------------
@@ -537,10 +530,21 @@ const DATA_TYPE_EMOJI = {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadLanguage();
+
+  // Allow Enter key on auth inputs
+  ['loginUsername','loginPassword','regUsername','regEmail','regPassword'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const btn = document.getElementById('authModal')?.querySelector('.btn-primary');
+        if (btn) btn.click();
+      }
+    });
+  });
+
   // Try auto-login from saved credentials
   const saved = loadRemembered();
   if (saved) {
-    // Pre-check the box so the user sees "Remember me" is active
     const cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
     autoLogin(saved.username, saved.password);
@@ -554,15 +558,12 @@ document.addEventListener('DOMContentLoaded', () => {
         loadSubscriptionStatus().then(() => showDash());
       } else {
         clearAuth();
+        goToStep(2);
       }
     });
+  } else {
+    goToStep(2);
   }
-
-  // Allow Enter key on auth inputs
-  ['loginUsername','loginPassword','regUsername','regEmail','regPassword'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.closest('.card').querySelector('.btn-primary').click(); });
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -589,6 +590,18 @@ async function api(method, path, body = null) {
 // ---------------------------------------------------------------------------
 // Auth
 // ---------------------------------------------------------------------------
+
+// Auth modal callback — called after successful login
+let _authCallback = null;
+
+function showAuthModal(cb) {
+  _authCallback = cb || null;
+  document.getElementById('authModal').style.display = 'flex';
+}
+
+function hideAuthModal() {
+  document.getElementById('authModal').style.display = 'none';
+}
 
 function switchAuthTab(tab) {
   document.getElementById('loginForm').style.display    = tab === 'login'    ? '' : 'none';
@@ -619,8 +632,13 @@ async function login() {
     }
     updateHeaderUI();
     await loadSubscriptionStatus();
-    toast(t('welcome') + ', ' + username + ' !', 'success');
-    showDash();
+    hideAuthModal();
+    toast(t('welcome') + ', ' + username, 'success');
+    if (_authCallback) {
+      const cb = _authCallback; _authCallback = null; cb();
+    } else {
+      showDash();
+    }
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = '';
@@ -648,7 +666,12 @@ async function register() {
     sessionStorage.setItem('wf_user', username);
     updateHeaderUI();
     await loadSubscriptionStatus();
-    showDash();
+    hideAuthModal();
+    if (_authCallback) {
+      const cb = _authCallback; _authCallback = null; cb();
+    } else {
+      showDash();
+    }
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = '';
@@ -661,7 +684,8 @@ async function logout() {
   try { await api('POST', '/api/auth/logout'); } catch {}
   clearRemembered();
   clearAuth();
-  goToStep(1);
+  hideAuthModal();
+  goToStep(2);
   toast(t('logged-out'), 'info');
 }
 
@@ -738,12 +762,14 @@ async function autoLogin(username, password) {
     await loadSubscriptionStatus();
     showDash();
   } catch {
-    // Server may have restarted — fall back to login form but KEEP saved credentials
+    // Server may have restarted — show login modal with pre-filled credentials
     clearAuth();
+    goToStep(2);
     const el = document.getElementById('loginUsername');
     if (el) el.value = username;
     const cb = document.getElementById('rememberMe');
     if (cb) cb.checked = true;
+    showAuthModal(null);
   }
 }
 
@@ -752,20 +778,20 @@ async function verifyToken() {
 }
 
 function updateHeaderUI() {
-  const userEl  = document.getElementById('headerUser');
-  const logoutEl = document.getElementById('logoutBtn');
-  const tierEl   = document.getElementById('tierBadge');
+  const userEl    = document.getElementById('headerUser');
+  const logoutEl  = document.getElementById('logoutBtn');
+  const tierEl    = document.getElementById('tierBadge');
   const upgradeEl = document.getElementById('upgradeBtn');
   const manageEl  = document.getElementById('manageSubBtn');
+  const loginEl   = document.getElementById('loginHeaderBtn');
 
   if (state.username) {
-    userEl.textContent = '👤 ' + state.username;
+    if (loginEl)  loginEl.style.display  = 'none';
+    userEl.textContent = state.username;
     userEl.style.display = '';
     logoutEl.style.display = '';
     tierEl.style.display = '';
-    // Upgrade / manage buttons based on tier
     if (state.subscriptionTier === 'beta') {
-      // Beta: hide both buttons, everything is unlocked
       upgradeEl.style.display = 'none';
       manageEl.style.display = 'none';
     } else if (state.subscriptionTier === 'free') {
@@ -776,6 +802,7 @@ function updateHeaderUI() {
       manageEl.style.display = '';
     }
   } else {
+    if (loginEl)  loginEl.style.display  = '';
     userEl.style.display = 'none';
     logoutEl.style.display = 'none';
     tierEl.style.display = 'none';
@@ -805,7 +832,7 @@ async function loadSubscriptionStatus() {
 function updateTierBadge(tier) {
   const el = document.getElementById('tierBadge');
   if (!el) return;
-  const labels = { free: 'Free', beta: '🧪 Bêta', pro: '⚡ Pro', premium: '👑 Premium' };
+  const labels = { free: 'Free', beta: 'Bêta', pro: 'Pro', premium: 'Premium' };
   el.textContent = labels[tier] || 'Free';
   el.className = `tier-badge ${tier === 'beta' ? 'pro' : tier}`;
   updateHeaderUI();
@@ -841,24 +868,38 @@ function applyTierToDataTypes(tier) {
 
 function goToStep(n, summary) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page' + n).classList.add('active');
+  const page = document.getElementById('page' + n);
+  if (page) page.classList.add('active');
   state.currentStep = n;
+  if (n > state.maxReachedStep) state.maxReachedStep = n;
   updateProgressBar(n);
 
   const bar = document.getElementById('progressBar');
-  bar.style.display = (n === 1) ? 'none' : 'flex';
+  // Show progress bar from step 2 onwards (step 1 is now auth modal)
+  bar.style.display = (n <= 1) ? 'none' : 'flex';
 
   if (n === 2) loadBrowserGrid('source');
   if (n === 4) loadBrowserGrid('dest');
   if (n === 6 && summary) buildSummary(summary);
 }
 
+function jumpToStep(n) {
+  // Allow jumping to any step already reached (2–4), but not transfer/done steps
+  if (n < 2 || n > Math.min(state.maxReachedStep, 4)) return;
+  goToStep(n);
+}
+
 function updateProgressBar(active) {
   for (let i = 1; i <= 6; i++) {
     const dot  = document.getElementById('sdot' + i);
     const line = document.getElementById('sline' + i);
+    if (!dot) continue;
     dot.classList.toggle('active', i === active);
     dot.classList.toggle('done',   i < active);
+    // Steps 2–4 are clickable if already reached and not the current step
+    const isClickable = i >= 2 && i <= 4 && i <= state.maxReachedStep && i !== active;
+    dot.classList.toggle('clickable', isClickable);
+    dot.querySelector('.dot').onclick = isClickable ? () => jumpToStep(i) : null;
     if (line) line.classList.toggle('done', i < active);
   }
 }
@@ -868,6 +909,10 @@ function updateProgressBar(active) {
 // ---------------------------------------------------------------------------
 
 async function loadBrowserGrid(role) {
+  if (!state.token) {
+    showAuthModal(() => loadBrowserGrid(role));
+    return;
+  }
   if (!state.detectedBrowsers.length) {
     try {
       const data = await api('GET', '/api/browsers/detect');
@@ -898,7 +943,7 @@ async function loadBrowserGrid(role) {
     card.className = 'browser-card' + (avail ? '' : ' unavailable');
     card.dataset.browser = b;
     card.innerHTML = `
-      <div class="browser-icon" style="background:${info.color}22">${info.emoji}</div>
+      <div class="browser-icon" style="background:${info.color}22;font-size:0.7rem;font-weight:700;color:${info.color};letter-spacing:-0.3px">${info.label.split(' ')[0]}</div>
       <div class="browser-name">${info.label}</div>
       <div class="browser-profiles">${avail ? profiles.length + ' profil(s)' : 'Non détecté'}</div>
     `;
@@ -980,6 +1025,10 @@ function resetCounters() {
 }
 
 async function scanBrowser() {
+  if (!state.token) {
+    showAuthModal(() => scanBrowser());
+    return;
+  }
   const btn = document.getElementById('scanBtn');
   const statusEl = document.getElementById('scanStatus');
   const errorEl  = document.getElementById('scanError');
@@ -1030,6 +1079,28 @@ async function scanBrowser() {
 // ---------------------------------------------------------------------------
 
 async function startTransfer() {
+  // Validate all steps before proceeding
+  if (!state.sourceBrowser) {
+    toast('Sélectionnez un navigateur source', 'error');
+    goToStep(2);
+    return;
+  }
+  if (!state.snapshotId) {
+    toast('Scannez le navigateur source avant de continuer', 'error');
+    goToStep(3);
+    return;
+  }
+  if (!state.destBrowser) {
+    toast('Sélectionnez un navigateur de destination', 'error');
+    goToStep(4);
+    return;
+  }
+  if (state.sourceBrowser === state.destBrowser && state.sourceProfile === state.destProfile) {
+    toast('Source et destination identiques — choisissez une autre destination', 'error');
+    goToStep(4);
+    return;
+  }
+
   goToStep(5);
   const types = Array.from(state.selectedDataTypes);
 
@@ -1039,7 +1110,7 @@ async function startTransfer() {
     container.innerHTML += `
       <div class="progress-item" id="prog-${type}">
         <div class="progress-item-header">
-          <span>${DATA_TYPE_EMOJI[type] || '📦'} ${type.charAt(0).toUpperCase() + type.slice(1)}</span>
+          <span>${type.charAt(0).toUpperCase() + type.slice(1)}</span>
           <span class="status-badge badge-pending" id="badge-${type}">En attente</span>
         </div>
         <div class="progress-bar-track">
@@ -1135,7 +1206,6 @@ function buildSummary(summary) {
   Object.entries(summary).forEach(([type, count]) => {
     grid.innerHTML += `
       <div class="summary-item">
-        <div style="font-size:1.5rem">${DATA_TYPE_EMOJI[type] || '📦'}</div>
         <div class="summary-count">${Number(count).toLocaleString()}</div>
         <div class="summary-label">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
       </div>`;
@@ -1172,10 +1242,12 @@ function startOver() {
   state.sourceBrowser = null;
   state.sourceProfile = null;
   state.snapshotId = null;
+  state.detectedBrowsers = [];
   state.destBrowser = null;
   state.destProfile = null;
   state.jobId = null;
   state.transferResult = null;
+  state.maxReachedStep = 2;
   // Reset selected types to match current tier
   if (state.subscriptionTier === 'free') {
     state.selectedDataTypes = new Set(['bookmarks', 'history']);
@@ -1197,7 +1269,7 @@ function showDash() {
 
   const greetEl = document.getElementById('dashGreeting');
   if (greetEl && state.username) {
-    greetEl.textContent = 'Bonjour, ' + state.username + ' ! 👋';
+    greetEl.textContent = 'Bonjour, ' + state.username;
   }
 
   switchDashTab('new');
@@ -1225,7 +1297,7 @@ function updatePlanDetails() {
   const el = document.getElementById('planDetails');
   if (!el) return;
   const tier = state.subscriptionTier;
-  const labels = { free: 'Free', beta: '🧪 Bêta', pro: '⚡ Pro', premium: '👑 Premium' };
+  const labels = { free: 'Free', beta: 'Bêta', pro: 'Pro', premium: 'Premium' };
   const label  = labels[tier] || 'Free';
 
   let html = `
