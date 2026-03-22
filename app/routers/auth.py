@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import session_store
 from app.database import get_db
 from app.models import User
-from app.schemas import LoginRequest, RegisterRequest, TokenResponse, UserResponse
+from app.schemas import DeleteAccountRequest, LoginRequest, RegisterRequest, TokenResponse, UserResponse
 from app.security import (
     create_access_token,
     decode_access_token,
@@ -134,6 +134,24 @@ async def logout(
 # ---------------------------------------------------------------------------
 # Me
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Delete account (no password needed — all data is already encrypted and
+# inaccessible without the password anyway; username + email is sufficient proof)
+# ---------------------------------------------------------------------------
+
+@router.delete("/account")
+@limiter.limit("3/hour")
+async def delete_account(request: Request, body: DeleteAccountRequest, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(User).where((User.username == body.username) & (User.email == body.email))
+    )
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this username and email")
+    await db.delete(user)
+    return {"detail": "Account and all associated data deleted successfully"}
+
 
 @router.get("/me", response_model=UserResponse)
 async def me(

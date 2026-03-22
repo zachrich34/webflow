@@ -42,6 +42,16 @@ class LoginRequest(BaseModel):
         return v.strip()
 
 
+class DeleteAccountRequest(BaseModel):
+    username: str
+    email: EmailStr
+
+    @field_validator("username")
+    @classmethod
+    def username_strip(cls, v: str) -> str:
+        return v.strip()
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
