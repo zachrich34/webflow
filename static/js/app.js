@@ -534,6 +534,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Try auto-login from saved credentials
   const saved = loadRemembered();
   if (saved) {
+    // Pre-check the box so the user sees "Remember me" is active
+    const cb = document.getElementById('rememberMe');
+    if (cb) cb.checked = true;
     autoLogin(saved.username, saved.password);
     return;
   }
@@ -616,7 +619,7 @@ async function login() {
     errEl.textContent = e.message;
     errEl.style.display = '';
   } finally {
-    btn.disabled = false; btn.innerHTML = 'Continuer →';
+    btn.disabled = false; btn.innerHTML = t('btn-continue');
   }
 }
 
@@ -696,12 +699,12 @@ async function autoLogin(username, password) {
     await loadSubscriptionStatus();
     showDash();
   } catch {
-    // Server may have restarted with no session — fall back to login form
-    clearRemembered();
+    // Server may have restarted — fall back to login form but KEEP saved credentials
     clearAuth();
-    // Pre-fill username
     const el = document.getElementById('loginUsername');
     if (el) el.value = username;
+    const cb = document.getElementById('rememberMe');
+    if (cb) cb.checked = true;
   }
 }
 
