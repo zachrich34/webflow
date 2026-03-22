@@ -56,6 +56,164 @@
       </div>
     </div>
 
+    <!-- ===== DASHBOARD (shown after login) ===== -->
+    <div class="page" id="pageDash">
+
+      <div style="text-align:center">
+        <h2 class="page-title" id="dashGreeting">Bonjour ! 👋</h2>
+        <p class="page-subtitle">Que voulez-vous faire aujourd'hui ?</p>
+      </div>
+
+      <!-- Tab navigation -->
+      <div class="dash-nav">
+        <button class="dash-tab active" id="dtab-new"       onclick="switchDashTab('new')">🚀 Nouveau transfert</button>
+        <button class="dash-tab"        id="dtab-transfers" onclick="switchDashTab('transfers')">📋 Mes transferts</button>
+        <button class="dash-tab"        id="dtab-plan"      onclick="switchDashTab('plan')">💎 Mon plan</button>
+        <button class="dash-tab"        id="dtab-faq"       onclick="switchDashTab('faq')">❓ FAQ</button>
+      </div>
+
+      <!-- Tab: Nouveau transfert -->
+      <div id="dtab-content-new">
+        <div class="start-transfer-hero card">
+          <div class="hero-icon">⚡</div>
+          <h3 style="font-size:1.5rem;font-weight:800;">Prêt à transférer ?</h3>
+          <p class="page-subtitle" style="max-width:400px">Déplacez vos bookmarks, historique, mots de passe et plus en quelques clics.</p>
+          <button class="btn btn-primary btn-xl" onclick="beginTransfer()">
+            🚀 Démarrer un transfert
+          </button>
+        </div>
+
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:4px;font-size:0.95rem;">Fonctionnalités Pro &amp; Premium</h3>
+          <p class="page-subtitle" style="font-size:0.8rem;margin-bottom:16px">Cliquez pour en savoir plus — disponibles bientôt.</p>
+          <div class="upcoming-grid">
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">🔄</span>
+              <div>
+                <div class="upcoming-name">Transferts automatiques quotidiens</div>
+                <div class="upcoming-desc">Sync automatique chaque jour — Premium</div>
+              </div>
+            </div>
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">📜</span>
+              <div>
+                <div class="upcoming-name">Historique illimité</div>
+                <div class="upcoming-desc">Conservez tous vos transferts passés — Pro</div>
+              </div>
+            </div>
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">👥</span>
+              <div>
+                <div class="upcoming-name">Sync multi-profils</div>
+                <div class="upcoming-desc">Gérez plusieurs profils simultanément — Premium</div>
+              </div>
+            </div>
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">⚡</span>
+              <div>
+                <div class="upcoming-name">Accès anticipé</div>
+                <div class="upcoming-desc">Nouvelles fonctionnalités en avant-première — Premium</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Mes transferts -->
+      <div id="dtab-content-transfers" style="display:none">
+        <div class="card" style="text-align:center;padding:52px 28px">
+          <div style="font-size:3rem;margin-bottom:16px">📋</div>
+          <h3 style="font-weight:700;margin-bottom:8px">Historique des transferts</h3>
+          <p class="page-subtitle">L'historique de vos transferts sera disponible ici très prochainement.</p>
+          <span class="lock-badge" style="margin-top:16px;display:inline-block;font-size:0.8rem;padding:4px 12px">À venir — Pro &amp; Premium</span>
+        </div>
+      </div>
+
+      <!-- Tab: Mon plan -->
+      <div id="dtab-content-plan" style="display:none">
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:20px">Mon abonnement</h3>
+          <div id="planDetails"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:20px;font-size:0.95rem;">Comparer les plans</h3>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <div class="pricing-name">Free</div>
+              <div class="pricing-price">0€ <span>/ mois</span></div>
+              <ul class="pricing-features">
+                <li class="included">Favoris</li>
+                <li class="included">Historique</li>
+                <li class="excluded">Mots de passe</li>
+                <li class="excluded">Extensions</li>
+                <li class="excluded">Paramètres</li>
+                <li class="excluded">Sync quotidienne</li>
+              </ul>
+            </div>
+            <div class="pricing-card highlight">
+              <span class="pricing-badge popular">Populaire</span>
+              <div class="pricing-name">Pro</div>
+              <div class="pricing-price">5€ <span>/ mois</span></div>
+              <ul class="pricing-features">
+                <li class="included">Favoris</li>
+                <li class="included">Historique</li>
+                <li class="included">Mots de passe</li>
+                <li class="included">Extensions</li>
+                <li class="included">Paramètres</li>
+                <li class="excluded">Sync quotidienne</li>
+              </ul>
+              <button class="btn btn-primary btn-sm" onclick="showComingSoonModal()">Souscrire Pro →</button>
+            </div>
+            <div class="pricing-card premium-card">
+              <span class="pricing-badge best">Meilleur</span>
+              <div class="pricing-name">Premium</div>
+              <div class="pricing-price">10€ <span>/ mois</span></div>
+              <ul class="pricing-features">
+                <li class="included">Favoris</li>
+                <li class="included">Historique</li>
+                <li class="included">Mots de passe</li>
+                <li class="included">Extensions</li>
+                <li class="included">Paramètres</li>
+                <li class="included">Sync quotidienne</li>
+                <li class="included">Accès anticipé</li>
+              </ul>
+              <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700" onclick="showComingSoonModal()">Souscrire Premium →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: FAQ -->
+      <div id="dtab-content-faq" style="display:none">
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:20px">Questions fréquentes</h3>
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">Est-ce que mes données sont sécurisées ? <span>▾</span></div>
+              <div class="faq-answer">Oui. WebFlow fonctionne entièrement en local sur votre machine. Vos données sont chiffrées avec AES-256 et votre mot de passe maître ne quitte jamais votre appareil.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">Quels navigateurs sont supportés ? <span>▾</span></div>
+              <div class="faq-answer">WebFlow supporte Chrome, Firefox, Opera GX, Microsoft Edge et Brave.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">Les mots de passe sont-ils transférés directement ? <span>▾</span></div>
+              <div class="faq-answer">Les mots de passe sont exportés dans un fichier CSV dans le dossier de profil du navigateur de destination. Vous devez ensuite les importer manuellement via le gestionnaire de mots de passe du navigateur.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">Puis-je transférer entre deux profils du même navigateur ? <span>▾</span></div>
+              <div class="faq-answer">Oui, vous pouvez transférer entre deux profils différents du même navigateur, mais pas vers le profil source identique.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)">Mes données sont-elles envoyées sur internet ? <span>▾</span></div>
+              <div class="faq-answer">Non. WebFlow tourne entièrement localement. Aucune donnée n'est envoyée à des serveurs externes. Votre compte est stocké localement sur votre machine.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <!-- ===== STEP 1: Auth ===== -->
     <div class="page active" id="page1">
       <div style="text-align:center; margin-bottom: 8px;">
@@ -133,7 +291,6 @@
       </div>
 
       <div style="display:flex; gap:12px; justify-content:flex-end">
-        <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
         <button class="btn btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Next →</button>
       </div>
     </div>

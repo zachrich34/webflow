@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verifyToken().then(ok => {
       if (ok) {
         updateHeaderUI();
-        loadSubscriptionStatus().then(() => goToStep(2));
+        loadSubscriptionStatus().then(() => showDash());
       } else {
         clearAuth();
       }
@@ -123,7 +123,7 @@ async function login() {
     updateHeaderUI();
     await loadSubscriptionStatus();
     toast('Bienvenue, ' + username + ' !', 'success');
-    goToStep(2);
+    showDash();
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = '';
@@ -151,7 +151,7 @@ async function register() {
     sessionStorage.setItem('wf_user', username);
     updateHeaderUI();
     await loadSubscriptionStatus();
-    goToStep(2);
+    showDash();
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = '';
@@ -242,7 +242,7 @@ function updateTierBadge(tier) {
 
 function applyTierToDataTypes(tier) {
   const proTypes = ['passwords', 'extensions', 'settings'];
-  const hasAccess = tier === 'pro' || tier === 'premium';
+  const hasAccess = tier === 'pro' || tier === 'premium' || tier === 'beta';
 
   proTypes.forEach(type => {
     const card = document.getElementById('dtcard-' + type);
@@ -611,7 +611,72 @@ function startOver() {
   } else {
     state.selectedDataTypes = new Set(['bookmarks', 'history', 'passwords', 'extensions', 'settings']);
   }
+  showDash();
+}
+
+// ---------------------------------------------------------------------------
+// Dashboard
+// ---------------------------------------------------------------------------
+
+function showDash() {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pageDash').classList.add('active');
+  state.currentStep = 0;
+  document.getElementById('progressBar').style.display = 'none';
+
+  const greetEl = document.getElementById('dashGreeting');
+  if (greetEl && state.username) {
+    greetEl.textContent = 'Bonjour, ' + state.username + ' ! 👋';
+  }
+
+  switchDashTab('new');
+  updatePlanDetails();
+}
+
+function switchDashTab(tab) {
+  ['new', 'transfers', 'plan', 'faq'].forEach(t => {
+    const btn     = document.getElementById('dtab-' + t);
+    const content = document.getElementById('dtab-content-' + t);
+    if (btn)     btn.classList.toggle('active', t === tab);
+    if (content) content.style.display = (t === tab) ? '' : 'none';
+  });
+}
+
+function beginTransfer() {
   goToStep(2);
+}
+
+function showComingSoonToast() {
+  toast('À venir pour Pro / Premium', 'info');
+}
+
+function updatePlanDetails() {
+  const el = document.getElementById('planDetails');
+  if (!el) return;
+  const tier = state.subscriptionTier;
+  const labels = { free: 'Free', beta: '🧪 Bêta', pro: '⚡ Pro', premium: '👑 Premium' };
+  const label  = labels[tier] || 'Free';
+
+  let html = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <span class="tier-badge ${tier === 'beta' ? 'pro' : tier}" style="font-size:0.85rem;padding:5px 14px">${label}</span>
+      <span style="color:var(--muted);font-size:0.875rem">Plan actuel</span>
+    </div>
+  `;
+  if (tier === 'beta') {
+    html += `<div class="alert alert-info">🧪 Accès bêta — toutes les fonctionnalités disponibles gratuitement.</div>`;
+  } else if (tier === 'free') {
+    html += `<div class="alert alert-warning">Passez à Pro ou Premium pour accéder aux mots de passe, extensions et paramètres.</div>`;
+  } else if (tier === 'pro') {
+    html += `<div class="alert alert-info">⚡ Accès complet — sauf sync quotidienne et accès anticipé (Premium).</div>`;
+  } else if (tier === 'premium') {
+    html += `<div class="alert alert-info" style="border-color:rgba(255,196,77,0.4);color:#ffc44d">👑 Vous avez accès à toutes les fonctionnalités.</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function toggleFaq(el) {
+  el.nextElementSibling.classList.toggle('open');
 }
 
 // ---------------------------------------------------------------------------
