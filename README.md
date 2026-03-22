@@ -4,17 +4,36 @@
 
 ---
 
+> ### ⚠️ Antivirus / SmartScreen warning — read this first
+>
+> When you download and run WebFlow, **Windows Defender, SmartScreen, or your antivirus may flag it.
+> This is a false positive and completely normal** — here's why:
+>
+> - WebFlow needs to **read your browser profile folders** (bookmarks, history, passwords).
+>   Antivirus software is designed to be suspicious of any app that does this.
+> - The `.exe` is **unsigned** — I don't yet have a paid code-signing certificate (~150€/year).
+>   Windows automatically warns about unsigned executables from unknown publishers.
+> - WebFlow contains **no malware, spyware, or trackers** — the full source code is right here in this repo, open for anyone to inspect.
+>
+> **How to run it anyway:**
+> - **Windows SmartScreen** → click "More info" → "Run anyway"
+> - **Windows Defender popup** → click "Show more" → "Run anyway"
+> - **Antivirus quarantine** → add an exception for the `WebFlow.exe` file
+>
+> If you're not comfortable, you can always **run from source** instead (see below) — same code, no binary trust required.
+
+---
+
 ## Download & Run (no setup needed)
 
-**Windows — the easy way:**
+**Windows:**
 
 1. Go to the **[Releases](../../releases/latest)** page of this repo
 2. Download **`WebFlow.exe`**
-3. Double-click it — a **native app window opens instantly**
+3. If Windows SmartScreen appears → click **"More info" → "Run anyway"**
+4. A **native app window opens instantly**
 
 No browser. No terminal. No Python. No pip.
-
-> **Windows SmartScreen warning?** Click **"More info" → "Run anyway"**. The exe is unsigned (no paid certificate), but the full source code is right here for you to inspect.
 
 ---
 

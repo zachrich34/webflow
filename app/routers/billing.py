@@ -115,6 +115,11 @@ async def billing_status(user_jti: tuple = Depends(get_current_user)):
         expires=user.subscription_expires,
         features=TIER_FEATURES.get(tier, TIER_FEATURES["free"]),
         is_active=tier != "free",
+        payments_enabled=bool(
+            settings.stripe_secret_key
+            and settings.stripe_pro_price_id
+            and settings.stripe_premium_price_id
+        ),
     )
 
 

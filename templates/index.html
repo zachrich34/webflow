@@ -13,11 +13,19 @@
   <header>
     <span class="logo">⚡ WebFlow</span>
     <div class="header-actions">
+      <select id="langSelect" class="lang-select" onchange="setLanguage(this.value)">
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="ru">🇷🇺 RU</option>
+        <option value="tr">🇹🇷 TR</option>
+        <option value="es">🇪🇸 ES</option>
+      </select>
       <span class="header-user" id="headerUser" style="display:none"></span>
       <span class="tier-badge free" id="tierBadge" style="display:none">Free</span>
-      <button class="btn btn-secondary btn-sm" id="upgradeBtn" style="display:none" onclick="showPricingModal()">Upgrade ✨</button>
-      <button class="btn btn-secondary btn-sm" id="manageSubBtn" style="display:none" onclick="openBillingPortal()">Gérer l'abonnement</button>
-      <button class="btn btn-secondary btn-sm" id="logoutBtn" style="display:none" onclick="logout()">Log out</button>
+      <button class="btn btn-secondary btn-sm" id="upgradeBtn" style="display:none" onclick="showPricingModal()" data-i18n="upgrade-btn">Upgrade ✨</button>
+      <button class="btn btn-secondary btn-sm" id="manageSubBtn" style="display:none" onclick="openBillingPortal()" data-i18n="manage-sub-btn">Gérer l'abonnement</button>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn" style="display:none" onclick="logout()" data-i18n="logout-btn">Log out</button>
     </div>
   </header>
 
@@ -27,33 +35,222 @@
     <div class="progress-bar" id="progressBar" style="display:none">
       <div class="step-dot" id="sdot1">
         <div class="dot">1</div>
-        <div class="label">Account</div>
+        <div class="label" data-i18n="step-account">Account</div>
       </div>
       <div class="step-line" id="sline1"></div>
       <div class="step-dot" id="sdot2">
         <div class="dot">2</div>
-        <div class="label">Source</div>
+        <div class="label" data-i18n="step-source">Source</div>
       </div>
       <div class="step-line" id="sline2"></div>
       <div class="step-dot" id="sdot3">
         <div class="dot">3</div>
-        <div class="label">Data</div>
+        <div class="label" data-i18n="step-data">Data</div>
       </div>
       <div class="step-line" id="sline3"></div>
       <div class="step-dot" id="sdot4">
         <div class="dot">4</div>
-        <div class="label">Destination</div>
+        <div class="label" data-i18n="step-dest">Destination</div>
       </div>
       <div class="step-line" id="sline4"></div>
       <div class="step-dot" id="sdot5">
         <div class="dot">5</div>
-        <div class="label">Transfer</div>
+        <div class="label" data-i18n="step-transfer">Transfer</div>
       </div>
       <div class="step-line" id="sline5"></div>
       <div class="step-dot" id="sdot6">
         <div class="dot">6</div>
-        <div class="label">Done</div>
+        <div class="label" data-i18n="step-done">Done</div>
       </div>
+    </div>
+
+    <!-- ===== DASHBOARD (shown after login) ===== -->
+    <div class="page" id="pageDash">
+
+      <div style="text-align:center">
+        <h2 class="page-title" id="dashGreeting">Bonjour ! 👋</h2>
+        <p class="page-subtitle">Que voulez-vous faire aujourd'hui ?</p>
+      </div>
+
+      <!-- Tab navigation -->
+      <div class="dash-nav">
+        <button class="dash-tab active" id="dtab-new"       onclick="switchDashTab('new')"       data-i18n="dtab-new">🚀 Nouveau transfert</button>
+        <button class="dash-tab"        id="dtab-transfers" onclick="switchDashTab('transfers')" data-i18n="dtab-transfers">📋 Mes transferts</button>
+        <button class="dash-tab"        id="dtab-plan"      onclick="switchDashTab('plan')"      data-i18n="dtab-plan">💎 Mon plan</button>
+        <button class="dash-tab"        id="dtab-faq"       onclick="switchDashTab('faq')"       data-i18n="dtab-faq">⭐ Review & FAQ</button>
+      </div>
+
+      <!-- Tab: Nouveau transfert -->
+      <div id="dtab-content-new">
+        <div class="start-transfer-hero card">
+          <div class="hero-icon">⚡</div>
+          <h3 style="font-size:1.5rem;font-weight:800;" data-i18n="hero-title">Prêt à transférer ?</h3>
+          <p class="page-subtitle" style="max-width:400px" data-i18n="hero-subtitle">Déplacez vos bookmarks, historique, mots de passe et plus en quelques clics.</p>
+          <button class="btn btn-primary btn-xl" onclick="beginTransfer()" data-i18n="btn-start-transfer">
+            🚀 Démarrer un transfert
+          </button>
+        </div>
+
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:4px;font-size:0.95rem;" data-i18n="upcoming-section-title">Fonctionnalités Pro &amp; Premium</h3>
+          <p class="page-subtitle" style="font-size:0.8rem;margin-bottom:16px" data-i18n="upcoming-section-sub">Cliquez pour en savoir plus — disponibles bientôt.</p>
+          <div class="upcoming-grid">
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">🔄</span>
+              <div>
+                <div class="upcoming-name" data-i18n="upcoming-auto-name">Transferts automatiques quotidiens</div>
+                <div class="upcoming-desc" data-i18n="upcoming-auto-desc">Sync automatique chaque jour — Premium</div>
+              </div>
+            </div>
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">📜</span>
+              <div>
+                <div class="upcoming-name" data-i18n="upcoming-history-name">Historique illimité</div>
+                <div class="upcoming-desc" data-i18n="upcoming-history-desc">Conservez tous vos transferts passés — Pro</div>
+              </div>
+            </div>
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">👥</span>
+              <div>
+                <div class="upcoming-name" data-i18n="upcoming-multi-name">Sync multi-profils</div>
+                <div class="upcoming-desc" data-i18n="upcoming-multi-desc">Gérez plusieurs profils simultanément — Premium</div>
+              </div>
+            </div>
+            <div class="upcoming-item" onclick="showComingSoonToast()">
+              <span class="upcoming-icon">⚡</span>
+              <div>
+                <div class="upcoming-name" data-i18n="upcoming-early-name">Accès anticipé</div>
+                <div class="upcoming-desc" data-i18n="upcoming-early-desc">Nouvelles fonctionnalités en avant-première — Premium</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Mes transferts -->
+      <div id="dtab-content-transfers" style="display:none">
+        <div class="card" style="text-align:center;padding:52px 28px">
+          <div style="font-size:3rem;margin-bottom:16px">📋</div>
+          <h3 style="font-weight:700;margin-bottom:8px" data-i18n="transfers-tab-title">Historique des transferts</h3>
+          <p class="page-subtitle" data-i18n="transfers-tab-sub">L'historique de vos transferts sera disponible ici très prochainement.</p>
+          <span class="lock-badge" style="margin-top:16px;display:inline-block;font-size:0.8rem;padding:4px 12px" data-i18n="transfers-tab-badge">À venir — Pro &amp; Premium</span>
+        </div>
+      </div>
+
+      <!-- Tab: Mon plan -->
+      <div id="dtab-content-plan" style="display:none">
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:20px" data-i18n="plan-tab-title">Mon abonnement</h3>
+          <div id="planDetails"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:20px;font-size:0.95rem;" data-i18n="plan-compare-title">Comparer les plans</h3>
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <div class="pricing-name">Free</div>
+              <div class="pricing-price">0€ <span data-i18n="per-month">/ mois</span></div>
+              <ul class="pricing-features">
+                <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+                <li class="included" data-i18n="dt-history">Historique</li>
+                <li class="excluded" data-i18n="dt-passwords">Mots de passe</li>
+                <li class="excluded" data-i18n="dt-extensions">Extensions</li>
+                <li class="excluded" data-i18n="dt-settings">Paramètres</li>
+                <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
+              </ul>
+            </div>
+            <div class="pricing-card highlight">
+              <span class="pricing-badge popular" data-i18n="badge-popular">Populaire</span>
+              <div class="pricing-name">Pro</div>
+              <div class="pricing-price">5€ <span data-i18n="per-month">/ mois</span></div>
+              <ul class="pricing-features">
+                <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+                <li class="included" data-i18n="dt-history">Historique</li>
+                <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+                <li class="included" data-i18n="dt-extensions">Extensions</li>
+                <li class="included" data-i18n="dt-settings">Paramètres</li>
+                <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
+              </ul>
+              <button class="btn btn-primary btn-sm" onclick="showComingSoonModal()" data-i18n="sub-pro-btn">Souscrire Pro →</button>
+            </div>
+            <div class="pricing-card premium-card">
+              <span class="pricing-badge best" data-i18n="badge-best">Meilleur</span>
+              <div class="pricing-name">Premium</div>
+              <div class="pricing-price">10€ <span data-i18n="per-month">/ mois</span></div>
+              <ul class="pricing-features">
+                <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+                <li class="included" data-i18n="dt-history">Historique</li>
+                <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+                <li class="included" data-i18n="dt-extensions">Extensions</li>
+                <li class="included" data-i18n="dt-settings">Paramètres</li>
+                <li class="included" data-i18n="feature-daily-sync">Sync quotidienne</li>
+                <li class="included" data-i18n="feature-early-access">Accès anticipé</li>
+              </ul>
+              <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700" onclick="showComingSoonModal()" data-i18n="sub-premium-btn">Souscrire Premium →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Review & FAQ -->
+      <div id="dtab-content-faq" style="display:none">
+
+        <!-- Beta review CTA -->
+        <div class="card" style="text-align:center;padding:40px 28px">
+          <div style="font-size:3rem;margin-bottom:12px">⭐</div>
+          <h3 style="font-weight:800;font-size:1.3rem;margin-bottom:8px" data-i18n="review-title">Donne ton avis sur la bêta</h3>
+          <p class="page-subtitle" style="max-width:420px;margin:0 auto 24px" data-i18n="review-sub">2 minutes pour nous aider à améliorer WebFlow. Ton retour compte vraiment.</p>
+          <div class="review-questions">
+            <div class="review-question-item">
+              <span class="review-q-num">1</span>
+              <span data-i18n="review-q1">Comment as-tu découvert WebFlow ?</span>
+            </div>
+            <div class="review-question-item">
+              <span class="review-q-num">2</span>
+              <span data-i18n="review-q2">Qu'est-ce qui a fonctionné ou pas ?</span>
+            </div>
+            <div class="review-question-item">
+              <span class="review-q-num">3</span>
+              <span data-i18n="review-q3">Quelles fonctionnalités manquent ?</span>
+            </div>
+            <div class="review-question-item">
+              <span class="review-q-num">4</span>
+              <span data-i18n="review-q4">Serais-tu prêt à payer pour WebFlow ? Si oui, combien/mois ?</span>
+            </div>
+          </div>
+          <a href="https://forms.gle/8u1pB5LSrscrX5Kw9" target="_blank" class="btn btn-primary btn-lg" style="margin-top:24px;text-decoration:none;display:inline-flex" data-i18n="review-btn">
+            ✍️ Répondre au formulaire
+          </a>
+        </div>
+
+        <!-- FAQ -->
+        <div class="card">
+          <h3 style="font-weight:700;margin-bottom:20px" data-i18n="faq-title">Questions fréquentes</h3>
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q1">Est-ce que mes données sont sécurisées ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a1">Oui. WebFlow fonctionne entièrement en local sur votre machine. Vos données sont chiffrées avec AES-256 et votre mot de passe maître ne quitte jamais votre appareil.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q2">Quels navigateurs sont supportés ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a2">WebFlow supporte Chrome, Firefox, Opera GX, Microsoft Edge et Brave.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q3">Les mots de passe sont-ils transférés directement ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a3">Les mots de passe sont exportés dans un fichier CSV dans le dossier de profil du navigateur de destination. Vous devez ensuite les importer manuellement via le gestionnaire de mots de passe du navigateur.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q4">Puis-je transférer entre deux profils du même navigateur ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a4">Oui, vous pouvez transférer entre deux profils différents du même navigateur, mais pas vers le profil source identique.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q5">Mes données sont-elles envoyées sur internet ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a5">Non. WebFlow tourne entièrement localement. Aucune donnée n'est envoyée à des serveurs externes. Votre compte est stocké localement sur votre machine.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
     <!-- ===== STEP 1: Auth ===== -->
@@ -70,48 +267,52 @@
 
       <div class="card" style="max-width:480px; margin: 0 auto; width:100%;">
         <div class="nav-tabs" style="margin-bottom:20px">
-          <button class="nav-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
-          <button class="nav-tab" id="tabRegister" onclick="switchAuthTab('register')">Create account</button>
+          <button class="nav-tab active" id="tabLogin" onclick="switchAuthTab('login')" data-i18n="tab-login">Login</button>
+          <button class="nav-tab" id="tabRegister" onclick="switchAuthTab('register')" data-i18n="tab-register">Create account</button>
         </div>
 
         <!-- Login form -->
         <div id="loginForm">
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="loginUsername" placeholder="your_username" autocomplete="username">
+            <label data-i18n="label-username">Username</label>
+            <input type="text" id="loginUsername" placeholder="your_username" autocomplete="username" data-i18n-ph="ph-username">
           </div>
           <div class="form-group">
-            <label>Master password</label>
+            <label data-i18n="label-password">Master password</label>
             <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
           </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <input type="checkbox" id="rememberMe" style="width:16px;height:16px;accent-color:var(--accent1);cursor:pointer">
+            <label for="rememberMe" style="font-size:0.82rem;color:var(--muted);text-transform:none;letter-spacing:0;cursor:pointer" data-i18n="remember-me">Se souvenir de moi</label>
+          </div>
           <div id="loginError" class="form-error" style="display:none; margin-bottom:12px;"></div>
-          <button class="btn btn-primary btn-lg" style="width:100%" onclick="login()" id="loginBtn">
-            Continue →
+          <button class="btn btn-primary btn-lg" style="width:100%" onclick="login()" id="loginBtn" data-i18n="btn-continue">
+            Continuer →
           </button>
         </div>
 
         <!-- Register form -->
         <div id="registerForm" style="display:none">
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="regUsername" placeholder="your_username" autocomplete="username">
+            <label data-i18n="label-username">Username</label>
+            <input type="text" id="regUsername" placeholder="your_username" autocomplete="username" data-i18n-ph="ph-username">
           </div>
           <div class="form-group">
-            <label>Email</label>
+            <label data-i18n="label-email">Email</label>
             <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email">
           </div>
           <div class="form-group">
-            <label>Master password (min. 8 chars)</label>
-            <input type="password" id="regPassword" placeholder="Create a strong password" autocomplete="new-password">
+            <label data-i18n="label-password-new">Master password (min. 8 chars)</label>
+            <input type="password" id="regPassword" placeholder="Create a strong password" autocomplete="new-password" data-i18n-ph="ph-strong-password">
           </div>
           <div id="regError" class="form-error" style="display:none; margin-bottom:12px;"></div>
-          <button class="btn btn-primary btn-lg" style="width:100%" onclick="register()" id="regBtn">
-            Create account →
+          <button class="btn btn-primary btn-lg" style="width:100%" onclick="register()" id="regBtn" data-i18n="btn-create-account">
+            Créer le compte →
           </button>
         </div>
       </div>
 
-      <p style="text-align:center; font-size:0.78rem; color:var(--muted); max-width:480px; margin: 0 auto;">
+      <p style="text-align:center; font-size:0.78rem; color:var(--muted); max-width:480px; margin: 0 auto;" data-i18n="local-notice">
         WebFlow runs locally on your machine. No data is sent to external servers.
       </p>
     </div>
@@ -133,8 +334,8 @@
       </div>
 
       <div style="display:flex; gap:12px; justify-content:flex-end">
-        <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
-        <button class="btn btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Next →</button>
+        <button class="btn btn-secondary" onclick="showDash()" data-i18n="step2-back">← Retour</button>
+        <button class="btn btn-primary" id="step2Next" onclick="goToStep(3)" disabled data-i18n="step2-next">Next →</button>
       </div>
     </div>
 
@@ -148,7 +349,7 @@
           <input type="checkbox" checked>
           <div class="data-type-icon">🔖</div>
           <div class="data-type-info">
-            <div class="data-type-name">Bookmarks</div>
+            <div class="data-type-name" data-i18n="dt-bookmarks">Bookmarks</div>
             <div class="data-type-count" id="count-bookmarks">Non scanné</div>
           </div>
         </div>
@@ -156,7 +357,7 @@
           <input type="checkbox" checked>
           <div class="data-type-icon">📅</div>
           <div class="data-type-info">
-            <div class="data-type-name">Historique</div>
+            <div class="data-type-name" data-i18n="dt-history">Historique</div>
             <div class="data-type-count" id="count-history">Non scanné</div>
           </div>
         </div>
@@ -164,7 +365,7 @@
           <input type="checkbox">
           <div class="data-type-icon">🔑</div>
           <div class="data-type-info">
-            <div class="data-type-name">Mots de passe</div>
+            <div class="data-type-name" data-i18n="dt-passwords">Mots de passe</div>
             <div class="data-type-count" id="count-passwords">Non scanné</div>
           </div>
           <span class="lock-badge" id="lock-passwords">Pro</span>
@@ -173,7 +374,7 @@
           <input type="checkbox">
           <div class="data-type-icon">🧩</div>
           <div class="data-type-info">
-            <div class="data-type-name">Extensions</div>
+            <div class="data-type-name" data-i18n="dt-extensions">Extensions</div>
             <div class="data-type-count" id="count-extensions">Non scanné</div>
           </div>
           <span class="lock-badge" id="lock-extensions">Pro</span>
@@ -182,10 +383,49 @@
           <input type="checkbox">
           <div class="data-type-icon">⚙️</div>
           <div class="data-type-info">
-            <div class="data-type-name">Paramètres</div>
+            <div class="data-type-name" data-i18n="dt-settings">Paramètres</div>
             <div class="data-type-count" id="count-settings">Page d'accueil, moteur de recherche</div>
           </div>
           <span class="lock-badge" id="lock-settings">Pro</span>
+        </div>
+      </div>
+
+      <!-- Pro/Premium locked features -->
+      <div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;" data-i18n="pro-section-label">Pro &amp; Premium — À venir</p>
+        <div class="data-types-grid">
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">🔄</div>
+            <div class="data-type-info">
+              <div class="data-type-name" data-i18n="pro-auto-name">Transferts automatiques</div>
+              <div class="data-type-count" data-i18n="pro-auto-desc">Sync quotidienne programmée</div>
+            </div>
+            <span class="lock-badge">Premium</span>
+          </div>
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">📜</div>
+            <div class="data-type-info">
+              <div class="data-type-name" data-i18n="pro-history-name">Historique illimité</div>
+              <div class="data-type-count" data-i18n="pro-history-desc">Tous vos transferts conservés</div>
+            </div>
+            <span class="lock-badge">Pro</span>
+          </div>
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">👥</div>
+            <div class="data-type-info">
+              <div class="data-type-name" data-i18n="pro-multi-name">Multi-profils</div>
+              <div class="data-type-count" data-i18n="pro-multi-desc">Sync plusieurs profils en même temps</div>
+            </div>
+            <span class="lock-badge">Premium</span>
+          </div>
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">⚡</div>
+            <div class="data-type-info">
+              <div class="data-type-name" data-i18n="pro-early-name">Accès anticipé</div>
+              <div class="data-type-count" data-i18n="pro-early-desc">Nouvelles fonctionnalités en avant-première</div>
+            </div>
+            <span class="lock-badge">Premium</span>
+          </div>
         </div>
       </div>
 
@@ -199,11 +439,9 @@
       <div id="scanError" style="display:none" class="alert alert-error"></div>
 
       <div style="display:flex; gap:12px; justify-content:flex-end">
-        <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
-        <button class="btn btn-primary" id="scanBtn" onclick="scanBrowser()">
-          🔍 Scan browser
-        </button>
-        <button class="btn btn-primary" id="step3Next" onclick="goToStep(4)" disabled>Next →</button>
+        <button class="btn btn-secondary" onclick="goToStep(2)" data-i18n="step3-back">← Back</button>
+        <button class="btn btn-primary" id="scanBtn" onclick="scanBrowser()" data-i18n="step3-scan">🔍 Scanner</button>
+        <button class="btn btn-primary" id="step3Next" onclick="goToStep(4)" disabled data-i18n="step3-next">Next →</button>
       </div>
     </div>
 
@@ -228,17 +466,17 @@
       </div>
 
       <div style="display:flex; gap:12px; justify-content:flex-end">
-        <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
-        <button class="btn btn-primary" id="step4Next" onclick="startTransfer()" disabled>
-          🚀 Start transfer
+        <button class="btn btn-secondary" onclick="goToStep(3)" data-i18n="step4-back">← Back</button>
+        <button class="btn btn-primary" id="step4Next" onclick="startTransfer()" disabled data-i18n="step4-start">
+          🚀 Lancer le transfert
         </button>
       </div>
     </div>
 
     <!-- ===== STEP 5: Transfer progress ===== -->
     <div class="page" id="page5">
-      <h2 class="page-title">Transferring your data…</h2>
-      <p class="page-subtitle">Please wait. Do not close this window.</p>
+      <h2 class="page-title" data-i18n="step5-title">Transfert en cours…</h2>
+      <p class="page-subtitle" data-i18n="step5-sub">Veuillez patienter. Ne fermez pas cette fenêtre.</p>
 
       <div class="card">
         <div class="transfer-progress" id="transferProgress">
@@ -253,8 +491,8 @@
     <div class="page" id="page6">
       <div style="text-align:center">
         <div style="font-size:4rem; margin-bottom:12px;">🎉</div>
-        <h2 class="page-title">Transfer complete!</h2>
-        <p class="page-subtitle" style="margin-top:8px;">Your browser data has been successfully transferred.</p>
+        <h2 class="page-title" data-i18n="step6-title">Transfert terminé !</h2>
+        <p class="page-subtitle" style="margin-top:8px;" data-i18n="step6-sub">Vos données ont été transférées avec succès.</p>
       </div>
 
       <div class="card">
@@ -275,16 +513,15 @@
       </div>
 
       <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-        <button class="btn btn-secondary btn-lg" onclick="downloadReport()">📄 Download report</button>
-        <button class="btn btn-primary btn-lg" onclick="startOver()">↺ New transfer</button>
+        <button class="btn btn-secondary btn-lg" onclick="downloadReport()" data-i18n="btn-download">📄 Télécharger le rapport</button>
+        <button class="btn btn-primary btn-lg" onclick="startOver()" data-i18n="btn-new-transfer">↺ Nouveau transfert</button>
       </div>
     </div>
 
   </main>
 
-  <footer>
-    WebFlow — local browser data transfer tool &nbsp;|&nbsp;
-    All data encrypted with AES-256 · Passwords never stored in plaintext
+  <footer data-i18n="footer">
+    WebFlow — outil local de transfert · Chiffrement AES-256 · Mots de passe jamais stockés en clair
   </footer>
 
   <!-- Toast container -->
@@ -294,63 +531,63 @@
   <div class="modal-overlay" id="pricingModal" style="display:none" onclick="if(event.target===this)closePricingModal()">
     <div class="modal">
       <button class="modal-close" onclick="closePricingModal()">✕</button>
-      <h2 class="page-title" style="font-size:1.5rem">Passer à la version supérieure</h2>
-      <p class="page-subtitle" style="margin-top:6px">Débloque le transfert de mots de passe, extensions et paramètres.</p>
+      <h2 class="page-title" style="font-size:1.5rem" data-i18n="modal-upgrade-title">Passer à la version supérieure</h2>
+      <p class="page-subtitle" style="margin-top:6px" data-i18n="modal-upgrade-sub">Débloque le transfert de mots de passe, extensions et paramètres.</p>
 
       <div class="pricing-grid">
 
         <!-- Free -->
         <div class="pricing-card" id="pcard-free">
-          <span class="pricing-badge active" id="badge-free" style="display:none">Actuel</span>
+          <span class="pricing-badge active" id="badge-free" style="display:none" data-i18n="badge-current">Actuel</span>
           <div class="pricing-name">Free</div>
-          <div class="pricing-price">0€ <span>/ mois</span></div>
+          <div class="pricing-price">0€ <span data-i18n="per-month">/ mois</span></div>
           <ul class="pricing-features">
-            <li class="included">Favoris</li>
-            <li class="included">Historique</li>
-            <li class="excluded">Mots de passe</li>
-            <li class="excluded">Extensions</li>
-            <li class="excluded">Paramètres</li>
-            <li class="excluded">Sync quotidienne</li>
+            <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+            <li class="included" data-i18n="dt-history">Historique</li>
+            <li class="excluded" data-i18n="dt-passwords">Mots de passe</li>
+            <li class="excluded" data-i18n="dt-extensions">Extensions</li>
+            <li class="excluded" data-i18n="dt-settings">Paramètres</li>
+            <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
           </ul>
-          <button class="btn btn-secondary btn-sm" disabled>Gratuit</button>
+          <button class="btn btn-secondary btn-sm" disabled data-i18n="badge-free-btn">Gratuit</button>
         </div>
 
         <!-- Pro -->
         <div class="pricing-card highlight" id="pcard-pro">
-          <span class="pricing-badge popular">Populaire</span>
-          <span class="pricing-badge active" id="badge-pro" style="display:none">Actuel</span>
+          <span class="pricing-badge popular" data-i18n="badge-popular">Populaire</span>
+          <span class="pricing-badge active" id="badge-pro" style="display:none" data-i18n="badge-current">Actuel</span>
           <div class="pricing-name">Pro</div>
-          <div class="pricing-price">5€ <span>/ mois</span></div>
+          <div class="pricing-price">5€ <span data-i18n="per-month">/ mois</span></div>
           <ul class="pricing-features">
-            <li class="included">Favoris</li>
-            <li class="included">Historique</li>
-            <li class="included">Mots de passe</li>
-            <li class="included">Extensions</li>
-            <li class="included">Paramètres</li>
-            <li class="excluded">Sync quotidienne</li>
+            <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+            <li class="included" data-i18n="dt-history">Historique</li>
+            <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+            <li class="included" data-i18n="dt-extensions">Extensions</li>
+            <li class="included" data-i18n="dt-settings">Paramètres</li>
+            <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
           </ul>
-          <button class="btn btn-primary btn-sm" id="btnCheckoutPro" onclick="startCheckout('pro')">
+          <button class="btn btn-primary btn-sm" id="btnCheckoutPro" onclick="startCheckout('pro')" data-i18n="sub-pro-btn">
             Souscrire Pro →
           </button>
         </div>
 
         <!-- Premium -->
         <div class="pricing-card premium-card" id="pcard-premium">
-          <span class="pricing-badge best">Meilleur</span>
-          <span class="pricing-badge active" id="badge-premium" style="display:none">Actuel</span>
+          <span class="pricing-badge best" data-i18n="badge-best">Meilleur</span>
+          <span class="pricing-badge active" id="badge-premium" style="display:none" data-i18n="badge-current">Actuel</span>
           <div class="pricing-name">Premium</div>
-          <div class="pricing-price">10€ <span>/ mois</span></div>
+          <div class="pricing-price">10€ <span data-i18n="per-month">/ mois</span></div>
           <ul class="pricing-features">
-            <li class="included">Favoris</li>
-            <li class="included">Historique</li>
-            <li class="included">Mots de passe</li>
-            <li class="included">Extensions</li>
-            <li class="included">Paramètres</li>
-            <li class="included">Sync quotidienne</li>
-            <li class="included">Accès anticipé</li>
+            <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+            <li class="included" data-i18n="dt-history">Historique</li>
+            <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+            <li class="included" data-i18n="dt-extensions">Extensions</li>
+            <li class="included" data-i18n="dt-settings">Paramètres</li>
+            <li class="included" data-i18n="feature-daily-sync">Sync quotidienne</li>
+            <li class="included" data-i18n="feature-early-access">Accès anticipé</li>
           </ul>
           <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700"
-                  id="btnCheckoutPremium" onclick="startCheckout('premium')">
+                  id="btnCheckoutPremium" onclick="startCheckout('premium')" data-i18n="sub-premium-btn">
             Souscrire Premium →
           </button>
         </div>
@@ -359,11 +596,28 @@
 
       <!-- After payment, user clicks this to refresh -->
       <div id="paymentPendingBox" style="display:none;margin-top:20px" class="alert alert-info">
-        ⏳ Paiement en cours dans ton navigateur…
-        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="refreshSubscription()">
+        <span data-i18n="payment-pending">⏳ Paiement en cours dans ton navigateur…</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="refreshSubscription()" data-i18n="refresh-sub-btn">
           Actualiser l'abonnement
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== Coming Soon modal ===== -->
+  <div class="modal-overlay" id="comingSoonModal" style="display:none" onclick="if(event.target===this)closeComingSoonModal()">
+    <div class="modal" style="max-width:420px;text-align:center">
+      <button class="modal-close" onclick="closeComingSoonModal()">✕</button>
+      <div style="font-size:3rem;margin-bottom:16px">🚀</div>
+      <h2 class="page-title" style="font-size:1.4rem" data-i18n="cs-title">Les paiements arrivent bientôt !</h2>
+      <p class="page-subtitle" style="margin-top:10px" data-i18n="cs-body1">
+        WebFlow est actuellement en bêta gratuite — toutes les fonctionnalités sont disponibles sans abonnement.
+        Les plans payants seront activés très prochainement.
+      </p>
+      <p class="page-subtitle" style="margin-top:8px" data-i18n="cs-body2">En attendant, profite de tout gratuitement. 🎉</p>
+      <button class="btn btn-primary" style="margin-top:24px;width:100%" onclick="closeComingSoonModal()" data-i18n="cs-btn">
+        Continuer gratuitement →
+      </button>
     </div>
   </div>
 

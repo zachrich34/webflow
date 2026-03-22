@@ -20,8 +20,8 @@ class RegisterRequest(BaseModel):
     @classmethod
     def username_valid(cls, v: str) -> str:
         v = v.strip()
-        if not re.fullmatch(r"[A-Za-z0-9_\-]{3,32}", v):
-            raise ValueError("Username must be 3-32 characters: letters, digits, _ or -")
+        if not re.fullmatch(r"[A-Za-z0-9_\-\.]{3,32}", v):
+            raise ValueError("Username must be 3-32 characters: letters, digits, _ - or .")
         return v
 
     @field_validator("password")
@@ -164,10 +164,11 @@ class DetectedBrowsers(BaseModel):
 # ---------------------------------------------------------------------------
 
 class SubscriptionStatusResponse(BaseModel):
-    tier: str             # "free" | "pro" | "premium"
+    tier: str              # "free" | "beta" | "pro" | "premium"
     expires: Optional[datetime] = None
-    features: List[str]   # list of allowed data types + flags
-    is_active: bool       # True if tier != "free"
+    features: List[str]    # list of allowed data types + flags
+    is_active: bool        # True if tier != "free"
+    payments_enabled: bool = False  # True only when Stripe is fully configured
 
     class Config:
         from_attributes = True
