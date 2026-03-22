@@ -87,7 +87,11 @@ async function api(method, path, body = null) {
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await resp.json().catch(() => ({}));
-  if (!resp.ok) throw new Error(data.detail || `HTTP ${resp.status}`);
+  if (!resp.ok) {
+    let msg = data.detail;
+    if (Array.isArray(msg)) msg = msg.map(e => e.msg || JSON.stringify(e)).join(', ');
+    throw new Error(msg || `HTTP ${resp.status}`);
+  }
   return data;
 }
 
