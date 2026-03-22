@@ -1,10 +1,27 @@
 """Application configuration via environment variables / .env file."""
 import os
+import sys
 import secrets
+from pathlib import Path
 from pydantic_settings import BaseSettings
 
 
+def _default_db_url() -> str:
+    """Return a persistent database path that survives PyInstaller re-extractions."""
+    if sys.platform == "win32":
+        base = Path(os.environ.get("APPDATA", Path.home())) / "WebFlow"
+    elif sys.platform == "darwin":
+        base = Path.home() / "Library" / "Application Support" / "WebFlow"
+    else:
+        base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share")) / "WebFlow"
+    base.mkdir(parents=True, exist_ok=True)
+    return "sqlite+aiosqlite:///" + (base / "webflow.db").as_posix()
+
+
 class Settings(BaseSettings):
+    # App version — keep in sync with GitHub release tag
+    VERSION: str = "1.1.0"
+
     # Security
     secret_key: str = os.environ.get("WEBFLOW_SECRET_KEY", secrets.token_hex(32))
     algorithm: str = "HS256"
@@ -29,7 +46,7 @@ class Settings(BaseSettings):
     early_adopter_cutoff: str = os.environ.get("WEBFLOW_EARLY_ADOPTER_CUTOFF", "")
 
     # Database
-    database_url: str = "sqlite+aiosqlite:///./webflow.db"
+    database_url: str = _default_db_url()
 
     # Stripe (set in .env or environment variables)
     stripe_secret_key: str = os.environ.get("STRIPE_SECRET_KEY", "")

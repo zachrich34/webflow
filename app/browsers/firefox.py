@@ -317,7 +317,7 @@ class FirefoxImporter(BrowserImporter):
                     "INSERT INTO moz_bookmarks (type, parent, title, dateAdded, lastModified) VALUES (2, ?, 'Imported by WebFlow', ?, ?)",
                     (parent_id, 0, 0),
                 )
-                folder_id = conn.lastrowid
+                folder_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
 
             count = 0
             for bm in items:
@@ -330,7 +330,7 @@ class FirefoxImporter(BrowserImporter):
                         "INSERT INTO moz_places (url, title, visit_count) VALUES (?, ?, 0)",
                         (bm.url, bm.title),
                     )
-                    place_id = conn.lastrowid
+                    place_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
 
                 conn.execute(
                     "INSERT INTO moz_bookmarks (type, fk, parent, title, dateAdded, lastModified) VALUES (1, ?, ?, ?, ?, ?)",
@@ -370,7 +370,7 @@ class FirefoxImporter(BrowserImporter):
                             "INSERT INTO moz_places (url, title, visit_count) VALUES (?, ?, ?)",
                             (entry.url, entry.title, entry.visit_count),
                         )
-                        place_id = conn.lastrowid
+                        place_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
                     conn.execute(
                         "INSERT OR IGNORE INTO moz_historyvisits (place_id, visit_date, visit_type) VALUES (?, ?, 1)",
                         (place_id, entry.last_visited or 0),

@@ -20,8 +20,8 @@ class RegisterRequest(BaseModel):
     @classmethod
     def username_valid(cls, v: str) -> str:
         v = v.strip()
-        if not re.fullmatch(r"[A-Za-z0-9_\-]{3,32}", v):
-            raise ValueError("Username must be 3-32 characters: letters, digits, _ or -")
+        if not re.fullmatch(r"[A-Za-z0-9_\-\.]{3,32}", v):
+            raise ValueError("Username must be 3-32 characters: letters, digits, _ - or .")
         return v
 
     @field_validator("password")
@@ -35,6 +35,16 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     username: str
     password: str
+
+    @field_validator("username")
+    @classmethod
+    def username_strip(cls, v: str) -> str:
+        return v.strip()
+
+
+class DeleteAccountRequest(BaseModel):
+    username: str
+    email: EmailStr
 
     @field_validator("username")
     @classmethod
