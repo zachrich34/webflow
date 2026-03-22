@@ -41,6 +41,9 @@ const TRANSLATIONS = {
     'label-password':'Mot de passe maître','label-email':'Email',
     'label-password-new':'Mot de passe maître (min. 8 car.)','remember-me':'Se souvenir de moi',
     'btn-continue':'Continuer →','btn-create-account':'Créer le compte →',
+    'forgot-password-link':'Mot de passe oublié / Supprimer le compte',
+    'del-modal-title':'Supprimer le compte','del-modal-desc':"Ton mot de passe maître est aussi ta clé de chiffrement — il est impossible à réinitialiser. Tu peux supprimer le compte (toutes tes données seront effacées) pour en créer un nouveau.",
+    'del-modal-cancel':'Annuler','del-modal-confirm':'Supprimer définitivement',
     'ph-username':'votre_pseudo','ph-strong-password':'Créez un mot de passe fort',
     'local-notice':'WebFlow tourne localement. Aucune donnée envoyée à des serveurs externes.',
     'step-account':'Compte','step-source':'Source','step-data':'Données',
@@ -114,6 +117,9 @@ const TRANSLATIONS = {
     'label-password':'Master password','label-email':'Email',
     'label-password-new':'Master password (min. 8 chars)','remember-me':'Remember me',
     'btn-continue':'Continue →','btn-create-account':'Create account →',
+    'forgot-password-link':'Forgot password / Delete account',
+    'del-modal-title':'Delete account','del-modal-desc':'Your master password is also your encryption key — it cannot be reset. You can delete your account (all data will be erased) to register again.',
+    'del-modal-cancel':'Cancel','del-modal-confirm':'Delete permanently',
     'ph-username':'your_username','ph-strong-password':'Create a strong password',
     'local-notice':'WebFlow runs locally on your machine. No data is sent to external servers.',
     'step-account':'Account','step-source':'Source','step-data':'Data',
@@ -657,6 +663,39 @@ async function logout() {
   clearAuth();
   goToStep(1);
   toast(t('logged-out'), 'info');
+}
+
+function openDeleteAccountModal() {
+  const modal = document.getElementById('deleteAccountModal');
+  modal.style.display = 'flex';
+  document.getElementById('delUsername').value = document.getElementById('loginUsername').value || '';
+  document.getElementById('delEmail').value = '';
+  document.getElementById('delError').style.display = 'none';
+}
+
+function closeDeleteAccountModal() {
+  document.getElementById('deleteAccountModal').style.display = 'none';
+}
+
+async function deleteAccount() {
+  const username = document.getElementById('delUsername').value.trim();
+  const email = document.getElementById('delEmail').value.trim();
+  const errEl = document.getElementById('delError');
+  const btn = document.getElementById('delBtn');
+  if (!username || !email) { errEl.textContent = 'Remplis les deux champs.'; errEl.style.display = 'block'; return; }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    await api('DELETE', '/api/auth/account', { username, email });
+    closeDeleteAccountModal();
+    toast('Compte supprimé. Tu peux maintenant créer un nouveau compte.', 'success');
+    switchAuthTab('register');
+    document.getElementById('regUsername').value = username;
+  } catch(e) {
+    errEl.textContent = e.message || 'Erreur';
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.innerHTML = t('del-modal-confirm');
+  }
 }
 
 function clearAuth() {
