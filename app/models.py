@@ -21,6 +21,12 @@ class User(Base):
     created_at = Column(DateTime, server_default=func.now())
     last_login = Column(DateTime, nullable=True)
 
+    # Subscription — "free" | "pro" | "premium"
+    subscription_tier = Column(String(16), nullable=False, default="free", server_default="free")
+    subscription_expires = Column(DateTime, nullable=True)
+    stripe_customer_id = Column(String(64), nullable=True, index=True)
+    stripe_subscription_id = Column(String(64), nullable=True)
+
     snapshots = relationship("BrowserSnapshot", back_populates="user", cascade="all, delete-orphan")
     transfer_jobs = relationship("TransferJob", back_populates="user", cascade="all, delete-orphan")
 

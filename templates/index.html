@@ -14,6 +14,9 @@
     <span class="logo">⚡ WebFlow</span>
     <div class="header-actions">
       <span class="header-user" id="headerUser" style="display:none"></span>
+      <span class="tier-badge free" id="tierBadge" style="display:none">Free</span>
+      <button class="btn btn-secondary btn-sm" id="upgradeBtn" style="display:none" onclick="showPricingModal()">Upgrade ✨</button>
+      <button class="btn btn-secondary btn-sm" id="manageSubBtn" style="display:none" onclick="openBillingPortal()">Gérer l'abonnement</button>
       <button class="btn btn-secondary btn-sm" id="logoutBtn" style="display:none" onclick="logout()">Log out</button>
     </div>
   </header>
@@ -140,46 +143,49 @@
       <h2 class="page-title">What to <span style="color:var(--accent2)">transfer</span>?</h2>
       <p class="page-subtitle">Select the data you want to move to the new browser.</p>
 
-      <div class="data-types-grid">
-        <div class="data-type-card selected" onclick="toggleDataType(this, 'bookmarks')">
+      <div class="data-types-grid" id="dataTypesGrid">
+        <div class="data-type-card selected" id="dtcard-bookmarks" onclick="toggleDataType(this, 'bookmarks')">
           <input type="checkbox" checked>
           <div class="data-type-icon">🔖</div>
           <div class="data-type-info">
             <div class="data-type-name">Bookmarks</div>
-            <div class="data-type-count" id="count-bookmarks">Scanning…</div>
+            <div class="data-type-count" id="count-bookmarks">Non scanné</div>
           </div>
         </div>
-        <div class="data-type-card selected" onclick="toggleDataType(this, 'history')">
+        <div class="data-type-card selected" id="dtcard-history" onclick="toggleDataType(this, 'history')">
           <input type="checkbox" checked>
           <div class="data-type-icon">📅</div>
           <div class="data-type-info">
-            <div class="data-type-name">History</div>
-            <div class="data-type-count" id="count-history">Scanning…</div>
+            <div class="data-type-name">Historique</div>
+            <div class="data-type-count" id="count-history">Non scanné</div>
           </div>
         </div>
-        <div class="data-type-card selected" onclick="toggleDataType(this, 'passwords')">
-          <input type="checkbox" checked>
+        <div class="data-type-card" id="dtcard-passwords" onclick="toggleDataType(this, 'passwords')">
+          <input type="checkbox">
           <div class="data-type-icon">🔑</div>
           <div class="data-type-info">
-            <div class="data-type-name">Passwords</div>
-            <div class="data-type-count" id="count-passwords">Scanning…</div>
+            <div class="data-type-name">Mots de passe</div>
+            <div class="data-type-count" id="count-passwords">Non scanné</div>
           </div>
+          <span class="lock-badge" id="lock-passwords">Pro</span>
         </div>
-        <div class="data-type-card selected" onclick="toggleDataType(this, 'extensions')">
-          <input type="checkbox" checked>
+        <div class="data-type-card" id="dtcard-extensions" onclick="toggleDataType(this, 'extensions')">
+          <input type="checkbox">
           <div class="data-type-icon">🧩</div>
           <div class="data-type-info">
             <div class="data-type-name">Extensions</div>
-            <div class="data-type-count" id="count-extensions">Scanning…</div>
+            <div class="data-type-count" id="count-extensions">Non scanné</div>
           </div>
+          <span class="lock-badge" id="lock-extensions">Pro</span>
         </div>
-        <div class="data-type-card selected" onclick="toggleDataType(this, 'settings')">
-          <input type="checkbox" checked>
+        <div class="data-type-card" id="dtcard-settings" onclick="toggleDataType(this, 'settings')">
+          <input type="checkbox">
           <div class="data-type-icon">⚙️</div>
           <div class="data-type-info">
-            <div class="data-type-name">Settings</div>
-            <div class="data-type-count" id="count-settings">Homepage, search engine</div>
+            <div class="data-type-name">Paramètres</div>
+            <div class="data-type-count" id="count-settings">Page d'accueil, moteur de recherche</div>
           </div>
+          <span class="lock-badge" id="lock-settings">Pro</span>
         </div>
       </div>
 
@@ -283,6 +289,84 @@
 
   <!-- Toast container -->
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ===== Pricing / Upgrade modal ===== -->
+  <div class="modal-overlay" id="pricingModal" style="display:none" onclick="if(event.target===this)closePricingModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closePricingModal()">✕</button>
+      <h2 class="page-title" style="font-size:1.5rem">Passer à la version supérieure</h2>
+      <p class="page-subtitle" style="margin-top:6px">Débloque le transfert de mots de passe, extensions et paramètres.</p>
+
+      <div class="pricing-grid">
+
+        <!-- Free -->
+        <div class="pricing-card" id="pcard-free">
+          <span class="pricing-badge active" id="badge-free" style="display:none">Actuel</span>
+          <div class="pricing-name">Free</div>
+          <div class="pricing-price">0€ <span>/ mois</span></div>
+          <ul class="pricing-features">
+            <li class="included">Favoris</li>
+            <li class="included">Historique</li>
+            <li class="excluded">Mots de passe</li>
+            <li class="excluded">Extensions</li>
+            <li class="excluded">Paramètres</li>
+            <li class="excluded">Sync quotidienne</li>
+          </ul>
+          <button class="btn btn-secondary btn-sm" disabled>Gratuit</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card highlight" id="pcard-pro">
+          <span class="pricing-badge popular">Populaire</span>
+          <span class="pricing-badge active" id="badge-pro" style="display:none">Actuel</span>
+          <div class="pricing-name">Pro</div>
+          <div class="pricing-price">5€ <span>/ mois</span></div>
+          <ul class="pricing-features">
+            <li class="included">Favoris</li>
+            <li class="included">Historique</li>
+            <li class="included">Mots de passe</li>
+            <li class="included">Extensions</li>
+            <li class="included">Paramètres</li>
+            <li class="excluded">Sync quotidienne</li>
+          </ul>
+          <button class="btn btn-primary btn-sm" id="btnCheckoutPro" onclick="startCheckout('pro')">
+            Souscrire Pro →
+          </button>
+        </div>
+
+        <!-- Premium -->
+        <div class="pricing-card premium-card" id="pcard-premium">
+          <span class="pricing-badge best">Meilleur</span>
+          <span class="pricing-badge active" id="badge-premium" style="display:none">Actuel</span>
+          <div class="pricing-name">Premium</div>
+          <div class="pricing-price">10€ <span>/ mois</span></div>
+          <ul class="pricing-features">
+            <li class="included">Favoris</li>
+            <li class="included">Historique</li>
+            <li class="included">Mots de passe</li>
+            <li class="included">Extensions</li>
+            <li class="included">Paramètres</li>
+            <li class="included">Sync quotidienne</li>
+            <li class="included">Accès anticipé</li>
+          </ul>
+          <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700"
+                  id="btnCheckoutPremium" onclick="startCheckout('premium')">
+            Souscrire Premium →
+          </button>
+        </div>
+
+      </div>
+
+      <!-- After payment, user clicks this to refresh -->
+      <div id="paymentPendingBox" style="display:none;margin-top:20px" class="alert alert-info">
+        ⏳ Paiement en cours dans ton navigateur…
+        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="refreshSubscription()">
+          Actualiser l'abonnement
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script src="/static/js/app.js"></script>
