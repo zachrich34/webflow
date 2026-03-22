@@ -140,52 +140,52 @@
       <!-- Tab: Mon plan -->
       <div id="dtab-content-plan" style="display:none">
         <div class="card">
-          <h3 style="font-weight:700;margin-bottom:20px">Mon abonnement</h3>
+          <h3 style="font-weight:700;margin-bottom:20px" data-i18n="plan-tab-title">Mon abonnement</h3>
           <div id="planDetails"></div>
         </div>
         <div class="card">
-          <h3 style="font-weight:700;margin-bottom:20px;font-size:0.95rem;">Comparer les plans</h3>
+          <h3 style="font-weight:700;margin-bottom:20px;font-size:0.95rem;" data-i18n="plan-compare-title">Comparer les plans</h3>
           <div class="pricing-grid">
             <div class="pricing-card">
               <div class="pricing-name">Free</div>
-              <div class="pricing-price">0€ <span>/ mois</span></div>
+              <div class="pricing-price">0€ <span data-i18n="per-month">/ mois</span></div>
               <ul class="pricing-features">
-                <li class="included">Favoris</li>
-                <li class="included">Historique</li>
-                <li class="excluded">Mots de passe</li>
-                <li class="excluded">Extensions</li>
-                <li class="excluded">Paramètres</li>
-                <li class="excluded">Sync quotidienne</li>
+                <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+                <li class="included" data-i18n="dt-history">Historique</li>
+                <li class="excluded" data-i18n="dt-passwords">Mots de passe</li>
+                <li class="excluded" data-i18n="dt-extensions">Extensions</li>
+                <li class="excluded" data-i18n="dt-settings">Paramètres</li>
+                <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
               </ul>
             </div>
             <div class="pricing-card highlight">
-              <span class="pricing-badge popular">Populaire</span>
+              <span class="pricing-badge popular" data-i18n="badge-popular">Populaire</span>
               <div class="pricing-name">Pro</div>
-              <div class="pricing-price">5€ <span>/ mois</span></div>
+              <div class="pricing-price">5€ <span data-i18n="per-month">/ mois</span></div>
               <ul class="pricing-features">
-                <li class="included">Favoris</li>
-                <li class="included">Historique</li>
-                <li class="included">Mots de passe</li>
-                <li class="included">Extensions</li>
-                <li class="included">Paramètres</li>
-                <li class="excluded">Sync quotidienne</li>
+                <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+                <li class="included" data-i18n="dt-history">Historique</li>
+                <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+                <li class="included" data-i18n="dt-extensions">Extensions</li>
+                <li class="included" data-i18n="dt-settings">Paramètres</li>
+                <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
               </ul>
-              <button class="btn btn-primary btn-sm" onclick="showComingSoonModal()">Souscrire Pro →</button>
+              <button class="btn btn-primary btn-sm" onclick="showComingSoonModal()" data-i18n="sub-pro-btn">Souscrire Pro →</button>
             </div>
             <div class="pricing-card premium-card">
-              <span class="pricing-badge best">Meilleur</span>
+              <span class="pricing-badge best" data-i18n="badge-best">Meilleur</span>
               <div class="pricing-name">Premium</div>
-              <div class="pricing-price">10€ <span>/ mois</span></div>
+              <div class="pricing-price">10€ <span data-i18n="per-month">/ mois</span></div>
               <ul class="pricing-features">
-                <li class="included">Favoris</li>
-                <li class="included">Historique</li>
-                <li class="included">Mots de passe</li>
-                <li class="included">Extensions</li>
-                <li class="included">Paramètres</li>
-                <li class="included">Sync quotidienne</li>
-                <li class="included">Accès anticipé</li>
+                <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+                <li class="included" data-i18n="dt-history">Historique</li>
+                <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+                <li class="included" data-i18n="dt-extensions">Extensions</li>
+                <li class="included" data-i18n="dt-settings">Paramètres</li>
+                <li class="included" data-i18n="feature-daily-sync">Sync quotidienne</li>
+                <li class="included" data-i18n="feature-early-access">Accès anticipé</li>
               </ul>
-              <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700" onclick="showComingSoonModal()">Souscrire Premium →</button>
+              <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700" onclick="showComingSoonModal()" data-i18n="sub-premium-btn">Souscrire Premium →</button>
             </div>
           </div>
         </div>
@@ -197,54 +197,54 @@
         <!-- Beta review CTA -->
         <div class="card" style="text-align:center;padding:40px 28px">
           <div style="font-size:3rem;margin-bottom:12px">⭐</div>
-          <h3 style="font-weight:800;font-size:1.3rem;margin-bottom:8px">Donne ton avis sur la bêta</h3>
-          <p class="page-subtitle" style="max-width:420px;margin:0 auto 24px">2 minutes pour nous aider à améliorer WebFlow. Ton retour compte vraiment.</p>
+          <h3 style="font-weight:800;font-size:1.3rem;margin-bottom:8px" data-i18n="review-title">Donne ton avis sur la bêta</h3>
+          <p class="page-subtitle" style="max-width:420px;margin:0 auto 24px" data-i18n="review-sub">2 minutes pour nous aider à améliorer WebFlow. Ton retour compte vraiment.</p>
           <div class="review-questions">
             <div class="review-question-item">
               <span class="review-q-num">1</span>
-              <span>Comment as-tu découvert WebFlow ?</span>
+              <span data-i18n="review-q1">Comment as-tu découvert WebFlow ?</span>
             </div>
             <div class="review-question-item">
               <span class="review-q-num">2</span>
-              <span>Qu'est-ce qui a fonctionné ou pas ?</span>
+              <span data-i18n="review-q2">Qu'est-ce qui a fonctionné ou pas ?</span>
             </div>
             <div class="review-question-item">
               <span class="review-q-num">3</span>
-              <span>Quelles fonctionnalités manquent ?</span>
+              <span data-i18n="review-q3">Quelles fonctionnalités manquent ?</span>
             </div>
             <div class="review-question-item">
               <span class="review-q-num">4</span>
-              <span>Serais-tu prêt à payer pour WebFlow ? Si oui, combien/mois ?</span>
+              <span data-i18n="review-q4">Serais-tu prêt à payer pour WebFlow ? Si oui, combien/mois ?</span>
             </div>
           </div>
-          <a href="https://forms.gle/8u1pB5LSrscrX5Kw9" target="_blank" class="btn btn-primary btn-lg" style="margin-top:24px;text-decoration:none;display:inline-flex">
+          <a href="https://forms.gle/8u1pB5LSrscrX5Kw9" target="_blank" class="btn btn-primary btn-lg" style="margin-top:24px;text-decoration:none;display:inline-flex" data-i18n="review-btn">
             ✍️ Répondre au formulaire
           </a>
         </div>
 
         <!-- FAQ -->
         <div class="card">
-          <h3 style="font-weight:700;margin-bottom:20px">Questions fréquentes</h3>
+          <h3 style="font-weight:700;margin-bottom:20px" data-i18n="faq-title">Questions fréquentes</h3>
           <div class="faq-list">
             <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">Est-ce que mes données sont sécurisées ? <span>▾</span></div>
-              <div class="faq-answer">Oui. WebFlow fonctionne entièrement en local sur votre machine. Vos données sont chiffrées avec AES-256 et votre mot de passe maître ne quitte jamais votre appareil.</div>
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q1">Est-ce que mes données sont sécurisées ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a1">Oui. WebFlow fonctionne entièrement en local sur votre machine. Vos données sont chiffrées avec AES-256 et votre mot de passe maître ne quitte jamais votre appareil.</div>
             </div>
             <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">Quels navigateurs sont supportés ? <span>▾</span></div>
-              <div class="faq-answer">WebFlow supporte Chrome, Firefox, Opera GX, Microsoft Edge et Brave.</div>
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q2">Quels navigateurs sont supportés ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a2">WebFlow supporte Chrome, Firefox, Opera GX, Microsoft Edge et Brave.</div>
             </div>
             <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">Les mots de passe sont-ils transférés directement ? <span>▾</span></div>
-              <div class="faq-answer">Les mots de passe sont exportés dans un fichier CSV dans le dossier de profil du navigateur de destination. Vous devez ensuite les importer manuellement via le gestionnaire de mots de passe du navigateur.</div>
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q3">Les mots de passe sont-ils transférés directement ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a3">Les mots de passe sont exportés dans un fichier CSV dans le dossier de profil du navigateur de destination. Vous devez ensuite les importer manuellement via le gestionnaire de mots de passe du navigateur.</div>
             </div>
             <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">Puis-je transférer entre deux profils du même navigateur ? <span>▾</span></div>
-              <div class="faq-answer">Oui, vous pouvez transférer entre deux profils différents du même navigateur, mais pas vers le profil source identique.</div>
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q4">Puis-je transférer entre deux profils du même navigateur ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a4">Oui, vous pouvez transférer entre deux profils différents du même navigateur, mais pas vers le profil source identique.</div>
             </div>
             <div class="faq-item">
-              <div class="faq-question" onclick="toggleFaq(this)">Mes données sont-elles envoyées sur internet ? <span>▾</span></div>
-              <div class="faq-answer">Non. WebFlow tourne entièrement localement. Aucune donnée n'est envoyée à des serveurs externes. Votre compte est stocké localement sur votre machine.</div>
+              <div class="faq-question" onclick="toggleFaq(this)"><span data-i18n="faq-q5">Mes données sont-elles envoyées sur internet ?</span> <span>▾</span></div>
+              <div class="faq-answer" data-i18n="faq-a5">Non. WebFlow tourne entièrement localement. Aucune donnée n'est envoyée à des serveurs externes. Votre compte est stocké localement sur votre machine.</div>
             </div>
           </div>
         </div>
@@ -531,63 +531,63 @@
   <div class="modal-overlay" id="pricingModal" style="display:none" onclick="if(event.target===this)closePricingModal()">
     <div class="modal">
       <button class="modal-close" onclick="closePricingModal()">✕</button>
-      <h2 class="page-title" style="font-size:1.5rem">Passer à la version supérieure</h2>
-      <p class="page-subtitle" style="margin-top:6px">Débloque le transfert de mots de passe, extensions et paramètres.</p>
+      <h2 class="page-title" style="font-size:1.5rem" data-i18n="modal-upgrade-title">Passer à la version supérieure</h2>
+      <p class="page-subtitle" style="margin-top:6px" data-i18n="modal-upgrade-sub">Débloque le transfert de mots de passe, extensions et paramètres.</p>
 
       <div class="pricing-grid">
 
         <!-- Free -->
         <div class="pricing-card" id="pcard-free">
-          <span class="pricing-badge active" id="badge-free" style="display:none">Actuel</span>
+          <span class="pricing-badge active" id="badge-free" style="display:none" data-i18n="badge-current">Actuel</span>
           <div class="pricing-name">Free</div>
-          <div class="pricing-price">0€ <span>/ mois</span></div>
+          <div class="pricing-price">0€ <span data-i18n="per-month">/ mois</span></div>
           <ul class="pricing-features">
-            <li class="included">Favoris</li>
-            <li class="included">Historique</li>
-            <li class="excluded">Mots de passe</li>
-            <li class="excluded">Extensions</li>
-            <li class="excluded">Paramètres</li>
-            <li class="excluded">Sync quotidienne</li>
+            <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+            <li class="included" data-i18n="dt-history">Historique</li>
+            <li class="excluded" data-i18n="dt-passwords">Mots de passe</li>
+            <li class="excluded" data-i18n="dt-extensions">Extensions</li>
+            <li class="excluded" data-i18n="dt-settings">Paramètres</li>
+            <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
           </ul>
-          <button class="btn btn-secondary btn-sm" disabled>Gratuit</button>
+          <button class="btn btn-secondary btn-sm" disabled data-i18n="badge-free-btn">Gratuit</button>
         </div>
 
         <!-- Pro -->
         <div class="pricing-card highlight" id="pcard-pro">
-          <span class="pricing-badge popular">Populaire</span>
-          <span class="pricing-badge active" id="badge-pro" style="display:none">Actuel</span>
+          <span class="pricing-badge popular" data-i18n="badge-popular">Populaire</span>
+          <span class="pricing-badge active" id="badge-pro" style="display:none" data-i18n="badge-current">Actuel</span>
           <div class="pricing-name">Pro</div>
-          <div class="pricing-price">5€ <span>/ mois</span></div>
+          <div class="pricing-price">5€ <span data-i18n="per-month">/ mois</span></div>
           <ul class="pricing-features">
-            <li class="included">Favoris</li>
-            <li class="included">Historique</li>
-            <li class="included">Mots de passe</li>
-            <li class="included">Extensions</li>
-            <li class="included">Paramètres</li>
-            <li class="excluded">Sync quotidienne</li>
+            <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+            <li class="included" data-i18n="dt-history">Historique</li>
+            <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+            <li class="included" data-i18n="dt-extensions">Extensions</li>
+            <li class="included" data-i18n="dt-settings">Paramètres</li>
+            <li class="excluded" data-i18n="feature-daily-sync">Sync quotidienne</li>
           </ul>
-          <button class="btn btn-primary btn-sm" id="btnCheckoutPro" onclick="startCheckout('pro')">
+          <button class="btn btn-primary btn-sm" id="btnCheckoutPro" onclick="startCheckout('pro')" data-i18n="sub-pro-btn">
             Souscrire Pro →
           </button>
         </div>
 
         <!-- Premium -->
         <div class="pricing-card premium-card" id="pcard-premium">
-          <span class="pricing-badge best">Meilleur</span>
-          <span class="pricing-badge active" id="badge-premium" style="display:none">Actuel</span>
+          <span class="pricing-badge best" data-i18n="badge-best">Meilleur</span>
+          <span class="pricing-badge active" id="badge-premium" style="display:none" data-i18n="badge-current">Actuel</span>
           <div class="pricing-name">Premium</div>
-          <div class="pricing-price">10€ <span>/ mois</span></div>
+          <div class="pricing-price">10€ <span data-i18n="per-month">/ mois</span></div>
           <ul class="pricing-features">
-            <li class="included">Favoris</li>
-            <li class="included">Historique</li>
-            <li class="included">Mots de passe</li>
-            <li class="included">Extensions</li>
-            <li class="included">Paramètres</li>
-            <li class="included">Sync quotidienne</li>
-            <li class="included">Accès anticipé</li>
+            <li class="included" data-i18n="dt-bookmarks">Favoris</li>
+            <li class="included" data-i18n="dt-history">Historique</li>
+            <li class="included" data-i18n="dt-passwords">Mots de passe</li>
+            <li class="included" data-i18n="dt-extensions">Extensions</li>
+            <li class="included" data-i18n="dt-settings">Paramètres</li>
+            <li class="included" data-i18n="feature-daily-sync">Sync quotidienne</li>
+            <li class="included" data-i18n="feature-early-access">Accès anticipé</li>
           </ul>
           <button class="btn btn-sm" style="background:linear-gradient(135deg,#ffc44d,#ff9500);color:#0d0d1a;font-weight:700"
-                  id="btnCheckoutPremium" onclick="startCheckout('premium')">
+                  id="btnCheckoutPremium" onclick="startCheckout('premium')" data-i18n="sub-premium-btn">
             Souscrire Premium →
           </button>
         </div>
@@ -596,8 +596,8 @@
 
       <!-- After payment, user clicks this to refresh -->
       <div id="paymentPendingBox" style="display:none;margin-top:20px" class="alert alert-info">
-        ⏳ Paiement en cours dans ton navigateur…
-        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="refreshSubscription()">
+        <span data-i18n="payment-pending">⏳ Paiement en cours dans ton navigateur…</span>
+        <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="refreshSubscription()" data-i18n="refresh-sub-btn">
           Actualiser l'abonnement
         </button>
       </div>
@@ -609,13 +609,13 @@
     <div class="modal" style="max-width:420px;text-align:center">
       <button class="modal-close" onclick="closeComingSoonModal()">✕</button>
       <div style="font-size:3rem;margin-bottom:16px">🚀</div>
-      <h2 class="page-title" style="font-size:1.4rem">Les paiements arrivent bientôt !</h2>
-      <p class="page-subtitle" style="margin-top:10px">
+      <h2 class="page-title" style="font-size:1.4rem" data-i18n="cs-title">Les paiements arrivent bientôt !</h2>
+      <p class="page-subtitle" style="margin-top:10px" data-i18n="cs-body1">
         WebFlow est actuellement en bêta gratuite — toutes les fonctionnalités sont disponibles sans abonnement.
         Les plans payants seront activés très prochainement.
       </p>
-      <p class="page-subtitle" style="margin-top:8px">En attendant, profite de tout gratuitement. 🎉</p>
-      <button class="btn btn-primary" style="margin-top:24px;width:100%" onclick="closeComingSoonModal()">
+      <p class="page-subtitle" style="margin-top:8px" data-i18n="cs-body2">En attendant, profite de tout gratuitement. 🎉</p>
+      <button class="btn btn-primary" style="margin-top:24px;width:100%" onclick="closeComingSoonModal()" data-i18n="cs-btn">
         Continuer gratuitement →
       </button>
     </div>

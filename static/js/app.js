@@ -79,6 +79,34 @@ const TRANSLATIONS = {
     'btn-download':'📄 Télécharger le rapport','btn-new-transfer':'↺ Nouveau transfert',
     'footer':'WebFlow — outil local de transfert · Chiffrement AES-256 · Mots de passe jamais stockés en clair',
     'coming-soon-toast':'À venir pour Pro / Premium','welcome':'Bienvenue','logged-out':'Déconnecté.',
+    'per-month':'/ mois','badge-popular':'Populaire','badge-best':'Meilleur','badge-current':'Actuel',
+    'badge-free-btn':'Gratuit','feature-daily-sync':'Sync quotidienne','feature-early-access':'Accès anticipé',
+    'sub-pro-btn':'Souscrire Pro →','sub-premium-btn':'Souscrire Premium →',
+    'plan-current-label':'Plan actuel',
+    'plan-msg-beta':'🧪 Accès bêta — toutes les fonctionnalités disponibles gratuitement.',
+    'plan-msg-free':'Passez à Pro ou Premium pour accéder aux mots de passe, extensions et paramètres.',
+    'plan-msg-pro':'⚡ Accès complet — sauf sync quotidienne et accès anticipé (Premium).',
+    'plan-msg-premium':'👑 Vous avez accès à toutes les fonctionnalités.',
+    'modal-upgrade-title':'Passer à la version supérieure',
+    'modal-upgrade-sub':'Débloque le transfert de mots de passe, extensions et paramètres.',
+    'payment-pending':'⏳ Paiement en cours dans ton navigateur…',
+    'refresh-sub-btn':"Actualiser l'abonnement",'sub-updated':'Abonnement mis à jour :','error-prefix':'Erreur :',
+    'review-q1':'Comment as-tu découvert WebFlow ?','review-q2':"Qu'est-ce qui a fonctionné ou pas ?",
+    'review-q3':'Quelles fonctionnalités manquent ?',
+    'review-q4':'Serais-tu prêt à payer pour WebFlow ? Si oui, combien/mois ?',
+    'faq-q1':'Est-ce que mes données sont sécurisées ?',
+    'faq-a1':'Oui. WebFlow fonctionne entièrement en local sur votre machine. Vos données sont chiffrées avec AES-256 et votre mot de passe maître ne quitte jamais votre appareil.',
+    'faq-q2':'Quels navigateurs sont supportés ?',
+    'faq-a2':'WebFlow supporte Chrome, Firefox, Opera GX, Microsoft Edge et Brave.',
+    'faq-q3':'Les mots de passe sont-ils transférés directement ?',
+    'faq-a3':'Les mots de passe sont exportés dans un fichier CSV dans le dossier de profil. Vous devez ensuite les importer manuellement via le gestionnaire de mots de passe du navigateur.',
+    'faq-q4':'Puis-je transférer entre deux profils du même navigateur ?',
+    'faq-a4':'Oui, vous pouvez transférer entre deux profils différents du même navigateur, mais pas vers le profil source identique.',
+    'faq-q5':'Mes données sont-elles envoyées sur internet ?',
+    'faq-a5':"Non. WebFlow tourne entièrement localement. Aucune donnée n'est envoyée à des serveurs externes. Votre compte est stocké localement.",
+    'cs-title':'Les paiements arrivent bientôt !',
+    'cs-body1':'WebFlow est actuellement en bêta gratuite — toutes les fonctionnalités sont disponibles sans abonnement. Les plans payants seront activés très prochainement.',
+    'cs-body2':'En attendant, profite de tout gratuitement. 🎉','cs-btn':'Continuer gratuitement →',
   },
   en: {
     'upgrade-btn':'Upgrade ✨','manage-sub-btn':'Manage subscription','logout-btn':'Log out',
@@ -124,6 +152,34 @@ const TRANSLATIONS = {
     'btn-download':'📄 Download report','btn-new-transfer':'↺ New transfer',
     'footer':'WebFlow — local browser data transfer tool · All data encrypted with AES-256 · Passwords never stored in plaintext',
     'coming-soon-toast':'Coming soon for Pro / Premium','welcome':'Welcome','logged-out':'Logged out.',
+    'per-month':'/ month','badge-popular':'Popular','badge-best':'Best','badge-current':'Current',
+    'badge-free-btn':'Free','feature-daily-sync':'Daily sync','feature-early-access':'Early access',
+    'sub-pro-btn':'Subscribe Pro →','sub-premium-btn':'Subscribe Premium →',
+    'plan-current-label':'Current plan',
+    'plan-msg-beta':'🧪 Beta access — all features available for free.',
+    'plan-msg-free':'Upgrade to Pro or Premium to access passwords, extensions and settings.',
+    'plan-msg-pro':'⚡ Full access — except daily sync and early access (Premium).',
+    'plan-msg-premium':'👑 You have access to all features.',
+    'modal-upgrade-title':'Upgrade your plan',
+    'modal-upgrade-sub':'Unlock password, extension and settings transfer.',
+    'payment-pending':'⏳ Payment in progress in your browser…',
+    'refresh-sub-btn':'Refresh subscription','sub-updated':'Subscription updated:','error-prefix':'Error:',
+    'review-q1':'How did you discover WebFlow?','review-q2':'What worked or didn\'t work?',
+    'review-q3':'What features are missing?',
+    'review-q4':'Would you pay for WebFlow? If so, how much/month?',
+    'faq-q1':'Is my data secure?',
+    'faq-a1':'Yes. WebFlow runs entirely locally on your machine. Your data is encrypted with AES-256 and your master password never leaves your device.',
+    'faq-q2':'Which browsers are supported?',
+    'faq-a2':'WebFlow supports Chrome, Firefox, Opera GX, Microsoft Edge and Brave.',
+    'faq-q3':'Are passwords transferred directly?',
+    'faq-a3':'Passwords are exported to a CSV file in the destination browser\'s profile folder. You then need to import them manually via the browser\'s password manager.',
+    'faq-q4':'Can I transfer between profiles of the same browser?',
+    'faq-a4':'Yes, you can transfer between two different profiles of the same browser, but not to the same source profile.',
+    'faq-q5':'Is my data sent to the internet?',
+    'faq-a5':'No. WebFlow runs entirely locally. No data is sent to external servers. Your account is stored locally on your machine.',
+    'cs-title':'Payments coming soon!',
+    'cs-body1':'WebFlow is currently in free beta — all features are available without a subscription. Paid plans will be activated very soon.',
+    'cs-body2':'In the meantime, enjoy everything for free. 🎉','cs-btn':'Continue for free →',
   },
   de: {
     'upgrade-btn':'Upgrade ✨','manage-sub-btn':'Abo verwalten','logout-btn':'Abmelden',
@@ -169,6 +225,34 @@ const TRANSLATIONS = {
     'btn-download':'📄 Bericht herunterladen','btn-new-transfer':'↺ Neuer Transfer',
     'footer':'WebFlow — lokales Transfer-Tool · AES-256-Verschlüsselung',
     'coming-soon-toast':'Demnächst für Pro / Premium','welcome':'Willkommen','logged-out':'Abgemeldet.',
+    'per-month':'/ Monat','badge-popular':'Beliebt','badge-best':'Bestes','badge-current':'Aktuell',
+    'badge-free-btn':'Kostenlos','feature-daily-sync':'Tägliche Sync','feature-early-access':'Früher Zugang',
+    'sub-pro-btn':'Pro abonnieren →','sub-premium-btn':'Premium abonnieren →',
+    'plan-current-label':'Aktueller Plan',
+    'plan-msg-beta':'🧪 Beta-Zugang — alle Funktionen kostenlos verfügbar.',
+    'plan-msg-free':'Upgraden Sie auf Pro oder Premium für Passwörter, Erweiterungen und Einstellungen.',
+    'plan-msg-pro':'⚡ Vollzugang — außer täglicher Sync und frühem Zugang (Premium).',
+    'plan-msg-premium':'👑 Sie haben Zugang zu allen Funktionen.',
+    'modal-upgrade-title':'Plan upgraden',
+    'modal-upgrade-sub':'Schaltet Passwort-, Erweiterungs- und Einstellungsübertragung frei.',
+    'payment-pending':'⏳ Zahlung läuft in Ihrem Browser…',
+    'refresh-sub-btn':'Abonnement aktualisieren','sub-updated':'Abonnement aktualisiert:','error-prefix':'Fehler:',
+    'review-q1':'Wie haben Sie WebFlow entdeckt?','review-q2':'Was hat funktioniert oder nicht?',
+    'review-q3':'Welche Funktionen fehlen?',
+    'review-q4':'Würden Sie für WebFlow zahlen? Wenn ja, wie viel/Monat?',
+    'faq-q1':'Sind meine Daten sicher?',
+    'faq-a1':'Ja. WebFlow läuft vollständig lokal. Ihre Daten werden mit AES-256 verschlüsselt und Ihr Master-Passwort verlässt nie Ihr Gerät.',
+    'faq-q2':'Welche Browser werden unterstützt?',
+    'faq-a2':'WebFlow unterstützt Chrome, Firefox, Opera GX, Microsoft Edge und Brave.',
+    'faq-q3':'Werden Passwörter direkt übertragen?',
+    'faq-a3':'Passwörter werden in eine CSV-Datei exportiert. Sie müssen diese dann manuell über den Passwort-Manager des Browsers importieren.',
+    'faq-q4':'Kann ich zwischen Profilen desselben Browsers übertragen?',
+    'faq-a4':'Ja, zwischen zwei verschiedenen Profilen desselben Browsers, aber nicht zum gleichen Quellprofil.',
+    'faq-q5':'Werden meine Daten ins Internet gesendet?',
+    'faq-a5':'Nein. WebFlow läuft vollständig lokal. Es werden keine Daten an externe Server gesendet.',
+    'cs-title':'Zahlungen kommen bald!',
+    'cs-body1':'WebFlow befindet sich derzeit in der kostenlosen Beta — alle Funktionen sind ohne Abonnement verfügbar. Bezahlpläne werden sehr bald aktiviert.',
+    'cs-body2':'In der Zwischenzeit alles kostenlos nutzen. 🎉','cs-btn':'Kostenlos weitermachen →',
   },
   ru: {
     'upgrade-btn':'Улучшить ✨','manage-sub-btn':'Управление подпиской','logout-btn':'Выйти',
@@ -214,6 +298,34 @@ const TRANSLATIONS = {
     'btn-download':'📄 Скачать отчёт','btn-new-transfer':'↺ Новый перенос',
     'footer':'WebFlow — локальный инструмент переноса · Шифрование AES-256',
     'coming-soon-toast':'Скоро для Pro / Premium','welcome':'Добро пожаловать','logged-out':'Вы вышли.',
+    'per-month':'/ мес','badge-popular':'Популярное','badge-best':'Лучшее','badge-current':'Текущий',
+    'badge-free-btn':'Бесплатно','feature-daily-sync':'Ежедневная синхр.','feature-early-access':'Ранний доступ',
+    'sub-pro-btn':'Подписаться Pro →','sub-premium-btn':'Подписаться Premium →',
+    'plan-current-label':'Текущий план',
+    'plan-msg-beta':'🧪 Бета-доступ — все функции доступны бесплатно.',
+    'plan-msg-free':'Перейдите на Pro или Premium для доступа к паролям, расширениям и настройкам.',
+    'plan-msg-pro':'⚡ Полный доступ — кроме ежедневной синхронизации и раннего доступа (Premium).',
+    'plan-msg-premium':'👑 У вас есть доступ ко всем функциям.',
+    'modal-upgrade-title':'Улучшить план',
+    'modal-upgrade-sub':'Открывает перенос паролей, расширений и настроек.',
+    'payment-pending':'⏳ Оплата выполняется в вашем браузере…',
+    'refresh-sub-btn':'Обновить подписку','sub-updated':'Подписка обновлена:','error-prefix':'Ошибка:',
+    'review-q1':'Как вы узнали о WebFlow?','review-q2':'Что сработало или нет?',
+    'review-q3':'Каких функций не хватает?',
+    'review-q4':'Готовы ли вы платить за WebFlow? Если да, сколько/месяц?',
+    'faq-q1':'Мои данные в безопасности?',
+    'faq-a1':'Да. WebFlow работает полностью локально. Данные зашифрованы AES-256, мастер-пароль никогда не покидает устройство.',
+    'faq-q2':'Какие браузеры поддерживаются?',
+    'faq-a2':'WebFlow поддерживает Chrome, Firefox, Opera GX, Microsoft Edge и Brave.',
+    'faq-q3':'Пароли переносятся напрямую?',
+    'faq-a3':'Пароли экспортируются в CSV-файл. Затем нужно импортировать их через менеджер паролей браузера.',
+    'faq-q4':'Можно переносить между профилями одного браузера?',
+    'faq-a4':'Да, между двумя разными профилями одного браузера, но не в тот же исходный профиль.',
+    'faq-q5':'Данные отправляются в интернет?',
+    'faq-a5':'Нет. WebFlow работает полностью локально. Никакие данные не отправляются на внешние серверы.',
+    'cs-title':'Платежи скоро появятся!',
+    'cs-body1':'WebFlow сейчас в бесплатной бете — все функции доступны без подписки. Платные планы будут активированы очень скоро.',
+    'cs-body2':'А пока пользуйтесь всем бесплатно. 🎉','cs-btn':'Продолжить бесплатно →',
   },
   tr: {
     'upgrade-btn':'Yükselt ✨','manage-sub-btn':'Aboneliği yönet','logout-btn':'Çıkış yap',
@@ -259,6 +371,34 @@ const TRANSLATIONS = {
     'btn-download':'📄 Raporu indir','btn-new-transfer':'↺ Yeni transfer',
     'footer':'WebFlow — yerel tarayıcı veri aktarım aracı · AES-256 şifreleme',
     'coming-soon-toast':'Pro / Premium için yakında','welcome':'Hoş geldiniz','logged-out':'Çıkış yapıldı.',
+    'per-month':'/ ay','badge-popular':'Popüler','badge-best':'En iyi','badge-current':'Mevcut',
+    'badge-free-btn':'Ücretsiz','feature-daily-sync':'Günlük senkronizasyon','feature-early-access':'Erken erişim',
+    'sub-pro-btn':"Pro'ya abone ol →",'sub-premium-btn':"Premium'a abone ol →",
+    'plan-current-label':'Mevcut plan',
+    'plan-msg-beta':'🧪 Beta erişimi — tüm özellikler ücretsiz.',
+    'plan-msg-free':"Şifreler, uzantılar ve ayarlara erişmek için Pro veya Premium'a geçin.",
+    'plan-msg-pro':'⚡ Tam erişim — günlük senkronizasyon ve erken erişim hariç (Premium).',
+    'plan-msg-premium':'👑 Tüm özelliklere erişiminiz var.',
+    'modal-upgrade-title':'Planınızı yükseltin',
+    'modal-upgrade-sub':'Şifre, uzantı ve ayar transferini açar.',
+    'payment-pending':'⏳ Ödeme tarayıcınızda devam ediyor…',
+    'refresh-sub-btn':'Aboneliği yenile','sub-updated':'Abonelik güncellendi:','error-prefix':'Hata:',
+    'review-q1':"WebFlow'u nasıl keşfettiniz?",'review-q2':'Ne işe yaradı ya da yaramadı?',
+    'review-q3':'Hangi özellikler eksik?',
+    'review-q4':'WebFlow için ödeme yapar mıydınız? Evet ise ne kadar/ay?',
+    'faq-q1':'Verilerim güvende mi?',
+    'faq-a1':'Evet. WebFlow tamamen yerel olarak çalışır. Veriler AES-256 ile şifrelenir, ana şifre cihazı asla terk etmez.',
+    'faq-q2':'Hangi tarayıcılar destekleniyor?',
+    'faq-a2':'WebFlow; Chrome, Firefox, Opera GX, Microsoft Edge ve Brave\'i destekler.',
+    'faq-q3':'Şifreler doğrudan aktarılıyor mu?',
+    'faq-a3':'Şifreler CSV dosyasına aktarılır. Ardından tarayıcının şifre yöneticisi aracılığıyla manuel olarak içe aktarmanız gerekir.',
+    'faq-q4':'Aynı tarayıcının profilleri arasında aktarım yapabilir miyim?',
+    'faq-a4':'Evet, aynı tarayıcının iki farklı profili arasında, ancak kaynak profille aynı olamaz.',
+    'faq-q5':'Verilerim internete gönderiliyor mu?',
+    'faq-a5':'Hayır. WebFlow tamamen yerel olarak çalışır. Hiçbir veri harici sunuculara gönderilmez.',
+    'cs-title':'Ödemeler yakında geliyor!',
+    'cs-body1':'WebFlow şu anda ücretsiz betada — tüm özellikler abonelik olmadan kullanılabilir. Ücretli planlar çok yakında etkinleştirilecek.',
+    'cs-body2':'Bu arada her şeyi ücretsiz kullanın. 🎉','cs-btn':'Ücretsiz devam et →',
   },
   es: {
     'upgrade-btn':'Mejorar ✨','manage-sub-btn':'Gestionar suscripción','logout-btn':'Cerrar sesión',
@@ -304,6 +444,34 @@ const TRANSLATIONS = {
     'btn-download':'📄 Descargar informe','btn-new-transfer':'↺ Nueva transferencia',
     'footer':'WebFlow — herramienta local de transferencia · Cifrado AES-256',
     'coming-soon-toast':'Próximamente para Pro / Premium','welcome':'Bienvenido','logged-out':'Sesión cerrada.',
+    'per-month':'/ mes','badge-popular':'Popular','badge-best':'Mejor','badge-current':'Actual',
+    'badge-free-btn':'Gratis','feature-daily-sync':'Sincronización diaria','feature-early-access':'Acceso anticipado',
+    'sub-pro-btn':'Suscribirse Pro →','sub-premium-btn':'Suscribirse Premium →',
+    'plan-current-label':'Plan actual',
+    'plan-msg-beta':'🧪 Acceso beta — todas las funciones disponibles gratuitamente.',
+    'plan-msg-free':'Actualiza a Pro o Premium para acceder a contraseñas, extensiones y configuración.',
+    'plan-msg-pro':'⚡ Acceso completo — excepto sincronización diaria y acceso anticipado (Premium).',
+    'plan-msg-premium':'👑 Tienes acceso a todas las funciones.',
+    'modal-upgrade-title':'Mejorar tu plan',
+    'modal-upgrade-sub':'Desbloquea la transferencia de contraseñas, extensiones y configuración.',
+    'payment-pending':'⏳ Pago en curso en tu navegador…',
+    'refresh-sub-btn':'Actualizar suscripción','sub-updated':'Suscripción actualizada:','error-prefix':'Error:',
+    'review-q1':'¿Cómo descubriste WebFlow?','review-q2':'¿Qué funcionó o no funcionó?',
+    'review-q3':'¿Qué funciones faltan?',
+    'review-q4':'¿Pagarías por WebFlow? Si es así, ¿cuánto/mes?',
+    'faq-q1':'¿Están seguros mis datos?',
+    'faq-a1':'Sí. WebFlow funciona completamente de forma local. Tus datos están cifrados con AES-256 y tu contraseña maestra nunca sale de tu dispositivo.',
+    'faq-q2':'¿Qué navegadores son compatibles?',
+    'faq-a2':'WebFlow es compatible con Chrome, Firefox, Opera GX, Microsoft Edge y Brave.',
+    'faq-q3':'¿Las contraseñas se transfieren directamente?',
+    'faq-a3':'Las contraseñas se exportan a un archivo CSV. Luego debes importarlas manualmente a través del gestor de contraseñas del navegador.',
+    'faq-q4':'¿Puedo transferir entre perfiles del mismo navegador?',
+    'faq-a4':'Sí, entre dos perfiles diferentes del mismo navegador, pero no al mismo perfil de origen.',
+    'faq-q5':'¿Mis datos se envían a internet?',
+    'faq-a5':'No. WebFlow funciona completamente de forma local. No se envían datos a servidores externos.',
+    'cs-title':'¡Los pagos llegan pronto!',
+    'cs-body1':'WebFlow está actualmente en beta gratuita — todas las funciones están disponibles sin suscripción. Los planes de pago se activarán muy pronto.',
+    'cs-body2':'Mientras tanto, disfruta de todo gratis. 🎉','cs-btn':'Continuar gratis →',
   },
 };
 
@@ -325,6 +493,8 @@ function setLanguage(lang) {
     const val = t(el.dataset.i18nPh);
     if (val) el.placeholder = val;
   });
+  // Re-render dynamic sections that use t()
+  updatePlanDetails();
 }
 
 function loadLanguage() {
@@ -1019,17 +1189,17 @@ function updatePlanDetails() {
   let html = `
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
       <span class="tier-badge ${tier === 'beta' ? 'pro' : tier}" style="font-size:0.85rem;padding:5px 14px">${label}</span>
-      <span style="color:var(--muted);font-size:0.875rem">Plan actuel</span>
+      <span style="color:var(--muted);font-size:0.875rem">${t('plan-current-label')}</span>
     </div>
   `;
   if (tier === 'beta') {
-    html += `<div class="alert alert-info">🧪 Accès bêta — toutes les fonctionnalités disponibles gratuitement.</div>`;
+    html += `<div class="alert alert-info">${t('plan-msg-beta')}</div>`;
   } else if (tier === 'free') {
-    html += `<div class="alert alert-warning">Passez à Pro ou Premium pour accéder aux mots de passe, extensions et paramètres.</div>`;
+    html += `<div class="alert alert-warning">${t('plan-msg-free')}</div>`;
   } else if (tier === 'pro') {
-    html += `<div class="alert alert-info">⚡ Accès complet — sauf sync quotidienne et accès anticipé (Premium).</div>`;
+    html += `<div class="alert alert-info">${t('plan-msg-pro')}</div>`;
   } else if (tier === 'premium') {
-    html += `<div class="alert alert-info" style="border-color:rgba(255,196,77,0.4);color:#ffc44d">👑 Vous avez accès à toutes les fonctionnalités.</div>`;
+    html += `<div class="alert alert-info" style="border-color:rgba(255,196,77,0.4);color:#ffc44d">${t('plan-msg-premium')}</div>`;
   }
   el.innerHTML = html;
 }
@@ -1087,16 +1257,16 @@ async function startCheckout(plan) {
     window.open(data.url, '_blank');
     document.getElementById('paymentPendingBox').style.display = 'flex';
   } catch (e) {
-    toast('Erreur : ' + e.message, 'error');
+    toast(t('error-prefix') + ' ' + e.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = 'Souscrire ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' →'; }
+    if (btn) { btn.disabled = false; btn.innerHTML = plan === 'pro' ? t('sub-pro-btn') : t('sub-premium-btn'); }
   }
 }
 
 async function refreshSubscription() {
   await loadSubscriptionStatus();
   closePricingModal();
-  toast('Abonnement mis à jour : ' + state.subscriptionTier, 'success');
+  toast(t('sub-updated') + ' ' + state.subscriptionTier, 'success');
   resetCounters();
 }
 
