@@ -14,6 +14,18 @@ from app.models import User
 from app.routers.auth import get_current_user
 from app.schemas import CheckoutResponse, SubscriptionStatusResponse
 
+def _parse_early_adopter_cutoff() -> Optional[datetime]:
+    """Parse WEBFLOW_EARLY_ADOPTER_CUTOFF from config (ISO date string like '2025-06-01')."""
+    raw = settings.early_adopter_cutoff.strip()
+    if not raw:
+        return None
+    try:
+        return datetime.fromisoformat(raw).replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+EARLY_ADOPTER_CUTOFF: Optional[datetime] = _parse_early_adopter_cutoff()
+
 router = APIRouter(prefix="/api/billing", tags=["billing"])
 
 
@@ -27,6 +39,7 @@ PREMIUM_DATA_TYPES = PRO_DATA_TYPES  # same data types + sync + early_access fla
 
 TIER_FEATURES: dict[str, list[str]] = {
     "free":    ["bookmarks", "history"],
+    "beta":    ["bookmarks", "history", "passwords", "extensions", "settings"],
     "pro":     ["bookmarks", "history", "passwords", "extensions", "settings"],
     "premium": ["bookmarks", "history", "passwords", "extensions", "settings",
                 "daily_sync", "early_access"],
@@ -52,21 +65,39 @@ def _get_stripe():
 
 
 def get_effective_tier(user: User) -> str:
-    """Return the user's active tier, falling back to 'free' if subscription expired."""
+    """Return the user's active tier.
+
+    Priority order:
+    1. Beta mode → everyone is 'beta' (all features free)
+    2. Early adopter (registered before cutoff) → lifetime 'premium'
+    3. Active paid subscription → 'pro' or 'premium'
+    4. Default → 'free'
+    """
+    if settings.beta_mode:
+        return "beta"
+
+    # Early adopter: lifetime premium for users who joined before the cutoff
+    if EARLY_ADOPTER_CUTOFF and user.created_at:
+        created = user.created_at
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        if created < EARLY_ADOPTER_CUTOFF:
+            return "premium"
+
     if user.subscription_tier in ("pro", "premium"):
         if user.subscription_expires is None:
-            # No expiry stored yet (just activated) — treat as active
             return user.subscription_tier
         expires = user.subscription_expires
         if expires.tzinfo is None:
             expires = expires.replace(tzinfo=timezone.utc)
         if expires > datetime.now(timezone.utc):
             return user.subscription_tier
+
     return "free"
 
 
 def get_allowed_data_types(tier: str) -> set[str]:
-    if tier in ("pro", "premium"):
+    if tier in ("pro", "premium", "beta"):
         return PRO_DATA_TYPES
     return FREE_DATA_TYPES
 

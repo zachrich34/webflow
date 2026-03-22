@@ -188,7 +188,11 @@ function updateHeaderUI() {
     logoutEl.style.display = '';
     tierEl.style.display = '';
     // Upgrade / manage buttons based on tier
-    if (state.subscriptionTier === 'free') {
+    if (state.subscriptionTier === 'beta') {
+      // Beta: hide both buttons, everything is unlocked
+      upgradeEl.style.display = 'none';
+      manageEl.style.display = 'none';
+    } else if (state.subscriptionTier === 'free') {
       upgradeEl.style.display = '';
       manageEl.style.display = 'none';
     } else {
@@ -224,9 +228,9 @@ async function loadSubscriptionStatus() {
 function updateTierBadge(tier) {
   const el = document.getElementById('tierBadge');
   if (!el) return;
-  const labels = { free: 'Free', pro: '⚡ Pro', premium: '👑 Premium' };
+  const labels = { free: 'Free', beta: '🧪 Bêta', pro: '⚡ Pro', premium: '👑 Premium' };
   el.textContent = labels[tier] || 'Free';
-  el.className = `tier-badge ${tier}`;
+  el.className = `tier-badge ${tier === 'beta' ? 'pro' : tier}`;
   updateHeaderUI();
 }
 

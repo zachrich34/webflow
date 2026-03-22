@@ -19,6 +19,15 @@ class Settings(BaseSettings):
     # History limit (days)
     history_days: int = 90
 
+    # Beta mode — all features unlocked for everyone, no paywall
+    # Set WEBFLOW_BETA_MODE=false in .env when ready to enable paid tiers
+    beta_mode: bool = True
+
+    # Early adopter cutoff date (ISO format: "2025-06-01")
+    # Users who registered before this date get lifetime premium automatically
+    # Leave empty to disable
+    early_adopter_cutoff: str = os.environ.get("WEBFLOW_EARLY_ADOPTER_CUTOFF", "")
+
     # Database
     database_url: str = "sqlite+aiosqlite:///./webflow.db"
 
