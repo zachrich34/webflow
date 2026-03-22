@@ -56,6 +56,13 @@ const DATA_TYPE_EMOJI = {
 // ---------------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Try auto-login from saved credentials
+  const saved = loadRemembered();
+  if (saved) {
+    autoLogin(saved.username, saved.password);
+    return;
+  }
+
   if (state.token) {
     verifyToken().then(ok => {
       if (ok) {
@@ -109,6 +116,7 @@ function switchAuthTab(tab) {
 async function login() {
   const username = document.getElementById('loginUsername').value.trim();
   const password = document.getElementById('loginPassword').value;
+  const remember = document.getElementById('rememberMe')?.checked || false;
   const errEl = document.getElementById('loginError');
   errEl.style.display = 'none';
   const btn = document.getElementById('loginBtn');
@@ -120,6 +128,11 @@ async function login() {
     state.username = username;
     sessionStorage.setItem('wf_token', state.token);
     sessionStorage.setItem('wf_user', username);
+    if (remember) {
+      saveRemembered(username, password);
+    } else {
+      clearRemembered();
+    }
     updateHeaderUI();
     await loadSubscriptionStatus();
     toast('Bienvenue, ' + username + ' !', 'success');
@@ -162,6 +175,7 @@ async function register() {
 
 async function logout() {
   try { await api('POST', '/api/auth/logout'); } catch {}
+  clearRemembered();
   clearAuth();
   goToStep(1);
   toast('Déconnecté.', 'info');
@@ -174,6 +188,46 @@ function clearAuth() {
   sessionStorage.removeItem('wf_token');
   sessionStorage.removeItem('wf_user');
   updateHeaderUI();
+}
+
+// ---------------------------------------------------------------------------
+// Remember me (credentials stored locally for auto-login on app restart)
+// ---------------------------------------------------------------------------
+
+function saveRemembered(username, password) {
+  localStorage.setItem('wf_remember', btoa(JSON.stringify({ username, password })));
+}
+
+function loadRemembered() {
+  try {
+    const raw = localStorage.getItem('wf_remember');
+    if (!raw) return null;
+    return JSON.parse(atob(raw));
+  } catch { return null; }
+}
+
+function clearRemembered() {
+  localStorage.removeItem('wf_remember');
+}
+
+async function autoLogin(username, password) {
+  try {
+    const data = await api('POST', '/api/auth/login', { username, password });
+    state.token = data.access_token;
+    state.username = username;
+    sessionStorage.setItem('wf_token', state.token);
+    sessionStorage.setItem('wf_user', username);
+    updateHeaderUI();
+    await loadSubscriptionStatus();
+    showDash();
+  } catch {
+    // Server may have restarted with no session — fall back to login form
+    clearRemembered();
+    clearAuth();
+    // Pre-fill username
+    const el = document.getElementById('loginUsername');
+    if (el) el.value = username;
+  }
 }
 
 async function verifyToken() {

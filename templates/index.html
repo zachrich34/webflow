@@ -273,6 +273,10 @@
             <label>Master password</label>
             <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
           </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <input type="checkbox" id="rememberMe" style="width:16px;height:16px;accent-color:var(--accent1);cursor:pointer">
+            <label for="rememberMe" style="font-size:0.82rem;color:var(--muted);text-transform:none;letter-spacing:0;cursor:pointer">Se souvenir de moi</label>
+          </div>
           <div id="loginError" class="form-error" style="display:none; margin-bottom:12px;"></div>
           <button class="btn btn-primary btn-lg" style="width:100%" onclick="login()" id="loginBtn">
             Continue →
