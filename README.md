@@ -1,4 +1,4 @@
-# ⚡ WebFlow — Browser Data Transfer Tool
+# 🌊 WebFlow — Browser Data Transfer Tool
 
 > Transfer your bookmarks, history, passwords, and extensions from one browser to another — locally, privately, and securely.
 
@@ -10,18 +10,17 @@
 
 1. Go to the **[Releases](../../releases/latest)** page of this repo
 2. Download **`WebFlow.exe`**
-3. Double-click it
-4. Your browser opens at `http://localhost:8000` automatically
+3. Double-click it — a **native app window opens instantly**
+
+No browser. No terminal. No Python. No pip.
 
 > **Windows SmartScreen warning?** Click **"More info" → "Run anyway"**. The exe is unsigned (no paid certificate), but the full source code is right here for you to inspect.
-
-That's it. No Python, no terminal, no pip.
 
 ---
 
 ## What is WebFlow?
 
-WebFlow is a local web application that lets you migrate your browser data between different browsers — similar to how TuneMyMusic transfers playlists between music services, but for browsers.
+WebFlow is a **native desktop app** that lets you migrate your browser data between different browsers — similar to how TuneMyMusic transfers playlists between music services, but for browsers. It runs entirely on your machine with no internet connection required.
 
 **Supported browsers:** Google Chrome · Mozilla Firefox · Opera GX · Microsoft Edge · Brave
 
@@ -60,7 +59,7 @@ Encrypted blob in SQLite  ← you see: "gAAAAA..." not plaintext
 - Your **encryption key** is derived from your password at login and stays in RAM — lost on server restart (you just log in again)
 - All browser data (bookmarks, history, passwords) is **Fernet-encrypted** before being saved to SQLite
 - If someone steals the `webflow.db` file, they see **only encrypted blobs** — useless without your password
-- The app runs **entirely on localhost** — no data ever leaves your machine
+- The app runs **entirely on your machine** — no data ever leaves your machine
 - JWT tokens stored in `sessionStorage` (cleared when you close the tab) — never `localStorage`
 - Rate limiting: 5 login attempts/min, 3 registrations/hour per IP
 - Security headers on every response: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, CSP
@@ -93,9 +92,9 @@ source venv/bin/activate        # Linux/macOS
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Start the server
+# 4. Launch the app
 python run.py
-# Opens http://localhost:8000 in your browser automatically
+# A native desktop window opens automatically
 ```
 
 ### Build the exe yourself
@@ -155,7 +154,7 @@ webflow/
 
 ## API Reference
 
-The API is self-documented at `http://localhost:8000/api/docs` (Swagger UI).
+The API is self-documented at `http://127.0.0.1:8765/api/docs` (Swagger UI) when running from source.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -183,7 +182,7 @@ sqlite3 webflow.db "SELECT data_type, substr(encrypted_blob,1,40) FROM encrypted
 
 ### Check security headers
 ```bash
-curl -I http://localhost:8000
+curl -I http://127.0.0.1:8765
 # X-Frame-Options: DENY
 # X-Content-Type-Options: nosniff
 # X-XSS-Protection: 1; mode=block
@@ -193,7 +192,7 @@ curl -I http://localhost:8000
 ### Check rate limiting
 ```bash
 for i in $(seq 1 8); do
-  curl -s -o /dev/null -w "%{http_code}\n" -X POST http://localhost:8000/api/auth/login \
+  curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:8765/api/auth/login \
     -H "Content-Type: application/json" -d '{"username":"x","password":"y"}'
 done
 # 401 401 401 401 401 429 429 429  (rate limited after 5 attempts)
@@ -217,7 +216,7 @@ Passwords are decrypted using DPAPI via `pywin32`. Install it with: `pip install
 ## FAQ
 
 **Q: Does WebFlow send my data anywhere?**
-A: No. The server binds to `127.0.0.1` only. Nothing leaves your machine.
+A: No. The app runs entirely on your machine. Nothing leaves your device.
 
 **Q: What if I restart the server?**
 A: Your encrypted data stays in the DB. You just log in again to re-derive the key.
