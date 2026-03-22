@@ -18,12 +18,20 @@ const state = {
   sourceBrowser: null,
   sourceProfile: null,
   snapshotId: null,
-  selectedDataTypes: new Set(['bookmarks', 'history', 'passwords', 'extensions', 'settings']),
+  selectedDataTypes: new Set(['bookmarks', 'history']),
   destBrowser: null,
   destProfile: null,
   jobId: null,
   transferResult: null,
+  // Subscription
+  subscriptionTier: 'free',
+  subscriptionFeatures: ['bookmarks', 'history'],
 };
+
+// Free tier data types
+const FREE_TYPES = new Set(['bookmarks', 'history']);
+// Pro/Premium data types
+const PRO_TYPES  = new Set(['bookmarks', 'history', 'passwords', 'extensions', 'settings']);
 
 // Browser display info
 const BROWSER_INFO = {
@@ -51,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verifyToken().then(ok => {
       if (ok) {
         updateHeaderUI();
-        goToStep(2);
+        loadSubscriptionStatus().then(() => goToStep(2));
       } else {
         clearAuth();
       }
@@ -99,7 +107,7 @@ async function login() {
   const errEl = document.getElementById('loginError');
   errEl.style.display = 'none';
   const btn = document.getElementById('loginBtn');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Logging in…';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Connexion…';
 
   try {
     const data = await api('POST', '/api/auth/login', { username, password });
@@ -108,13 +116,14 @@ async function login() {
     sessionStorage.setItem('wf_token', state.token);
     sessionStorage.setItem('wf_user', username);
     updateHeaderUI();
-    toast('Welcome back, ' + username + '!', 'success');
+    await loadSubscriptionStatus();
+    toast('Bienvenue, ' + username + ' !', 'success');
     goToStep(2);
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = '';
   } finally {
-    btn.disabled = false; btn.innerHTML = 'Continue →';
+    btn.disabled = false; btn.innerHTML = 'Continuer →';
   }
 }
 
@@ -125,24 +134,24 @@ async function register() {
   const errEl    = document.getElementById('regError');
   errEl.style.display = 'none';
   const btn = document.getElementById('regBtn');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating account…';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Création du compte…';
 
   try {
     await api('POST', '/api/auth/register', { username, email, password });
-    toast('Account created! Logging in…', 'success');
-    // Auto-login
+    toast('Compte créé ! Connexion en cours…', 'success');
     const data = await api('POST', '/api/auth/login', { username, password });
     state.token = data.access_token;
     state.username = username;
     sessionStorage.setItem('wf_token', state.token);
     sessionStorage.setItem('wf_user', username);
     updateHeaderUI();
+    await loadSubscriptionStatus();
     goToStep(2);
   } catch (e) {
     errEl.textContent = e.message;
     errEl.style.display = '';
   } finally {
-    btn.disabled = false; btn.innerHTML = 'Create account →';
+    btn.disabled = false; btn.innerHTML = 'Créer le compte →';
   }
 }
 
@@ -150,11 +159,13 @@ async function logout() {
   try { await api('POST', '/api/auth/logout'); } catch {}
   clearAuth();
   goToStep(1);
-  toast('Logged out.', 'info');
+  toast('Déconnecté.', 'info');
 }
 
 function clearAuth() {
   state.token = null; state.username = null;
+  state.subscriptionTier = 'free';
+  state.subscriptionFeatures = ['bookmarks', 'history'];
   sessionStorage.removeItem('wf_token');
   sessionStorage.removeItem('wf_user');
   updateHeaderUI();
@@ -167,21 +178,87 @@ async function verifyToken() {
 function updateHeaderUI() {
   const userEl  = document.getElementById('headerUser');
   const logoutEl = document.getElementById('logoutBtn');
+  const tierEl   = document.getElementById('tierBadge');
+  const upgradeEl = document.getElementById('upgradeBtn');
+  const manageEl  = document.getElementById('manageSubBtn');
+
   if (state.username) {
     userEl.textContent = '👤 ' + state.username;
     userEl.style.display = '';
     logoutEl.style.display = '';
+    tierEl.style.display = '';
+    // Upgrade / manage buttons based on tier
+    if (state.subscriptionTier === 'free') {
+      upgradeEl.style.display = '';
+      manageEl.style.display = 'none';
+    } else {
+      upgradeEl.style.display = 'none';
+      manageEl.style.display = '';
+    }
   } else {
     userEl.style.display = 'none';
     logoutEl.style.display = 'none';
+    tierEl.style.display = 'none';
+    upgradeEl.style.display = 'none';
+    manageEl.style.display = 'none';
   }
+}
+
+// ---------------------------------------------------------------------------
+// Subscription
+// ---------------------------------------------------------------------------
+
+async function loadSubscriptionStatus() {
+  try {
+    const data = await api('GET', '/api/billing/status');
+    state.subscriptionTier = data.tier || 'free';
+    state.subscriptionFeatures = data.features || ['bookmarks', 'history'];
+    updateTierBadge(data.tier);
+    applyTierToDataTypes(data.tier);
+  } catch {
+    // Billing endpoint unavailable (Stripe not configured) — default to free
+    state.subscriptionTier = 'free';
+  }
+}
+
+function updateTierBadge(tier) {
+  const el = document.getElementById('tierBadge');
+  if (!el) return;
+  const labels = { free: 'Free', pro: '⚡ Pro', premium: '👑 Premium' };
+  el.textContent = labels[tier] || 'Free';
+  el.className = `tier-badge ${tier}`;
+  updateHeaderUI();
+}
+
+function applyTierToDataTypes(tier) {
+  const proTypes = ['passwords', 'extensions', 'settings'];
+  const hasAccess = tier === 'pro' || tier === 'premium';
+
+  proTypes.forEach(type => {
+    const card = document.getElementById('dtcard-' + type);
+    const lock = document.getElementById('lock-' + type);
+    if (!card) return;
+
+    if (hasAccess) {
+      card.classList.remove('locked');
+      if (lock) lock.style.display = 'none';
+      // Auto-select on upgrade
+      card.classList.add('selected');
+      state.selectedDataTypes.add(type);
+    } else {
+      card.classList.add('locked');
+      card.classList.remove('selected');
+      state.selectedDataTypes.delete(type);
+      if (lock) lock.style.display = '';
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
 // Step navigation
 // ---------------------------------------------------------------------------
 
-function goToStep(n) {
+function goToStep(n, summary) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page' + n).classList.add('active');
   state.currentStep = n;
@@ -190,9 +267,9 @@ function goToStep(n) {
   const bar = document.getElementById('progressBar');
   bar.style.display = (n === 1) ? 'none' : 'flex';
 
-  // Lazy-load step content
   if (n === 2) loadBrowserGrid('source');
   if (n === 4) loadBrowserGrid('dest');
+  if (n === 6 && summary) buildSummary(summary);
 }
 
 function updateProgressBar(active) {
@@ -215,7 +292,7 @@ async function loadBrowserGrid(role) {
       const data = await api('GET', '/api/browsers/detect');
       state.detectedBrowsers = data.browsers || [];
     } catch (e) {
-      toast('Could not detect browsers: ' + e.message, 'error');
+      toast('Impossible de détecter les navigateurs : ' + e.message, 'error');
       state.detectedBrowsers = [];
     }
   }
@@ -224,19 +301,17 @@ async function loadBrowserGrid(role) {
   const grid     = document.getElementById(gridId);
   grid.innerHTML = '';
 
-  // Group by browser
   const grouped = {};
   for (const p of state.detectedBrowsers) {
     if (!grouped[p.browser]) grouped[p.browser] = [];
     grouped[p.browser].push(p);
   }
 
-  // Always show all supported browsers; mark unavailable ones
   const allBrowsers = ['chrome', 'firefox', 'opera_gx', 'edge', 'brave'];
   for (const b of allBrowsers) {
-    const info    = BROWSER_INFO[b];
+    const info     = BROWSER_INFO[b];
     const profiles = grouped[b] || [];
-    const avail   = profiles.length > 0;
+    const avail    = profiles.length > 0;
 
     const card = document.createElement('div');
     card.className = 'browser-card' + (avail ? '' : ' unavailable');
@@ -244,7 +319,7 @@ async function loadBrowserGrid(role) {
     card.innerHTML = `
       <div class="browser-icon" style="background:${info.color}22">${info.emoji}</div>
       <div class="browser-name">${info.label}</div>
-      <div class="browser-profiles">${avail ? profiles.length + ' profile(s)' : 'Not detected'}</div>
+      <div class="browser-profiles">${avail ? profiles.length + ' profil(s)' : 'Non détecté'}</div>
     `;
     if (avail) {
       card.onclick = () => selectBrowser(role, b, profiles, card);
@@ -254,7 +329,6 @@ async function loadBrowserGrid(role) {
 }
 
 function selectBrowser(role, browser, profiles, cardEl) {
-  // Deselect all
   const gridId = role === 'source' ? 'sourceBrowserGrid' : 'destBrowserGrid';
   document.querySelectorAll('#' + gridId + ' .browser-card').forEach(c => c.classList.remove('selected'));
   cardEl.classList.add('selected');
@@ -277,7 +351,6 @@ function selectBrowser(role, browser, profiles, cardEl) {
     state.sourceProfile = profiles[0]?.path;
     profileSelect.onchange = () => { state.sourceProfile = profileSelect.value; };
     document.getElementById('step2Next').disabled = false;
-    // Reset scan
     state.snapshotId = null;
     document.getElementById('step3Next').disabled = true;
     document.getElementById('scanBtn').disabled = false;
@@ -304,6 +377,12 @@ function checkSameSource() {
 // ---------------------------------------------------------------------------
 
 function toggleDataType(card, type) {
+  // Check if locked by subscription tier
+  if (!FREE_TYPES.has(type) && state.subscriptionTier === 'free') {
+    showPricingModal('pro');
+    return;
+  }
+
   card.classList.toggle('selected');
   if (card.classList.contains('selected')) {
     state.selectedDataTypes.add(type);
@@ -315,7 +394,7 @@ function toggleDataType(card, type) {
 function resetCounters() {
   ['bookmarks','history','passwords','extensions','settings'].forEach(t => {
     const el = document.getElementById('count-' + t);
-    if (el) el.textContent = 'Not scanned';
+    if (el) el.textContent = 'Non scanné';
   });
 }
 
@@ -337,24 +416,28 @@ async function scanBrowser() {
 
     state.snapshotId = data.id;
 
-    // Update counts
     const summary = data.data_summary || {};
     Object.entries(summary).forEach(([type, count]) => {
       const el = document.getElementById('count-' + type);
-      if (el) el.textContent = count.toLocaleString() + ' items';
+      if (el) el.textContent = count.toLocaleString() + ' éléments';
     });
 
     if (data.status === 'error') {
-      errorEl.textContent = '⚠️ Partial scan: ' + (data.error_message || 'Some data could not be read');
+      errorEl.textContent = '⚠️ Scan partiel : ' + (data.error_message || 'Certaines données inaccessibles');
       errorEl.style.display = '';
     }
 
     document.getElementById('step3Next').disabled = false;
-    toast('Browser scanned — ' + Object.values(summary).reduce((a,b)=>a+b,0).toLocaleString() + ' items found', 'success');
+    toast('Navigateur scanné — ' + Object.values(summary).reduce((a,b)=>a+b,0).toLocaleString() + ' éléments trouvés', 'success');
   } catch (e) {
-    errorEl.textContent = '❌ ' + e.message;
-    errorEl.style.display = '';
-    toast('Scan failed: ' + e.message, 'error');
+    // If tier-related error, show upgrade modal
+    if (e.message && e.message.includes('plan')) {
+      showPricingModal('pro');
+    } else {
+      errorEl.textContent = '❌ ' + e.message;
+      errorEl.style.display = '';
+      toast('Scan échoué : ' + e.message, 'error');
+    }
   } finally {
     statusEl.style.display = 'none';
     btn.disabled = false;
@@ -369,7 +452,6 @@ async function startTransfer() {
   goToStep(5);
   const types = Array.from(state.selectedDataTypes);
 
-  // Build progress items
   const container = document.getElementById('transferProgress');
   container.innerHTML = '';
   types.forEach(type => {
@@ -377,7 +459,7 @@ async function startTransfer() {
       <div class="progress-item" id="prog-${type}">
         <div class="progress-item-header">
           <span>${DATA_TYPE_EMOJI[type] || '📦'} ${type.charAt(0).toUpperCase() + type.slice(1)}</span>
-          <span class="status-badge badge-pending" id="badge-${type}">Pending</span>
+          <span class="status-badge badge-pending" id="badge-${type}">En attente</span>
         </div>
         <div class="progress-bar-track">
           <div class="progress-bar-fill" id="fill-${type}"></div>
@@ -385,7 +467,6 @@ async function startTransfer() {
       </div>`;
   });
 
-  // Animate "running" state
   types.forEach(type => {
     setBadge(type, 'running');
     setFill(type, 30);
@@ -401,15 +482,20 @@ async function startTransfer() {
     state.jobId = job.id;
     pollJob(types);
   } catch (e) {
-    document.getElementById('transferError').textContent = '❌ ' + e.message;
-    document.getElementById('transferError').style.display = '';
-    types.forEach(t => { setBadge(t, 'error'); setFill(t, 100, true); });
+    if (e.message && e.message.includes('plan')) {
+      goToStep(3);
+      showPricingModal('pro');
+    } else {
+      document.getElementById('transferError').textContent = '❌ ' + e.message;
+      document.getElementById('transferError').style.display = '';
+      types.forEach(t => { setBadge(t, 'error'); setFill(t, 100, true); });
+    }
   }
 }
 
 async function pollJob(types) {
   let attempts = 0;
-  const maxAttempts = 120; // 2 minutes
+  const maxAttempts = 120;
 
   const poll = async () => {
     try {
@@ -423,10 +509,7 @@ async function pollJob(types) {
 
       if (job.status === 'done') {
         const summary = JSON.parse(job.result_summary || '{}');
-        types.forEach(t => {
-          setBadge(t, 'done');
-          setFill(t, 100);
-        });
+        types.forEach(t => { setBadge(t, 'done'); setFill(t, 100); });
         state.transferResult = summary;
         setTimeout(() => goToStep(6, summary), 800);
         return;
@@ -434,7 +517,7 @@ async function pollJob(types) {
 
       if (job.status === 'error') {
         types.forEach(t => { setBadge(t, 'error'); setFill(t, 100, true); });
-        document.getElementById('transferError').textContent = '❌ ' + (job.error_message || 'Transfer failed');
+        document.getElementById('transferError').textContent = '❌ ' + (job.error_message || 'Transfert échoué');
         document.getElementById('transferError').style.display = '';
       }
     } catch (e) {
@@ -448,8 +531,9 @@ async function pollJob(types) {
 function setBadge(type, status) {
   const el = document.getElementById('badge-' + type);
   if (!el) return;
+  const labels = { pending: 'En attente', running: 'En cours', done: 'Terminé', error: 'Erreur' };
   el.className = 'status-badge badge-' + status;
-  el.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+  el.textContent = labels[status] || status;
 }
 
 function setFill(type, pct, error = false) {
@@ -463,21 +547,6 @@ function setFill(type, pct, error = false) {
 // ---------------------------------------------------------------------------
 // Step 6 — Summary
 // ---------------------------------------------------------------------------
-
-function goToStep(n, summary) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page' + n).classList.add('active');
-  state.currentStep = n;
-  updateProgressBar(n);
-
-  const bar = document.getElementById('progressBar');
-  bar.style.display = (n === 1) ? 'none' : 'flex';
-
-  if (n === 2) loadBrowserGrid('source');
-  if (n === 4) loadBrowserGrid('dest');
-
-  if (n === 6 && summary) buildSummary(summary);
-}
 
 function buildSummary(summary) {
   const grid = document.getElementById('summaryGrid');
@@ -501,20 +570,20 @@ function buildSummary(summary) {
 
 function downloadReport() {
   const lines = [
-    'WebFlow Transfer Report',
-    'Date: ' + new Date().toLocaleString(),
-    'Source: ' + (BROWSER_INFO[state.sourceBrowser]?.label || state.sourceBrowser) + ' — ' + state.sourceProfile,
-    'Destination: ' + (BROWSER_INFO[state.destBrowser]?.label || state.destBrowser) + ' — ' + state.destProfile,
+    'WebFlow — Rapport de transfert',
+    'Date : ' + new Date().toLocaleString(),
+    'Source : ' + (BROWSER_INFO[state.sourceBrowser]?.label || state.sourceBrowser) + ' — ' + state.sourceProfile,
+    'Destination : ' + (BROWSER_INFO[state.destBrowser]?.label || state.destBrowser) + ' — ' + state.destProfile,
     '',
-    'Items transferred:',
+    'Éléments transférés :',
   ];
   if (state.transferResult) {
-    Object.entries(state.transferResult).forEach(([k, v]) => lines.push('  ' + k + ': ' + v));
+    Object.entries(state.transferResult).forEach(([k, v]) => lines.push('  ' + k + ' : ' + v));
   }
   const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'webflow-report-' + Date.now() + '.txt';
+  a.download = 'webflow-rapport-' + Date.now() + '.txt';
   a.click();
 }
 
@@ -526,8 +595,81 @@ function startOver() {
   state.destProfile = null;
   state.jobId = null;
   state.transferResult = null;
-  state.selectedDataTypes = new Set(['bookmarks','history','passwords','extensions','settings']);
+  // Reset selected types to match current tier
+  if (state.subscriptionTier === 'free') {
+    state.selectedDataTypes = new Set(['bookmarks', 'history']);
+  } else {
+    state.selectedDataTypes = new Set(['bookmarks', 'history', 'passwords', 'extensions', 'settings']);
+  }
   goToStep(2);
+}
+
+// ---------------------------------------------------------------------------
+// Pricing modal
+// ---------------------------------------------------------------------------
+
+function showPricingModal(suggestedPlan) {
+  const modal = document.getElementById('pricingModal');
+  modal.style.display = 'flex';
+
+  // Highlight suggested plan card
+  if (suggestedPlan) {
+    document.querySelectorAll('.pricing-card').forEach(c => c.style.transform = '');
+    const target = document.getElementById('pcard-' + suggestedPlan);
+    if (target) target.style.transform = 'scale(1.03)';
+  }
+
+  // Show current plan badge
+  ['free','pro','premium'].forEach(t => {
+    const b = document.getElementById('badge-' + t);
+    if (b) b.style.display = (t === state.subscriptionTier) ? '' : 'none';
+  });
+
+  // Disable checkout buttons for current/lower tiers
+  const tier = state.subscriptionTier;
+  const btnPro = document.getElementById('btnCheckoutPro');
+  const btnPremium = document.getElementById('btnCheckoutPremium');
+  if (btnPro)     btnPro.disabled     = (tier === 'pro' || tier === 'premium');
+  if (btnPremium) btnPremium.disabled = (tier === 'premium');
+
+  document.getElementById('paymentPendingBox').style.display = 'none';
+}
+
+function closePricingModal() {
+  document.getElementById('pricingModal').style.display = 'none';
+}
+
+async function startCheckout(plan) {
+  const btn = document.getElementById('btnCheckout' + plan.charAt(0).toUpperCase() + plan.slice(1));
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>'; }
+
+  try {
+    const data = await api('POST', '/api/billing/checkout/' + plan);
+    // Open Stripe checkout in system browser
+    window.open(data.url, '_blank');
+    // Show "I've paid, refresh now" prompt
+    document.getElementById('paymentPendingBox').style.display = 'flex';
+  } catch (e) {
+    toast('Erreur : ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Souscrire ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' →'; }
+  }
+}
+
+async function refreshSubscription() {
+  await loadSubscriptionStatus();
+  closePricingModal();
+  toast('Abonnement mis à jour : ' + state.subscriptionTier, 'success');
+  resetCounters();
+}
+
+async function openBillingPortal() {
+  try {
+    const data = await api('POST', '/api/billing/portal');
+    window.open(data.url, '_blank');
+  } catch (e) {
+    toast('Erreur : ' + e.message, 'error');
+  }
 }
 
 // ---------------------------------------------------------------------------

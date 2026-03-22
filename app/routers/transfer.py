@@ -15,6 +15,7 @@ from app import session_store
 from app.database import AsyncSessionLocal, get_db
 from app.models import BrowserSnapshot, EncryptedData, TransferJob
 from app.routers.auth import get_current_user
+from app.routers.billing import get_effective_tier, get_allowed_data_types
 from app.schemas import TransferJobResponse, TransferRequest
 from app.security import decrypt_data
 
@@ -118,6 +119,15 @@ async def start_transfer(
     fernet = session_store.get_key(jti)
     if not fernet:
         raise HTTPException(status_code=401, detail="Session expired")
+
+    # Enforce subscription tier
+    allowed = get_allowed_data_types(get_effective_tier(user))
+    locked = [t for t in body.data_types if t not in allowed]
+    if locked:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Your plan does not include: {', '.join(locked)}. Upgrade to Pro or Premium.",
+        )
 
     # Verify snapshot belongs to this user
     snap_result = await db.execute(

@@ -157,3 +157,21 @@ class BrowserProfile(BaseModel):
 class DetectedBrowsers(BaseModel):
     platform: str
     browsers: List[BrowserProfile]
+
+
+# ---------------------------------------------------------------------------
+# Billing / subscriptions
+# ---------------------------------------------------------------------------
+
+class SubscriptionStatusResponse(BaseModel):
+    tier: str             # "free" | "pro" | "premium"
+    expires: Optional[datetime] = None
+    features: List[str]   # list of allowed data types + flags
+    is_active: bool       # True if tier != "free"
+
+    class Config:
+        from_attributes = True
+
+
+class CheckoutResponse(BaseModel):
+    url: str

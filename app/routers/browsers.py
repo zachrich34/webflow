@@ -14,6 +14,7 @@ from app import session_store
 from app.database import get_db
 from app.models import BrowserSnapshot, EncryptedData
 from app.routers.auth import get_current_user
+from app.routers.billing import get_effective_tier, get_allowed_data_types
 from app.schemas import BrowserProfile, DetectedBrowsers, SnapshotRequest, SnapshotResponse
 from app.security import encrypt_data
 
@@ -110,6 +111,15 @@ async def create_snapshot(
     fernet = session_store.get_key(jti)
     if not fernet:
         raise HTTPException(status_code=401, detail="Session expired")
+
+    # Enforce subscription tier — silently drop types the user's plan doesn't allow
+    allowed = get_allowed_data_types(get_effective_tier(user))
+    locked = [t for t in body.data_types if t not in allowed]
+    if locked:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Your plan does not include: {', '.join(locked)}. Upgrade to Pro or Premium.",
+        )
 
     profile_path = Path(body.profile)
     if not profile_path.exists():

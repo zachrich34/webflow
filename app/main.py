@@ -13,6 +13,7 @@ from slowapi.util import get_remote_address
 
 from app.database import init_db
 from app.routers import auth, browsers, transfer
+from app.routers import billing
 
 
 # ---------------------------------------------------------------------------
@@ -90,6 +91,7 @@ async def security_headers(request: Request, call_next):
 app.include_router(auth.router)
 app.include_router(browsers.router)
 app.include_router(transfer.router)
+app.include_router(billing.router)
 
 
 # ---------------------------------------------------------------------------
@@ -112,6 +114,95 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+# ---------------------------------------------------------------------------
+# Stripe redirect landing pages
+# ---------------------------------------------------------------------------
+
+@app.get("/billing/success", include_in_schema=False)
+async def billing_success(session_id: str = ""):
+    """Verify Stripe checkout and activate subscription, then show confirmation."""
+    from fastapi.responses import HTMLResponse
+    from app.config import settings as cfg
+
+    async def _activate(sid: str) -> tuple[bool, str, str]:
+        if not sid or not cfg.stripe_secret_key:
+            return False, "free", "Configuration error"
+        try:
+            import stripe as stripe_lib
+            stripe_lib.api_key = cfg.stripe_secret_key
+            session = stripe_lib.checkout.Session.retrieve(sid, expand=["subscription"])
+            if session.payment_status != "paid" or not session.client_reference_id:
+                return False, "free", "Payment not completed"
+
+            plan = session.metadata.get("plan", "pro")
+            user_id = int(session.client_reference_id)
+            sub = session.subscription
+
+            expires_dt = None
+            if sub and sub.current_period_end:
+                from datetime import datetime, timezone
+                expires_dt = datetime.fromtimestamp(sub.current_period_end, tz=timezone.utc)
+
+            from app.database import AsyncSessionLocal
+            from app.models import User
+            from sqlalchemy import select
+            async with AsyncSessionLocal() as db:
+                result = await db.execute(select(User).where(User.id == user_id))
+                user = result.scalar_one_or_none()
+                if user:
+                    user.subscription_tier = plan
+                    user.subscription_expires = expires_dt
+                    if sub:
+                        user.stripe_subscription_id = sub.id
+                    cust = session.customer
+                    if cust:
+                        user.stripe_customer_id = cust if isinstance(cust, str) else cust.id
+                    await db.commit()
+            return True, plan, ""
+        except Exception as exc:
+            return False, "free", str(exc)
+
+    ok, plan, err = await _activate(session_id)
+
+    if ok:
+        body = f"""
+        <h2>✅ Abonnement {plan.title()} activé !</h2>
+        <p>Retourne dans l'application WebFlow et clique sur <strong>Actualiser l'abonnement</strong>.</p>
+        <p style="color:#888;font-size:.85rem">Tu peux fermer cet onglet.</p>
+        """
+    else:
+        body = f"""
+        <h2>❌ Erreur de paiement</h2>
+        <p>{err or "Paiement incomplet."}</p>
+        <p>Retourne dans WebFlow et réessaie.</p>
+        """
+
+    return HTMLResponse(f"""<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+    <title>WebFlow — Paiement</title>
+    <style>body{{font-family:system-ui,sans-serif;background:#0d0d1a;color:#e8e8f0;
+    display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}}
+    .box{{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:40px;max-width:480px;text-align:center}}
+    h2{{margin-bottom:16px}}p{{color:rgba(255,255,255,.65);line-height:1.6}}</style>
+    </head><body><div class="box">{body}</div></body></html>""")
+
+
+@app.get("/billing/cancel", include_in_schema=False)
+async def billing_cancel():
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse("""<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+    <title>WebFlow — Paiement annulé</title>
+    <style>body{font-family:system-ui,sans-serif;background:#0d0d1a;color:#e8e8f0;
+    display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+    .box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:40px;max-width:480px;text-align:center}
+    h2{margin-bottom:16px}p{color:rgba(255,255,255,.65);line-height:1.6}</style>
+    </head><body><div class="box">
+    <h2>Paiement annulé</h2>
+    <p>Tu peux fermer cet onglet et retourner dans WebFlow.</p>
+    </div></body></html>""")
 
 
 # ---------------------------------------------------------------------------

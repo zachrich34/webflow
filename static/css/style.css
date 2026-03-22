@@ -526,6 +526,157 @@ footer {
   margin: 8px 0;
 }
 
+/* ---- Tier badge ---- */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.tier-badge.free    { background: rgba(255,255,255,0.07); color: var(--muted); border: 1px solid var(--border); }
+.tier-badge.pro     { background: rgba(108,99,255,0.18); color: #a09bff; border: 1px solid rgba(108,99,255,0.35); }
+.tier-badge.premium { background: rgba(255,196,77,0.15); color: #ffc44d; border: 1px solid rgba(255,196,77,0.35); }
+
+/* ---- Locked data-type card ---- */
+.data-type-card.locked {
+  opacity: 0.55;
+  cursor: pointer;
+  position: relative;
+}
+.data-type-card.locked:hover {
+  border-color: var(--accent2);
+  background: rgba(255,101,132,0.08);
+}
+.lock-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: rgba(255,196,77,0.15);
+  color: #ffc44d;
+  border: 1px solid rgba(255,196,77,0.3);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ---- Upgrade modal overlay ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: #13132a;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 36px 32px;
+  max-width: 680px;
+  width: 100%;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  position: relative;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+.modal-close {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+.modal-close:hover { color: var(--text); }
+
+/* ---- Pricing grid ---- */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+@media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.pricing-card.current {
+  border-color: var(--accent3);
+  box-shadow: 0 0 20px rgba(67,233,123,0.12);
+}
+.pricing-card.highlight {
+  border-color: var(--accent1);
+  box-shadow: 0 0 24px rgba(108,99,255,0.2);
+}
+.pricing-card.premium-card {
+  border-color: rgba(255,196,77,0.4);
+  box-shadow: 0 0 20px rgba(255,196,77,0.1);
+}
+
+.pricing-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.pricing-badge.popular { background: var(--accent1); color: #fff; }
+.pricing-badge.best    { background: #ffc44d; color: #0d0d1a; }
+.pricing-badge.active  { background: var(--accent3); color: #0d0d1a; }
+
+.pricing-name { font-size: 1rem; font-weight: 700; }
+.pricing-price { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+.pricing-price span { font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.pricing-features li { font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 7px; }
+.pricing-features li.included { color: var(--text); }
+.pricing-features li::before { content: "✓"; color: var(--accent3); font-weight: 700; flex-shrink: 0; }
+.pricing-features li.excluded::before { content: "✗"; color: rgba(255,255,255,0.2); }
+.pricing-features li.excluded { color: rgba(255,255,255,0.25); }
+
+/* ---- Billing status card ---- */
+.billing-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.8rem;
+}
+.billing-status-bar .spacer { flex: 1; }
+
 /* ---- Nav tabs (login/register toggle) ---- */
 .nav-tabs {
   display: flex;
