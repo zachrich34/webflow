@@ -237,7 +237,7 @@ main {
   letter-spacing: -0.5px;
 }
 
-.page-subtitle { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+.page-subtitle { color: var(--muted); font-size: 0.95rem; line-height: 1.6; text-align: justify; }
 
 /* ---- Auth forms ---- */
 .auth-container {
