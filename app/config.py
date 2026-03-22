@@ -15,7 +15,7 @@ def _default_db_url() -> str:
     else:
         base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share")) / "WebFlow"
     base.mkdir(parents=True, exist_ok=True)
-    return f"sqlite+aiosqlite:///{base / 'webflow.db'}"
+    return "sqlite+aiosqlite:///" + (base / "webflow.db").as_posix()
 
 
 class Settings(BaseSettings):
