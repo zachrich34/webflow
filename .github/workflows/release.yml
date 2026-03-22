@@ -1,0 +1,70 @@
+name: Build & Release
+
+# Two ways to trigger:
+#   1. Go to Actions tab on GitHub → "Build & Release" → "Run workflow" (one click)
+#   2. Push a version tag:  git tag v1.0.0 && git push origin v1.0.0
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. 1.0.0)'
+        required: false
+        default: '1.0.0'
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # needed to create a Release and upload assets
+
+jobs:
+  build-windows:
+    name: Build WebFlow.exe (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pywebview
+
+      - name: Build exe with PyInstaller
+        run: pyinstaller webflow.spec
+
+      - name: Determine version tag
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=v${{ github.event.inputs.version || '1.0.0' }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release and upload WebFlow.exe
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: WebFlow ${{ steps.version.outputs.tag }}
+          files: dist/WebFlow.exe
+          body: |
+            ## Télécharger & Lancer
+
+            1. Télécharger **WebFlow.exe** ci-dessous
+            2. Double-cliquer — aucune installation requise
+            3. Une **fenêtre WebFlow s'ouvre** directement — pas de browser, pas de terminal
+
+            ---
+
+            > Windows affiche parfois un avertissement SmartScreen au premier lancement (exe non signé).
+            > Cliquer **"Informations complémentaires" → "Exécuter quand même"**.
