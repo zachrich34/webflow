@@ -26,6 +26,7 @@ const state = {
   // Subscription
   subscriptionTier: 'free',
   subscriptionFeatures: ['bookmarks', 'history'],
+  paymentsEnabled: false,
 };
 
 // Free tier data types
@@ -217,11 +218,12 @@ async function loadSubscriptionStatus() {
     const data = await api('GET', '/api/billing/status');
     state.subscriptionTier = data.tier || 'free';
     state.subscriptionFeatures = data.features || ['bookmarks', 'history'];
+    state.paymentsEnabled = data.payments_enabled || false;
     updateTierBadge(data.tier);
     applyTierToDataTypes(data.tier);
   } catch {
-    // Billing endpoint unavailable (Stripe not configured) — default to free
     state.subscriptionTier = 'free';
+    state.paymentsEnabled = false;
   }
 }
 
@@ -644,14 +646,17 @@ function closePricingModal() {
 }
 
 async function startCheckout(plan) {
+  if (!state.paymentsEnabled) {
+    showComingSoonModal();
+    return;
+  }
+
   const btn = document.getElementById('btnCheckout' + plan.charAt(0).toUpperCase() + plan.slice(1));
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>'; }
 
   try {
     const data = await api('POST', '/api/billing/checkout/' + plan);
-    // Open Stripe checkout in system browser
     window.open(data.url, '_blank');
-    // Show "I've paid, refresh now" prompt
     document.getElementById('paymentPendingBox').style.display = 'flex';
   } catch (e) {
     toast('Erreur : ' + e.message, 'error');
@@ -668,12 +673,24 @@ async function refreshSubscription() {
 }
 
 async function openBillingPortal() {
+  if (!state.paymentsEnabled) {
+    showComingSoonModal();
+    return;
+  }
   try {
     const data = await api('POST', '/api/billing/portal');
     window.open(data.url, '_blank');
   } catch (e) {
     toast('Erreur : ' + e.message, 'error');
   }
+}
+
+function showComingSoonModal() {
+  document.getElementById('comingSoonModal').style.display = 'flex';
+}
+
+function closeComingSoonModal() {
+  document.getElementById('comingSoonModal').style.display = 'none';
 }
 
 // ---------------------------------------------------------------------------

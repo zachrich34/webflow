@@ -367,6 +367,23 @@
     </div>
   </div>
 
+  <!-- ===== Coming Soon modal ===== -->
+  <div class="modal-overlay" id="comingSoonModal" style="display:none" onclick="if(event.target===this)closeComingSoonModal()">
+    <div class="modal" style="max-width:420px;text-align:center">
+      <button class="modal-close" onclick="closeComingSoonModal()">✕</button>
+      <div style="font-size:3rem;margin-bottom:16px">🚀</div>
+      <h2 class="page-title" style="font-size:1.4rem">Les paiements arrivent bientôt !</h2>
+      <p class="page-subtitle" style="margin-top:10px">
+        WebFlow est actuellement en bêta gratuite — toutes les fonctionnalités sont disponibles sans abonnement.
+        Les plans payants seront activés très prochainement.
+      </p>
+      <p class="page-subtitle" style="margin-top:8px">En attendant, profite de tout gratuitement. 🎉</p>
+      <button class="btn btn-primary" style="margin-top:24px;width:100%" onclick="closeComingSoonModal()">
+        Continuer gratuitement →
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <script src="/static/js/app.js"></script>

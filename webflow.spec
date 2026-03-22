@@ -32,6 +32,8 @@ a = Analysis(
         "app.routers.auth",
         "app.routers.browsers",
         "app.routers.transfer",
+        "app.routers.billing",
+        "stripe",
         "app.browsers",
         "app.browsers.base",
         "app.browsers.chrome",
