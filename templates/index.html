@@ -69,7 +69,7 @@
         <button class="dash-tab active" id="dtab-new"       onclick="switchDashTab('new')">🚀 Nouveau transfert</button>
         <button class="dash-tab"        id="dtab-transfers" onclick="switchDashTab('transfers')">📋 Mes transferts</button>
         <button class="dash-tab"        id="dtab-plan"      onclick="switchDashTab('plan')">💎 Mon plan</button>
-        <button class="dash-tab"        id="dtab-faq"       onclick="switchDashTab('faq')">❓ FAQ</button>
+        <button class="dash-tab"        id="dtab-faq"       onclick="switchDashTab('faq')">⭐ Review & FAQ</button>
       </div>
 
       <!-- Tab: Nouveau transfert -->
@@ -183,8 +183,38 @@
         </div>
       </div>
 
-      <!-- Tab: FAQ -->
+      <!-- Tab: Review & FAQ -->
       <div id="dtab-content-faq" style="display:none">
+
+        <!-- Beta review CTA -->
+        <div class="card" style="text-align:center;padding:40px 28px">
+          <div style="font-size:3rem;margin-bottom:12px">⭐</div>
+          <h3 style="font-weight:800;font-size:1.3rem;margin-bottom:8px">Donne ton avis sur la bêta</h3>
+          <p class="page-subtitle" style="max-width:420px;margin:0 auto 24px">2 minutes pour nous aider à améliorer WebFlow. Ton retour compte vraiment.</p>
+          <div class="review-questions">
+            <div class="review-question-item">
+              <span class="review-q-num">1</span>
+              <span>Comment as-tu découvert WebFlow ?</span>
+            </div>
+            <div class="review-question-item">
+              <span class="review-q-num">2</span>
+              <span>Qu'est-ce qui a fonctionné ou pas ?</span>
+            </div>
+            <div class="review-question-item">
+              <span class="review-q-num">3</span>
+              <span>Quelles fonctionnalités manquent ?</span>
+            </div>
+            <div class="review-question-item">
+              <span class="review-q-num">4</span>
+              <span>Serais-tu prêt à payer pour WebFlow ? Si oui, combien/mois ?</span>
+            </div>
+          </div>
+          <a href="https://forms.gle/8u1pB5LSrscrX5Kw9" target="_blank" class="btn btn-primary btn-lg" style="margin-top:24px;text-decoration:none;display:inline-flex">
+            ✍️ Répondre au formulaire
+          </a>
+        </div>
+
+        <!-- FAQ -->
         <div class="card">
           <h3 style="font-weight:700;margin-bottom:20px">Questions fréquentes</h3>
           <div class="faq-list">
@@ -210,6 +240,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
     </div>
