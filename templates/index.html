@@ -30,6 +30,16 @@
     </div>
   </header>
 
+  <!-- Update banner (shown when a new version is available) -->
+  <div id="updateBanner" style="display:none;background:rgba(108,99,255,0.12);border-bottom:1px solid rgba(108,99,255,0.25);padding:10px 40px;align-items:center;gap:14px;font-size:0.85rem;">
+    <span id="updateBannerText">Mise à jour disponible</span>
+    <div id="updateProgressWrap" style="display:none;flex:1;max-width:180px;height:4px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden">
+      <div id="updateProgressFill" style="height:100%;background:var(--accent1);width:0%;transition:width 0.3s ease"></div>
+    </div>
+    <button id="updateActionBtn" class="btn btn-primary btn-sm" onclick="handleUpdateAction()">Installer</button>
+    <button class="btn btn-secondary btn-sm" onclick="dismissUpdate()" style="padding:5px 10px">×</button>
+  </div>
+
   <main>
 
     <!-- Step progress indicator -->

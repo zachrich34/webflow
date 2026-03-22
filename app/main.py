@@ -14,6 +14,7 @@ from slowapi.util import get_remote_address
 from app.database import init_db
 from app.routers import auth, browsers, transfer
 from app.routers import billing
+from app.routers import updater
 
 
 # ---------------------------------------------------------------------------
@@ -92,6 +93,7 @@ app.include_router(auth.router)
 app.include_router(browsers.router)
 app.include_router(transfer.router)
 app.include_router(billing.router)
+app.include_router(updater.router)
 
 
 # ---------------------------------------------------------------------------

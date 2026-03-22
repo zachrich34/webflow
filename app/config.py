@@ -19,6 +19,9 @@ def _default_db_url() -> str:
 
 
 class Settings(BaseSettings):
+    # App version — keep in sync with GitHub release tag
+    VERSION: str = "1.1.0"
+
     # Security
     secret_key: str = os.environ.get("WEBFLOW_SECRET_KEY", secrets.token_hex(32))
     algorithm: str = "HS256"

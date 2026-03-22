@@ -564,6 +564,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     goToStep(2);
   }
+
+  // Check for updates in the background — non-blocking, 3s delay
+  setTimeout(checkForUpdate, 3000);
 });
 
 // ---------------------------------------------------------------------------
@@ -1416,4 +1419,111 @@ function toast(message, type = 'info') {
   div.textContent = message;
   container.appendChild(div);
   setTimeout(() => div.remove(), 4000);
+}
+
+// ---------------------------------------------------------------------------
+// Auto-updater
+// ---------------------------------------------------------------------------
+
+let _updatePhase = 'idle'; // idle | available | downloading | ready
+
+async function checkForUpdate() {
+  // Don't re-check if already in progress
+  if (_updatePhase !== 'idle') return;
+  // Throttle: once per session (stored in sessionStorage)
+  if (sessionStorage.getItem('wf_update_checked')) return;
+  sessionStorage.setItem('wf_update_checked', '1');
+  try {
+    await api('GET', '/api/update/check');
+    // Poll until the check resolves
+    let tries = 0;
+    const poll = async () => {
+      const s = await api('GET', '/api/update/status');
+      if (s.status === 'checking' && tries++ < 10) {
+        setTimeout(poll, 1000);
+        return;
+      }
+      if (s.status === 'available') {
+        _updatePhase = 'available';
+        showUpdateBanner(`Mise à jour ${s.latest_version} disponible`, 'Installer');
+      }
+    };
+    setTimeout(poll, 1200);
+  } catch {
+    // Silent fail — update check is non-critical
+  }
+}
+
+function showUpdateBanner(text, btnLabel) {
+  const banner = document.getElementById('updateBanner');
+  document.getElementById('updateBannerText').textContent = text;
+  document.getElementById('updateActionBtn').textContent = btnLabel;
+  banner.style.display = 'flex';
+}
+
+function dismissUpdate() {
+  document.getElementById('updateBanner').style.display = 'none';
+}
+
+async function handleUpdateAction() {
+  if (_updatePhase === 'available') {
+    _updatePhase = 'downloading';
+    document.getElementById('updateActionBtn').disabled = true;
+    document.getElementById('updateActionBtn').textContent = 'Téléchargement…';
+    document.getElementById('updateProgressWrap').style.display = '';
+    try {
+      await api('POST', '/api/update/download');
+      pollUpdateProgress();
+    } catch(e) {
+      toast('Erreur de téléchargement : ' + e.message, 'error');
+      _updatePhase = 'available';
+      document.getElementById('updateActionBtn').disabled = false;
+      document.getElementById('updateActionBtn').textContent = 'Installer';
+    }
+  } else if (_updatePhase === 'ready') {
+    document.getElementById('updateActionBtn').disabled = true;
+    document.getElementById('updateActionBtn').textContent = 'Redémarrage…';
+    try {
+      await api('POST', '/api/update/apply');
+    } catch(e) {
+      toast('Erreur lors de l\'application de la mise à jour : ' + e.message, 'error');
+      document.getElementById('updateActionBtn').disabled = false;
+    }
+  }
+}
+
+function pollUpdateProgress() {
+  const fill = document.getElementById('updateProgressFill');
+  const btn  = document.getElementById('updateActionBtn');
+  const text = document.getElementById('updateBannerText');
+  let errors = 0;
+
+  const poll = async () => {
+    try {
+      const s = await api('GET', '/api/update/status');
+      if (s.progress) fill.style.width = s.progress + '%';
+
+      if (s.status === 'downloading') {
+        setTimeout(poll, 800);
+      } else if (s.status === 'ready') {
+        _updatePhase = 'ready';
+        fill.style.width = '100%';
+        text.textContent = 'Mise à jour prête';
+        btn.textContent = 'Redémarrer';
+        btn.disabled = false;
+        // Non-frozen (dev): inform but don't offer restart
+        if (!s.is_frozen) {
+          text.textContent = 'Mise à jour téléchargée — relancez manuellement';
+          btn.style.display = 'none';
+        }
+      } else if (s.status === 'error') {
+        toast('Mise à jour échouée : ' + (s.error || 'erreur inconnue'), 'error');
+        dismissUpdate();
+        _updatePhase = 'idle';
+      }
+    } catch {
+      if (errors++ < 5) setTimeout(poll, 2000);
+    }
+  };
+  poll();
 }
