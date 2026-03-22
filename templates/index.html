@@ -326,6 +326,7 @@
       </div>
 
       <div style="display:flex; gap:12px; justify-content:flex-end">
+        <button class="btn btn-secondary" onclick="showDash()">← Retour</button>
         <button class="btn btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Next →</button>
       </div>
     </div>
@@ -378,6 +379,45 @@
             <div class="data-type-count" id="count-settings">Page d'accueil, moteur de recherche</div>
           </div>
           <span class="lock-badge" id="lock-settings">Pro</span>
+        </div>
+      </div>
+
+      <!-- Pro/Premium locked features -->
+      <div>
+        <p style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Pro &amp; Premium — À venir</p>
+        <div class="data-types-grid">
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">🔄</div>
+            <div class="data-type-info">
+              <div class="data-type-name">Transferts automatiques</div>
+              <div class="data-type-count">Sync quotidienne programmée</div>
+            </div>
+            <span class="lock-badge">Premium</span>
+          </div>
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">📜</div>
+            <div class="data-type-info">
+              <div class="data-type-name">Historique illimité</div>
+              <div class="data-type-count">Tous vos transferts conservés</div>
+            </div>
+            <span class="lock-badge">Pro</span>
+          </div>
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">👥</div>
+            <div class="data-type-info">
+              <div class="data-type-name">Multi-profils</div>
+              <div class="data-type-count">Sync plusieurs profils en même temps</div>
+            </div>
+            <span class="lock-badge">Premium</span>
+          </div>
+          <div class="data-type-card locked" onclick="showComingSoonToast()">
+            <div class="data-type-icon">⚡</div>
+            <div class="data-type-info">
+              <div class="data-type-name">Accès anticipé</div>
+              <div class="data-type-count">Nouvelles fonctionnalités en avant-première</div>
+            </div>
+            <span class="lock-badge">Premium</span>
+          </div>
         </div>
       </div>
 
